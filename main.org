@@ -103,11 +103,59 @@ Therefore,
 
 As stated before, in the right to left implication (that now we can assume as characterization of Markov chains), we have shown that transition probabilities can be expressed as:
 
-\begin{align*}
-& P(X_0 = s_0, \ldots X_n = s_n ) =\\
+\begin{align}
+& P(X_0 = s_0, \ldots X_n = s_n) = \nonumber \\
 & P(X_0 = s_0) \cdot P(X_1 = s_1 | X_0 = s_0) \cdot P(X_2 = s_2 | X_1 = s_1) \cdots P(X_n = s_n | X_{n - 1} = s_{n - 1})
+\label{eq:trans-probs}
+\end{align}
+
+and also:
+
+\begin{align}
+& P(X_{m} = s_{m}, \ldots, X_n = s_n | X_{m - 1} = s_{m - 1})) = \nonumber \\
+& = P(X_{m} = s_{m} | X_m = s_m) \cdots P(X_n = s_n | X_{n - 1} = s_{n - 1})
+\label{eq:trans-cond-probs}
+\end{align}
+
+#+begin_definition
+Given $\{X_n\}_{n\in I}$ a Markov chain with finite state space $S$, let us define the *initial distribution* as $\mu(s) = P(X_0 = s), s \in S$.
+#+end_definition
+
+#+begin_definition
+Given $\{X_n\}_{n\in I}$ a Markov chain with finite state space $S$, let us define the *transition probabilities* as 
+
+\begin{align*}
+& p_{s, t}(m, n) = P(X_n = t | X_m = s),\quad s,t \in S, \quad n,m \in \mathbb{N}, n\neq m \\ 
+& p_{s, t}(n, n) = \mathbb{1}_{s = t}
 \end{align*}
+#+end_definition
 
+Therefore, we can rewrite Equation \eqref{eq:trans-probs} as:
 
+\[
+P(X_k = s_k, k \le n) = \mu(s_0) \cdot p_{s_0, s_1}(0, 1) \cdot p_{s_1, s_2}(1, 2) \cdots p_{s_{n - 1}, s_n}(n - 1, n)
+\]
+
+Summing over $m - 1, \ldots, n -1$ in Equation \eqref{eq:trans-cond-probs}, we deduce:
+
+\begin{equation}
+p_{s, t}(m, n) = \sum_{s^{(1)} \in S} \ldots \sum_{s^{(n - m - 1)} \in S} p_{s, s^{(1)}}(m, m + 1) \cdots p_{s^{(n - m - 1)}, t}(n - 1, n)
+\label{eq:sum-probs}
+\end{equation}
+
+#+begin_definition 
+We will define the matrix $P(m, n) = (p_{s, t}(m, n))_{s, t \in S}$ henceforth.
+#+end_definition
+
+#+begin_fact
+$P$ verifies the semigroup property, best known as *Chapman-Kolmogorov equation*:
+
+\[
+P(m, n) = P(m, l) \cdot P(l, n), \quad \forall m \le l \le n 
+\]
+#+end_fact
+#+begin_proof
+Straightforward from Equation \eqref{eq:sum-probs} 
+#+end_proof
 * Second chapter
 * Bibliography
