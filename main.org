@@ -3,7 +3,7 @@
 #+OPTIONS: toc:t num:3
 
 #+latex_class: scrreprt
-#+latex_class_options: [oneside,openright,titlepage,numbers=noenddot,openany,headinclude,footinclude=true,cleardoublepage=empty,abstractoff,BCOR=5mm,paper=a4,fontsize=12pt,ngerman,american]
+#+latex_class_options: [oneside,english,openright,titlepage,numbers=noenddot,openany,headinclude,footinclude=true,cleardoublepage=empty,abstractoff,BCOR=5mm,paper=a4,fontsize=12pt,ngerman,american]
 #+latex_header_extra: \definecolor{ugrColor}{HTML}{c6474b} 
 #+latex_header_extra: \input{titlepage}\usepackage{wallpaper}\ThisULCornerWallPaper{1}{ugrA4.pdf}
 #+latex_header_extra: \usepackage[T1]{fontenc}
@@ -18,82 +18,96 @@
 :UNNUMBERED: t
 :END:
 
-Occaecati expedita cumque est. Aut odit vel nobis praesentium dolorem
-sed eligendi. Inventore molestiae delectus voluptatibus
-consequatur. Et cumque quia recusandae fugiat earum repellat
-porro. Earum et tempora vel voluptas. At sed animi qui hic eaque
-velit.
+Markov chains are a mathematical area which encompasses probability, inference, algebra (more accurately graph theory), algorithms theory (since discrete markov chains can be simulated in a computer, and therefore, we intend to simulate them as efficiently as we can or use as big input sizes as we can, for example in markov chains with more states). All of the above conditions make markov chains an interesting study from both the mathematical and the computer science viewpoint.
 
-Saepe deleniti aut voluptatem libero dolores illum iusto
-iusto. Explicabo dolor quia id enim molestiae praesentium sit. Odit
-enim doloribus aut assumenda recusandae. Eligendi officia nihil
-itaque. Quas fugiat aliquid qui est.
+* Introduction to Markov chains
+For convenience, unless otherwise indicated, we will consider $0\in \mathbb{N}$.
 
-Quis amet sint enim. Voluptatem optio quia voluptatem. Perspiciatis
-molestiae ut laboriosam repudiandae nihil.
+#+begin_definition
+A stochastic random process $\{X_n\}_{n\in I}$, where $I\subseteq \mathbb{N}$, is a Markov chain iff the future process $\{X_k\}_{k > n, k \in I}$ is independent of the past process $\{X_k\}_{k < n, k \in I}$ conditionally on $X_n$.
+#+end_definition
 
-* First chapter
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc finibus
-augue a tellus volutpat, quis cursus mi egestas. Suspendisse cursus
-eleifend lacus non consectetur. Proin nibh nisl, tincidunt eu
-tincidunt et, auctor vitae mi. Mauris tincidunt finibus enim, sit amet
-facilisis mi imperdiet in. Pellentesque pellentesque felis sed
-condimentum congue. Nunc at mauris et velit tempor gravida faucibus
-sed velit. Sed risus justo, feugiat non accumsan vitae, commodo a
-mauris. Vestibulum ac tortor ligula. Donec pulvinar neque ac purus
-varius dapibus. Donec fermentum bibendum ultrices. Quisque dictum,
-purus quis semper lacinia, justo nibh cursus orci, vitae sagittis
-mauris ex aliquet odio. Nullam vel lacus eu tellus dictum tempus in
-vel sapien. Morbi pulvinar tincidunt tincidunt. Cras eros tortor,
-commodo at tempus a, ultrices vel magna. Nulla eget mauris
-arcu. Vivamus aliquet sem odio, non faucibus ante iaculis non.
+#+begin_definition
+Given $\{X_n\}_{n\in I}$ a Markov chain, let us call the *state space* the set $S = \bigcup_{n \in I} Img \left(X_n\right)$, i.e. the set where the Markov chain takes its values.
+#+end_definition
 
-Aenean aliquet metus nisi, eu congue nulla egestas nec. Etiam pretium
-cursus orci a venenatis. Pellentesque placerat feugiat tortor tempus
-laoreet. Sed at rutrum leo. Aenean magna nulla, egestas quis efficitur
-a, consequat id ligula. Nulla facilisi. Duis orci urna, bibendum vel
-mollis non, commodo vitae tellus. Integer luctus ex sed nibh
-convallis, id malesuada metus facilisis.
+We will omit the subscript $n\in I$ and assume $I = \mathbb{N}$ henceforth. We will also assume $S$ is finite.
 
-#+begin_theorem
-En las condiciones dadas anteriormente se tiene
+#+begin_lemma
+$\{X_n\}_n$ is a Markov chain iff for all $n\in\mathbb{N}$ and given arbitrary $s_0, \ldots, s_{n + 1} \in S$, then it holds:
 
 \[
-g(t) = \int^b_a K(t,s)f(s)\ \diff s.
+P(X_{n + 1} = s_{n + 1} | X_n = s_n, \ldots, X_0 = s_0) = P(X_{n + 1} = s_{n + 1} | X_n = s_n)
 \]
-#+end_theorem
+#+end_lemma
 
-Vivamus sit amet sodales elit, in tempus nulla. Nullam euismod rhoncus
-quam, ac fringilla massa fermentum vehicula. Maecenas vestibulum purus
-non pellentesque congue. Sed nec massa purus. Mauris et quam
-dignissim, mollis lacus id, tristique diam. Vestibulum molestie
-vehicula tellus quis dignissim. Curabitur accumsan augue ut dictum
-semper. Proin tristique quam nulla, vel placerat tortor feugiat
-vel. Vestibulum quis ultricies enim, in vestibulum ante.
+#+begin_proof
+
+From left to right. By Markov chain definition, if $\{X_k\}_{k \in I}$ is independent of the past process $\{X_k\}_{m \in I}$ conditionally on $X_n$, then:
+
+\begin{align*}
+&P(X_{n + 1} = s_{n + 1}, X_{n - 1} = s_{n - 1}, \ldots, X_0 = s_0 | X_n = s_n) = \\
+&P(X_{n + 1} = s_{n + 1} | X_n = s_n) \cdot P(X_{n - 1} = s_{n - 1}, \ldots, X_0 = s_0 | X_n = s_n)
+\end{align*}
+
+If we prove that 
+
+\[
+\frac{P(X_{n + 1} = s_{n + 1}, X_{n - 1} = s_{n - 1}, \ldots, X_0 = s_0 | X_n = s_n)}{P(X_{n - 1} = s_{n - 1}, \ldots, X_0 = s_0 | X_n = s_n)} = P(X_{n + 1} = s_{n + 1} | X_n = s_n, \ldots, X_0 = s_0)
+\]
+
+then we would have arrived at our proof. That derives from:
+
+\begin{align*}
+\frac{P(X_{n + 1} = s_{n + 1}, X_{n - 1} = s_{n - 1}, \ldots, X_0 = s_0 | X_n = s_n)}{P(X_{n - 1} = s_{n - 1}, \ldots, X_0 = s_0 | X_n = s_n)} &=
+\frac{P(X_{n + 1} = s_{n + 1}, X_n = s_n, \ldots, X_0 = s_0)}{P(X_n = s_n, X_{n - 1} = s_{n - 1}, \ldots, X_0 = s_0)} = \\
+&= P(X_{n + 1}=s_{n + 1} | X_{n} = s_{n}, \ldots, X_0 = s_0)
+\end{align*}
+
+From right to left. We want to prove that:
+
+\begin{align*}
+&P(X_{n + m} = s_{n + m}, \ldots X_{n + 1} = s_{n + 1} | X_n = s_n, \ldots, X_0 = s_0) =\\
+&P(X_{n + m} = s_{n + m}, \ldots, X_{n + 1} = s_{n + 1} | X_n = s_n)
+\end{align*}
+
+On the one hand, if the right part holds, it easy to prove that:
+
+\begin{align*}
+& P(X_0 = s_0, \ldots X_n = s_n ) =\\
+& P(X_0 = s_0) \cdot P(X_1 = s_1 | X_0 = s_0) \cdot P(X_2 = s_2 | X_1 = s_1) \cdots P(X_n = s_n | X_{n - 1} = s_{n - 1})
+\end{align*}
+
+substituting each:
+
+\[
+P(X_i = s_i | X_{i - 1} = s_{i - 1}) = P(X_i = s_i | X_{i - 1} = s_{i - 1}, \ldots, X_0 = s_0) = \frac{P(X_i = s_i, \ldots, X_0 = s_0)}{P(X_{i - 1} = s_{i - 1}, \ldots, X_0 = s_0)}
+\]
+
+
+Summing over all $s_0, \ldots s_{k - 1}$, we get:
+
+\[
+P(X_{k} = s_{k}, \ldots, X_n = s_n) = P(X_k = s_k) \cdot P(X_{k + 1} = s_{k + 1} | X_k = s_k) \cdots P(X_n = s_n | X_{n - 1} = s_{n - 1})
+\]
+
+Therefore,
+
+\begin{align*}
+& P(X_{n + m} = s_{n + m}, \ldots, X_{n + 1} = s_{n + 1} | X_n = s_n, \ldots, X_0 = s_0) =\\
+&= \frac{P(X_{n + m}, \ldots, X_0)}{P(X_{n + m - 1}, \ldots, X_0)} \cdot \frac{P(X_{n + m - 1}, \ldots, X_0)}{P(X_{n + m - 2}, \ldots, X_0)} \cdots \frac{P(X_{n + 1}, \ldots, X_0)}{P(X_{n}, \ldots, X_0)} = \\
+&= P(X_{n + m} | X_{n + m - 1}) \cdots P(X_{n + 1} | X_{n}) = \frac{P(X_{n + m} = s_{n + m}, \ldots X_{n + 1} = s_{n + 1})}{P(X_n = s_n)} =\\
+&= P(X_{n + m} = s_{n + m}, \ldots, X_{n + 1} = s_{n + 1} | X_n = s_n) 
+\end{align*}
+#+end_proof
+
+As stated before, in the right to left implication (that now we can assume as characterization of Markov chains), we have shown that transition probabilities can be expressed as:
+
+\begin{align*}
+& P(X_0 = s_0, \ldots X_n = s_n ) =\\
+& P(X_0 = s_0) \cdot P(X_1 = s_1 | X_0 = s_0) \cdot P(X_2 = s_2 | X_1 = s_1) \cdots P(X_n = s_n | X_{n - 1} = s_{n - 1})
+\end{align*}
+
 
 * Second chapter
-Vivamus fringilla egestas nulla ac lobortis. Etiam viverra est risus,
-in fermentum nibh euismod quis. Vivamus suscipit arcu sed quam dictum
-suscipit. Maecenas pulvinar massa pulvinar fermentum
-pellentesque. Morbi eleifend nec velit ut suscipit. Nam vitae
-vestibulum dui, vel mollis dolor. Integer quis nibh sapien.
-
-Nullam laoreet augue at erat consectetur fermentum. In interdum
-aliquam condimentum. Etiam luctus viverra tellus, a consequat justo
-venenatis id. Curabitur a scelerisque erat. Nulla et ante eget lacus
-varius accumsan. Suspendisse odio nisl, convallis ac orci nec,
-efficitur semper enim. Pellentesque eros ipsum, luctus et viverra
-maximus, auctor at est. In hac habitasse platea dictumst. Etiam
-ultricies suscipit diam, eget dignissim tellus. Proin justo orci,
-volutpat placerat libero a, gravida interdum nisi.
-
-#+begin_corollary
-Se obtiene el siguiente resultado
-
-\[\begin{tikzcd}
-a\rar{f} \dar[swap]{g} & b \dar{h} \\
-c\rar{k} & d
-\end{tikzcd}\]
-#+end_corollary
-
 * Bibliography
