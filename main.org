@@ -1,6 +1,8 @@
 #+TITLE: Cadenas de Markov
 #+AUTHOR: Ignacio Cordón Castillo
 #+OPTIONS: toc:t num:3
+#+STARTUP: indent
+#+STARTUP: latexpreview
 
 #+latex_class: scrreprt
 #+latex_class_options: [oneside,english,openright,titlepage,numbers=noenddot,openany,headinclude,footinclude=true,cleardoublepage=empty,abstractoff,BCOR=5mm,paper=a4,fontsize=12pt,ngerman,american]
@@ -21,6 +23,7 @@
 Markov chains are a mathematical area which encompasses probability, inference, algebra (more accurately graph theory), algorithms theory (since discrete markov chains can be simulated in a computer, and therefore, we intend to simulate them as efficiently as we can or use as big input sizes as we can, for example in markov chains with more states). All of the above conditions make markov chains an interesting study from both the mathematical and the computer science viewpoint.
 
 * Introduction to Markov chains
+** Definition
 For convenience, unless otherwise indicated, we will consider $0\in \mathbb{N}$.
 
 #+begin_definition
@@ -101,6 +104,7 @@ Therefore,
 \end{align*}
 #+end_proof
 
+** Chapman-Kolmogorov equation
 As stated before, in the right to left implication (that now we can assume as characterization of Markov chains), we have shown that transition probabilities can be expressed as:
 
 \begin{align}
@@ -147,15 +151,80 @@ p_{s, t}(m, n) = \sum_{s^{(1)} \in S} \ldots \sum_{s^{(n - m - 1)} \in S} p_{s, 
 We will define the matrix $P(m, n) = (p_{s, t}(m, n))_{s, t \in S}$ henceforth.
 #+end_definition
 
-#+begin_fact
+#+begin_proposition
 $P$ verifies the semigroup property, best known as *Chapman-Kolmogorov equation*:
 
 \[
 P(m, n) = P(m, l) \cdot P(l, n), \quad \forall m \le l \le n 
 \]
-#+end_fact
+#+end_proposition
 #+begin_proof
 Straightforward from Equation \eqref{eq:sum-probs} 
 #+end_proof
+
+** Time-homogeneous Markov chains
+#+begin_definition
+Given a Markov chain $\{X_n\}$ with finite space state $S=\{0, \ldots, k\}$, it is said to be a *time-homogeneous Markov chain* iff it holds:
+
+\[
+\forall s, t\in S, \forall n \in \mathbb{N} \qquad p_{s, t} (n, n + 1) = p_{s, t} \in [0, 1]
+\]
+
+(i.e. the transition probabilities do not depend on the time).
+
+$p_{s, t}$ is called *one-step transition probability* and $P = (p_{s, t})_{s, t \in S}$ the transition matrix.
+#+end_definition
+
+#+begin_proposition
+It holds $P(m, n) = P^{n - m}$
+#+end_proposition
+
+#+begin_proof
+Trivial
+#+end_proof
+
+
+#+begin_proposition
+Naming $\mu_n = \left(\mu_n(0), \ldots, \mu_n(k)\right)$, it holds:
+
+\[
+\mu_n = \mu_0 \cdot P^n
+\]
+#+end_proposition
+
+#+begin_proof
+Trivial from Equation \eqref{eq:trans-probs}
+#+end_proof
+
+#+begin_definition
+We define the law of a Markov chain $\{X_n\}$ as its successive joint distributions, i.e.
+
+\[
+l(n, s_n, s_{n - 1}, \ldots, s_0) = P(X_n = s_n, X_{n - 1} = s_{n - 1}, \ldots, X_0 = s_0) \quad \forall n \in \mathbb{N}, s_k \in S
+\]
+#+end_definition
+
+#+begin_definition
+We will denote:
+
+\[
+P_s(A) = P(A | X_0 = s)
+\]
+
+for any given state $s\in S$. Let's note that $P_s$ is univocally defined by $P_s(X_k = t) \quad \forall k \ge 0, t \in S$.
+
+We will also denote
+
+\[
+\mathbb{E}_s Y = \mathbb{E}(Y | X_0 = s) = \sum_y y P(Y = y | X_0 = s) = \sum_y y P_i(Y = y)
+\]
+#+end_definition
+
+** Stationarity
+#+begin_definition
+We say that $\{X_n\}$ is stationary iff $\{X_n\}_{n \ge 0}$ has the same law as $\{X_n\}_{n \ge m}$.
+#+end_definition
+
+We will assume all the Markov chains as time-homogeneous ones henceforth, unless stated otherwise.
 * Second chapter
 * Bibliography
