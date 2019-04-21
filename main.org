@@ -197,11 +197,7 @@ Trivial from Equation \eqref{eq:trans-probs}
 #+end_proof
 
 #+begin_definition
-We define the law of a Markov chain $\{X_n\}$ as its successive joint distributions, i.e.
-
-\[
-l(n, s_n, s_{n - 1}, \ldots, s_0) = P(X_n = s_n, X_{n - 1} = s_{n - 1}, \ldots, X_0 = s_0) \quad \forall n \in \mathbb{N}, s_k \in S
-\]
+We define the law of a Markov chain $\{X_n\}$, where $X_n: \Omega \longrightarrow \mathbb{S}$, as the probability distribution of $X: \Omega \longrightarrow S^{\mathbb{N}}$, where $X(\omega) = \{X_n(w)\}_{n \in \mathbb{N}}$.
 #+end_definition
 
 #+begin_definition
@@ -225,6 +221,96 @@ We will also denote
 We say that $\{X_n\}$ is stationary iff $\{X_n\}_{n \ge 0}$ has the same law as $\{X_n\}_{n \ge m}$.
 #+end_definition
 
-We will assume all the Markov chains as time-homogeneous ones henceforth, unless stated otherwise.
-* Second chapter
+#+begin_proposition
+A Markov chain $\{X_n\}$ is stationary iff it is time homogeneous and all the $X_k$ have the same 
+distribution.
+#+end_proposition
+
+#+begin_proof
+From right to left, if $\{X_n\}$ is stationary, $P(X_0 = s) = P(X_m = s)$ for all $s\in S, m\in \mathbb{N}$
+#+end_proof
+
+We will assume all the Markov chains as time-homogeneous ones henceforth, unless stated 
+otherwise.
+** Stopping times and strong Markov property
+#+begin_definition
+Given $\{X_n\}$ a Markov chain, defined over $(\Omega, \mathcal{F}, P)$, then a *stopping time* is a random variable 
+$\tau : \Omega \mapsto \mathbb{N} \bigcap \{\infty\}$ such that:
+
+\[
+\{\tau = n \} \in \mathcal{F}_n = \sigma(X_0, X_1, \ldots, X_n), \quad \forall n \in \mathbb{N}
+\]
+
+Moreover, we call the $\sigma$ -algebra of events previous to $\tau$, namely $\mathcal{F}_{\tau}$, the one which contains all
+the events $A \in \mathcal{F}$ following:
+
+\[
+A\bigcap \{\tau = n \} \in \mathcal{F}_n
+\]
+#+end_definition
+
+For example, in the case of a coin, the first instant (or coin toss) $\tau$ where we get 4 heads 
+in a row, is a valid stopping time, because we only have to account for the previous random 
+variables; whereas the first toss where we are just one toss away from having obtained 4 heads 
+is not a valid stopping time, since it involves future events.
+
+Given $S = \{i_1, i_2, \ldots\}$ we would denote $S^m = \{(i^{(1)}, \ldots, i^{(m)}): i^{(j)} \in S\}$.
+
+#+begin_proposition
+Let $\{X_n\}$ be a Markov chain with $S$ as state space and stationary transition probabilities.
+Let $\tau$ be a stopping time. Then for all $m\in \mathbb{N}, C \subseteq S^m, A \in \mathcal{F}_\tau,
+i \in S$, if $P(A \bigcap \{X_\tau = i\}) > 0$, then it holds:
+
+\begin{equation}
+P\left((X_{\tau + 1}, \ldots, X_{\tau + m}) \in C | A, X_{\tau} = i\right) = 
+P\left((X_{\tau + 1}, \ldots, X_{\tau + m}) \in C | X_{\tau} = i\right)
+\label{ec:strong-mc}
+\end{equation}
+#+end_proposition
+
+#+begin_proof
+Let us start taking $m = 1, C = \{j\}$. Then, intersecting over $\{\tau = n\}$, we have:
+
+\begin{align*}
+P\left(X_{\tau + 1} = j, A, X_{\tau} = i\right) &=
+\sum_{n = 0}^{\infty} P\left(\tau = n, X_{n + 1}, A, X_n = i\right) = \\
+&= \sum_{n = 0}^{\infty} P\left(\tau = n, A, X_n = i\right) \cdot P\left(X_{n + 1} = j | \tau = n, A, X_n = i\right) = \\
+&= \sum_{n = 0}^{\infty} P\left(\tau = n, A, X_n = i\right) \cdot P\left(X_{n + 1} = j | X_n = i\right) = \\
+&= p_{i,j} \sum_{n = 0}^{\infty} P\left(\tau = n, A, X_n = i\right) = p_{i, j} P\left(A, X_{\tau} = i\right)
+\end{align*}
+
+where we have used $A\bigcap \{\tau = n\} \in \mathcal{F}_n$ to simplify 
+$P\left(X_{n + 1} = j | \tau = n, A, X_n = i\right)$
+as $P\left(X_{n + 1} = j | X_n = i\right)$. Therefore, using the proven equality we can show:
+
+\[
+P\left(X_{\tau + 1} = j | A, X_\tau = i\right) = \frac{P\left(X_{\tau + 1} = j, A, X_{\tau} = i\right)}{P(A, X_{\tau} = i)} = p_{i, j}
+\]
+
+Applying several times this argument, we have:
+
+\begin{align*}
+& P\left(X_{\tau + 1} = i_1, X_{\tau + 2} = i_2, \ldots, X_{\tau + m} = i_m | A, X_{\tau} = i\right) =\\
+&= P\left(X_{\tau + 1} = i_1 | A, X_{\tau} = i\right) \cdot P\left(X_{\tau + 2} = i_2 | A, X_{\tau} = i, X_{\tau + 1} = i_1\right) \cdots \\
+&\cdots P\left(X_{\tau + m} = i_m | A, X_{\tau} = i, X_{\tau + 1} = i_1, \ldots X_{\tau + m - 1} = i_{m - 1}\right) = p_{i, i_1} p_{i_1, i_2} \cdots p_{i_{m - 1}, i_m}
+\end{align*}
+
+In particular, when $A$ is the whole space $\Omega$, we arrive at:
+
+\[
+P\left(X_{\tau + 1} = i_1, X_{\tau + 2} = i_2, \ldots, X_{\tau + m} = i_m | X_{\tau} = i\right) = p_{i, i_1} p_{i_1, i_2} \cdots p_{i_{m - 1}, i_m}
+\]
+
+which shows the equality:
+
+\[
+P\left(X_{\tau + 1} = i_1, \ldots, X_{\tau + m} = i_m | A, X_{\tau} = i\right) =
+P\left(X_{\tau + 1} = i_1, \ldots, X_{\tau + m} = i_m | X_{\tau} = i\right) 
+\]
+
+We have shown that Equation \eqref{ec:strong-mc} holds for $C = \{(i_1, \ldots, i_m)\}$. For
+$C \subseteq S^m$ it would suffice summing over $(i_1, \ldots, i_m) \in C$.
+#+end_proof
+
+The previous result can be interpreted as the Markov chain restarting each time it hits the state $i \in S$.
 * Bibliography
