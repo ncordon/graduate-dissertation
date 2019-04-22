@@ -394,6 +394,16 @@ f_{jj}^{(n)} = \twopartdef
   { \sum_{k \in S, k \neq j} p_{j,k} f_{k,j}^{(n - 1)} } { n \ge 2 }
 \]
 
+*** Computation through transition probabilities
+We could ask ourselves whether it is possible to relate $f_{i,j}^{(n)}$ to $p_{i,j}^{(n)}$
+directly. It holds:
+
+\begin{align*}
+p_{i,j}^{(n)} &= \probi{X_n = j} = \sum_{m = 1}^{n} \probi{\tau_j = m} 
+\probi{X_n = j | \tau_j = = m} = \\
+&= \sum_{m = 1}^{n} \probi{\tau_j = m} \probj{X_{n-m} = j} = 
+\sum_{m = 1}^n f_{i, j}^{(m)} p_{j,j}^{(n - m)}
+\end{align*}
 
 * Bibliography
 :PROPERTIES:
