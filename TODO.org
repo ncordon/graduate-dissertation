@@ -1,0 +1,4 @@
+* What does strong Markov property means (it is not described in the corresponding section)
+* p_{i,j}(n, m) is defined, whereas p_{i, j}^{(n)} is not (hitting times section, for example)
+* Add example on hitting times
+* Add information on docs restructuring for the package
