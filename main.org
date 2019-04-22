@@ -7,13 +7,13 @@
 #+latex_class: scrreprt
 #+latex_class_options: [oneside,english,openright,titlepage,numbers=noenddot,openany,headinclude,footinclude=true,cleardoublepage=empty,abstractoff,BCOR=5mm,paper=a4,fontsize=12pt,ngerman,american]
 #+latex_header_extra: \definecolor{ugrColor}{HTML}{c6474b} 
-#+latex_header_extra: \input{titlepage}\usepackage{wallpaper}\ThisULCornerWallPaper{1}{ugrA4.pdf}
+#+latex_header_extra: \input{frontmatter/titlepage}\usepackage{wallpaper}\ThisULCornerWallPaper{1}{imgs/ugrA4.pdf}
 #+latex_header_extra: \usepackage[T1]{fontenc}
 #+latex_header_extra: \usepackage{babel}
 #+latex_header_extra: \usepackage[beramono,eulerchapternumbers,linedheaders,parts,a5paper,dottedtoc,manychapters]{classicthesis}
-#+latex_header_extra: \input{setup}
-#+latex_header_extra: \input{classicthesis-config}
-#+latex_header: \input{macros}
+#+latex_header_extra: \input{config/setup}
+#+latex_header_extra: \input{config/classicthesis}
+#+latex_header: \input{config/macros}
 
 * Abstract
 :PROPERTIES:
@@ -312,5 +312,90 @@ We have shown that Equation \eqref{ec:strong-mc} holds for $C = \{(i_1, \ldots, 
 $C \subseteq S^m$ it would suffice summing over $(i_1, \ldots, i_m) \in C$.
 #+end_proof
 
-The previous result can be interpreted as the Markov chain restarting each time it hits the state $i \in S$.
+The previous result says us that all the Markov chains (in discrete time) have the strong Markov 
+property, and it can be interpreted as the Markov chain restarting each time it hits the state 
+$i \in S$.
+
+** Hitting times
+The probabilities $p_{i, j}^{(n)} = P_i\left(X_n = j\right)$ gives us of the probability of the
+chain reaching state $j$ in the $n$ -th period, if it starts from $i$. But the state $j$ could have
+been visited before. We are interested now in finding the first time that a given state is reached.
+
+#+begin_definition
+We define the *hitting time* for the state $j \in S$ as:
+
+\[
+\tau_j = min \{n > 0 : X_n = j \}
+\] 
+#+end_definition
+
+#+begin_definition
+
+We call *first hitting time probability of the state $j$*, provided that the chain starts in the 
+state $i$, to:
+
+\[
+f_{i,j}^{(n)} = P_i\left(\tau_j = n\right) = P_i\left(X_n = j, X_m \neq j \quad \forall m = 1, \ldots, n - 1 \right)
+\]
+
+and we will denote $f_{i, j} := \sum_{n = 0}^{\infty} f_{i,j}^{(n)} = P_i\left(\tau_j < \infty\right)$
+#+end_definition
+
+Note that we coul have $f_{i, j} < 1$ iff $P_i\left(X_n \neq j \forall n \ge 1\right) > 0$.
+
+#+begin_definition
+We will call *return time distribution* for the state $i$ to $f_{i,i}^{(n)} = P_i \left(\tau_i = n\right)$, 
+and we will denote $f_{i,i} = P_i\left(\tau_i < \infty\right)$ (i.e. the probability of ever returning 
+to the start state $i$.
+#+end_definition
+
+*** Computation through absorption
+Let us consider a fixed state $j$. The aim is to compute $f_{i,j}^{(n)}$ with $i\neq j$. 
+We could freeze the chain $\{X_n\}$ once it hits $j$ in that state, that is, taking:
+
+\[
+\tildemc = \twopartdef 
+             {X_n} { X_r \neq j \; \forall r < n } 
+             {j} {X_r = j \textrm{ for some } r  < n}
+\]
+
+That is, $j$ has been transformed into an absorbing state, such that $\tildemc$ cannot leave.
+
+The transition matrix for $\tildemc$ is given by:
+
+\[
+\tildeprob_{i, k} = \probi{\tildex_1 = k} = 
+  \threepartdef 
+    { p_{i,k} } { i\neq j }
+    { 0 }       { i = j, k \neq j }
+    { 1 }       { i = j, k = j }
+\]
+
+That is, the transition matrix $\tildeP$ has the same rows as $P$, except for the $j$ -th row, 
+which has been substituted by $(0, \ldots, 0, \underset{j}{1}, 0, \ldots, 0)$. Therefore 
+we have that the $i, j$ entry for the matrix $\tildeP^n$ is:
+
+\[
+\tildep_{i,j}^{(n)} = \probi{\tildemc = j} = \probi{\tau_j \le n}
+\]
+
+and hence:
+
+\[
+f_{i,j}^{(n)} = \probi{\tau_j \le n} - \probi{\tau_j \le n - 1} = \tildep_{i, j}^{(n)} - \tildep_{i, j}^{(n - 1)}
+\]
+
+So obtaining $f_{i,j}^{(n)}$ can be done by computing $\tildeP^{n - 1}$ and $\tildeP^n$, 
+except for $j = i$. To compute that last probability, we could use:
+
+\[
+f_{jj}^{(n)} = \twopartdef
+  { p_{jj} } { n = 1 }
+  { \sum_{k \in S, k \neq j} p_{j,k} f_{k,j}^{(n - 1)} } { n \ge 2 }
+\]
+
+
 * Bibliography
+:PROPERTIES:
+:UNNUMBERED: t
+:END:

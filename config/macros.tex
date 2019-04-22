@@ -1,0 +1,89 @@
+% Setup visible during preview of math formulae
+
+%------------------------
+% Math libraries
+%------------------------
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usepackage{tikz-cd}
+\usetikzlibrary{shapes,fit}
+\usepackage{bussproofs}
+\EnableBpAbbreviations{}
+\usepackage{mathtools}
+\usepackage{scalerel}
+\usepackage{stmaryrd}
+
+%------------------------
+% Theorem styles
+%------------------------
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newtheorem{proofs}{Demonstration}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+\newtheorem{note}{Note}
+\newtheorem{exampleth}{Example}
+
+% ***************************************************************************************
+% Environment for examples and counterexamples
+% https://tex.stackexchange.com/questions/5223/command-for-argmin-or-argmax
+% ***************************************************************************************
+
+\usepackage{mdframed} % Add easy frames to paragraphs
+\usepackage{lipsum} % For dummy text
+\usepackage{xparse} % Add support for \NewDocumentEnvironment
+\definecolor{lightgray}{cmyk}{.30,0,0,.67} % define color using xcolor syntax
+\definecolor{midgray}{gray}{0.40}
+
+\newmdenv[ % Define mdframe settings and store as leftrule
+  linecolor=lightgray,
+  topline=false,
+  bottomline=false,
+  rightline=false,
+  skipabove=\topsep,
+  skipbelow=\topsep
+]{leftrule}
+
+\NewDocumentEnvironment{example}{O{\textbf{Example:}}}
+{\begin{leftrule}\noindent\textcolor{black}{#1}\par}
+{\end{leftrule}}
+
+\NewDocumentEnvironment{counterex}{O{\textbf{Counterexample:}}}
+{\begin{leftrule}\noindent\textcolor{black}{#1}\par}
+{\end{leftrule}}
+
+
+\begingroup\makeatletter\@for\theoremstyle:=definition,remark,plain\do{\expandafter\g@addto@macro\csname th@\theoremstyle\endcsname{\addtolength\thm@preskip\parskip}}\endgroup
+
+%------------------------
+% Macros
+% ------------------------
+
+% Latex shortcuts
+\newcommand*\diff{\mathop{}\!\mathrm{d}}
+\newcommand{\tildemc}{\widetilde{X}_n}
+\newcommand{\tildex}{\widetilde{X}}
+\newcommand{\tildeP}{\widetilde{P}}
+\newcommand{\tildep}{\widetilde{p}}
+\newcommand{\mc}{$\{X_n\}$}
+\newcommand{\tildeprob}{\widetilde{p}}
+\newcommand{\probi}[1]{P_i\left({#1}\right)}
+\newcommand{\twopartdef}[4]{
+  \left\{\begin{array}{ll}
+        #1 & \textrm{if } #2 \\
+        #3 & \textrm{if } #4
+  \end{array}\right.
+}
+\newcommand{\threepartdef}[6]{
+  \left\{\begin{array}{ll}
+        #1 & \textrm{if } #2 \\
+        #3 & \textrm{if } #4 \\
+        #5 & \textrm{if } #6
+  \end{array}\right.
+}
