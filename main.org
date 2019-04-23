@@ -394,16 +394,130 @@ f_{jj}^{(n)} = \twopartdef
   { \sum_{k \in S, k \neq j} p_{j,k} f_{k,j}^{(n - 1)} } { n \ge 2 }
 \]
 
+\begin{example}
+We consider a Markov chain with states $S = \{1,2,3\}$ and the following transition matrix:
+
+\[
+  P = \left(
+  \begin{array}{ccc}
+  \frac{1}{3} & \frac{2}{3} &      0      \\
+  \frac{1}{4} & \frac{1}{2} & \frac{1}{4} \\
+      0       & \frac{3}{4} & \frac{1}{4}
+  \end{array}
+  \right)
+\]
+
+To compute the time it takes us to reach the state $3$, we should consider:
+
+\[
+\tildeP = \left(
+  \begin{array}{ccc}
+  \frac{1}{3} & \frac{2}{3} & 0 \\
+  \frac{1}{4} & \frac{1}{2} & \frac{1}{4} \\
+       0      &      0      &   1
+  \end{array}
+\right) = \frac{1}{10} 
+\threemat {1 & 2 & 4} {1 & -1 & 3} {1 & 0 & 0} \cdot
+\threemat {1 &   &  } {  &  0 &  } {  &   & \frac{5}{6}} \cdot
+\threemat {0 & 0 & 10}{3 & -4 & 1} {1 & 2 &-3}
+\]
+
+It is easy to show, calling $\alpha = \frac{5}{6}$:
+
+\[
+\tilde{P}^n = \threemat
+            { \frac{2}{5} \alpha^n & \frac{4}{5} \alpha^n & 1 - \alpha^{n - 1}}
+            { \frac{3}{10}\alpha^n & \frac{3}{5} \alpha^n & 1 - \frac{3}{4}\alpha^{n - 1} }
+            { 0 & 0 & 1 }
+\]
+
+Therefore:
+
+\[
+P_1 \left(\tau_3 = n\right) = \tildep_{1,3}^{(n)} - \tildep_{1,3}^{(n-1)} =
+1 - \alpha^{n - 1} -  (1 - \alpha^{n - 2}) = (1 - \alpha) \alpha^{n - 2} = \frac{1}{6}\alpha^{n - 2} n \ge 2
+\]
+
+\[
+P_2 \left( \tau_3 = n \right) = \twopartdef { \frac{1}{4} } { n = 1 }
+                                            { \tildep_{2,3}^{(n)} - \tildep_{2,3}^{(n-1)} = \frac{1}{8} \alpha^{n - 2} } { n\ge 2 }
+\]
+
+To go from $3$ to itself, we could go directly or passing by $2$ (we could not go through
+$1$ since $p_{3,1} = 0$:
+
+\[
+P_3\left(\tau_3 = n\right) = \threepartdef
+  { \frac{1}{4} } { n = 1 } 
+  { \frac{3}{16} } { n = 2 }
+  { \frac{3}{32} \alpha^{n - 3} } { n \ge 3 }
+\]
+\end{example}
+
 *** Computation through transition probabilities
 We could ask ourselves whether it is possible to relate $f_{i,j}^{(n)}$ to $p_{i,j}^{(n)}$
 directly. It holds:
 
-\begin{align*}
+\begin{align}
 p_{i,j}^{(n)} &= \probi{X_n = j} = \sum_{m = 1}^{n} \probi{\tau_j = m} 
-\probi{X_n = j | \tau_j = = m} = \\
+\probi{X_n = j | \tau_j = = m} = \nonumber \\
 &= \sum_{m = 1}^{n} \probi{\tau_j = m} \probj{X_{n-m} = j} = 
 \sum_{m = 1}^n f_{i, j}^{(m)} p_{j,j}^{(n - m)}
-\end{align*}
+\label{eq:ps-fs-relation}
+\end{align}   
+
+It is not possible to express $f_{i,j}^{(n)}$ in terms of $p_{i,j}^{(n)}$, but taking the following generating functions, we can determine a theoretical relationship between both:
+
+\[
+P_{i,j}(s) = \sum_{n = 1}^{\infty} p_{i,j}^{(n)} s^n \qquad 
+F_{i,j}(s) = \sum_{n = 1}^{\infty} f_{i,j}^{(n)} s^n
+\]
+
+According to $\eqref{eq:ps-fs-relation}$:
+
+\[
+P_{i,j}(s) = \sum_{n = 1}^{\infty} \sum_{m = 1}^n f_{i, j}^{(m)} p_{j,j}^{(n - m)} s^n = 
+\sum_{n = 1}^{\infty} \sum_{m = 1}^{n - 1} f_{i, j}^{(m)} p_{j,j}^{(n - m)} s^n + 
+\sum_{n = 1}^{\infty} f_{i, j}^{(n)} \underbrace{p_{j,j}^{(0)}}_{1} s^n \underset{(\ast)} = F_{i,j}(s) P_{j,j}(s) + F_{i,j}(s)
+\]
+
+where in $(\ast)$ it has been used that $\sum_{n = 1}^{\infty} \sum_{m = 1}^{\infty} p_{i, j}^{(n)} f_{i,j}^{(m)} s^{n + m}$ can be rewritten as (fixes $k$, there we can take finite $m$ positive values and $k - m$ positive):
+
+\[
+\sum_{n = 1}^{\infty} \sum_{m = 1}^{n - 1} f_{i, j}^{(m)} p_{j,j}^{(n - m)} s^n
+\]
+
+We deduce:
+
+\[
+F_{i,j}(s) = \frac{P_{i,j}(s)}{1 + P_{j,j}(s)}
+\]
+
+Although this is just a theoretical relationship for the moment, we can observe, on the one hand:
+
+\[
+F_{i,j}(1) = f_{i,j} = \probi{\tau_j < \infty}
+\]
+and if the condition $f_{i,j} = 1$ is met:
+
+\[
+F_{i,j}'(j) = \sum_{n = 1}^{\infty} n f_{i,j}^{(n)} = \expecti{\tau_j}
+\]
+
+#+begin_definition
+Taking a fixed state $j$, we can define:
+
+1. The *expected number of visited to $j$ * as $P_{i,j}(1) = \sum_{n = 1}^{\infty} p_{i,j}^{(n)}$
+2. The *total number of visits to $j$ * as $V_j = \sum_{n = 1}^{\infty} \mathbb{1}_{X_n = j}$
+#+end_definition
+
+#+begin_proposition
+It holds that $\expecti{V_j} = P_{i,j}(1)$
+#+end_proposition
+
+#+begin_proof
+Straightforward from $\expecti{V_j} = \sum_{n = 1}^{\infty} \expecti{\mathbb{1}_{X_n = j}} = \sum_{n = 1}^{\infty} p_{i,j}^{(n)}$
+#+end_proof
 
 * Bibliography
 :PROPERTIES:
