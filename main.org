@@ -31,7 +31,7 @@ A stochastic random process $\{X_n\}_{n\in I}$, where $I\subseteq \mathbb{N}$, i
 #+end_definition
 
 #+begin_definition
-Given $\{X_n\}_{n\in I}$ a Markov chain, let us call the *state space* the set $S = \bigcup_{n \in I} Img \left(X_n\right)$, i.e. the set where the Markov chain takes its values.
+Given $\{X_n\}_{n\in I}$ a Markov chain, let us call the state space the set $S = \bigcup_{n \in I} Img \left(X_n\right)$, i.e. the set where the Markov chain takes its values.
 #+end_definition
 
 We will omit the subscript $n\in I$ and assume $I = \mathbb{N}$ henceforth. We will also assume $S$ is finite.
@@ -122,11 +122,11 @@ and also:
 \end{align}
 
 #+begin_definition
-Given $\{X_n\}_{n\in I}$ a Markov chain with finite state space $S$, let us define the *initial distribution* as $\mu(s) = P(X_0 = s), s \in S$.
+Given $\{X_n\}_{n\in I}$ a Markov chain with finite state space $S$, let us define the initial distribution as $\mu(s) = P(X_0 = s), s \in S$.
 #+end_definition
 
 #+begin_definition
-Given $\{X_n\}_{n\in I}$ a Markov chain with finite state space $S$, let us define the *transition probabilities* as 
+Given $\{X_n\}_{n\in I}$ a Markov chain with finite state space $S$, let us define the transition probabilities as 
 
 \begin{align*}
 & p_{s, t}(m, n) = P(X_n = t | X_m = s),\quad s,t \in S, \quad n,m \in \mathbb{N}, n\neq m \\ 
@@ -152,7 +152,7 @@ We will define the matrix $P(m, n) = (p_{s, t}(m, n))_{s, t \in S}$ henceforth.
 #+end_definition
 
 #+begin_proposition
-$P$ verifies the semigroup property, best known as *Chapman-Kolmogorov equation*:
+$P$ verifies the semigroup property, best known as Chapman-Kolmogorov equation:
 
 \[
 P(m, n) = P(m, l) \cdot P(l, n), \quad \forall m \le l \le n 
@@ -164,7 +164,7 @@ Straightforward from Equation \eqref{eq:sum-probs}
 
 ** Time-homogeneous Markov chains
 #+begin_definition
-Given a Markov chain $\{X_n\}$ with finite space state $S=\{0, \ldots, k\}$, it is said to be a *time-homogeneous Markov chain* iff it holds:
+Given a Markov chain $\{X_n\}$ with finite space state $S=\{0, \ldots, k\}$, it is said to be a time-homogeneous Markov chain iff it holds:
 
 \[
 \forall s, t\in S, \forall n \in \mathbb{N} \qquad p_{s, t} (n, n + 1) = p_{s, t} \in [0, 1]
@@ -172,7 +172,7 @@ Given a Markov chain $\{X_n\}$ with finite space state $S=\{0, \ldots, k\}$, it 
 
 (i.e. the transition probabilities do not depend on the time).
 
-$p_{s, t}$ is called *one-step transition probability* and $P = (p_{s, t})_{s, t \in S}$ the transition matrix.
+$p_{s, t}$ is called one-step transition probability and $P = (p_{s, t})_{s, t \in S}$ the transition matrix.
 #+end_definition
 
 #+begin_proposition
@@ -234,7 +234,7 @@ We will assume all the Markov chains as time-homogeneous ones henceforth, unless
 otherwise.
 ** Stopping times and strong Markov property
 #+begin_definition
-Given $\{X_n\}$ a Markov chain, defined over $(\Omega, \mathcal{F}, P)$, then a *stopping time* is a random variable 
+Given $\{X_n\}$ a Markov chain, defined over $(\Omega, \mathcal{F}, P)$, then a stopping time is a random variable 
 $\tau : \Omega \mapsto \mathbb{N} \bigcap \{\infty\}$ such that:
 
 \[
@@ -322,7 +322,7 @@ chain reaching state $j$ in the $n$ -th period, if it starts from $i$. But the s
 been visited before. We are interested now in finding the first time that a given state is reached.
 
 #+begin_definition
-We define the *hitting time* for the state $j \in S$ as:
+We define the hitting time for the state $j \in S$ as:
 
 \[
 \tau_j = min \{n > 0 : X_n = j \}
@@ -331,23 +331,31 @@ We define the *hitting time* for the state $j \in S$ as:
 
 #+begin_definition
 
-We call *first hitting time probability of the state $j$*, provided that the chain starts in the 
+We call first hitting time probability of the state $j$, provided that the chain starts in the 
 state $i$, to:
 
 \[
 f_{i,j}^{(n)} = P_i\left(\tau_j = n\right) = P_i\left(X_n = j, X_m \neq j \quad \forall m = 1, \ldots, n - 1 \right)
 \]
 
-and we will denote $f_{i, j} := \sum_{n = 0}^{\infty} f_{i,j}^{(n)} = P_i\left(\tau_j < \infty\right)$
+and we will define the total probability of reaching $j$ as $f_{i, j} := \sum_{n = 0}^{\infty} f_{i,j}^{(n)} = P_i\left(\tau_j < \infty\right)$
 #+end_definition
 
 Note that we coul have $f_{i, j} < 1$ iff $P_i\left(X_n \neq j \forall n \ge 1\right) > 0$.
 
 #+begin_definition
-We will call *return time distribution* for the state $i$ to $f_{i,i}^{(n)} = P_i \left(\tau_i = n\right)$, 
+We will call return time distribution for the state $i$ to $f_{i,i}^{(n)} = P_i \left(\tau_i = n\right)$, 
 and we will denote $f_{i,i} = P_i\left(\tau_i < \infty\right)$ (i.e. the probability of ever returning 
 to the start state $i$.
 #+end_definition
+
+$f_{i, j}$ can be computed using the recurrence:
+
+\[
+f_{i,j} = \probi{X_1 = j} + \sum_{k \neq j} \probi {X_1 = k} \probi {\tau_j < \infty | X_1 = k } = p_{i,j} + \sum_{k\neq j} p_{i,k} f_{k,j}
+\]
+
+solving first the system formed by the equations given by $i\neq j$ (if we have $n$ states, that would be $n \cdot (n - 1)$ equations), and then substituting the computed $f_{k,j}$ values to get $f_{j,j}$.
 
 *** Computation through absorption
 Let us consider a fixed state $j$. The aim is to compute $f_{i,j}^{(n)}$ with $i\neq j$. 
@@ -455,6 +463,7 @@ P_3\left(\tau_3 = n\right) = \threepartdef
 \end{example}
 
 *** Computation through transition probabilities
+
 We could ask ourselves whether it is possible to relate $f_{i,j}^{(n)}$ to $p_{i,j}^{(n)}$
 directly. It holds:
 
@@ -507,8 +516,8 @@ F_{i,j}'(j) = \sum_{n = 1}^{\infty} n f_{i,j}^{(n)} = \expecti{\tau_j}
 #+begin_definition
 Taking a fixed state $j$, we can define:
 
-1. The *expected number of visited to $j$ * as $P_{i,j}(1) = \sum_{n = 1}^{\infty} p_{i,j}^{(n)}$
-2. The *total number of visits to $j$ * as $V_j = \sum_{n = 1}^{\infty} \mathbb{1}_{X_n = j}$
+1. The expected number of visited to $j$  as $P_{i,j}(1) = \sum_{n = 1}^{\infty} p_{i,j}^{(n)}$
+2. The total number of visits to $j$  as $V_j = \sum_{n = 1}^{\infty} \mathbb{1}_{X_n = j}$
 #+end_definition
 
 #+begin_proposition
@@ -518,6 +527,58 @@ It holds that $\expecti{V_j} = P_{i,j}(1)$
 #+begin_proof
 Straightforward from $\expecti{V_j} = \sum_{n = 1}^{\infty} \expecti{\mathbb{1}_{X_n = j}} = \sum_{n = 1}^{\infty} p_{i,j}^{(n)}$
 #+end_proof
+
+** Classification of states
+*** Communicating classes
+
+#+begin_definition
+The state $i\in E$ communicates with $j\in S$, and we will write it like $i \rightarrow j$
+iff $p_{i,j}^{(n)} > 0$ for some $n >= 0$.
+
+If $i \longrightarrow j$ and $j \longrightarrow i$ then we will say that both states communicate and
+we will represent it as $i \longleftrightarrow j$.
+#+end_definition
+
+#+begin_proposition
+$\longleftrightarrow$ is an equivalence relationship
+#+end_proposition
+
+#+begin_proof
+1. Reflexivity holds by definition of $p_{i,i}^{(0)} = 1$
+2. Transitivity holds trivially.
+3. Transitivity holds because if $p_{i,j}^{(n)} > 0$ and $p_{j,k}^{(m)} > 0$ then
+\[
+p_{i,k}^{(n + m)} \ge p_{i,j}^{(n)} \cdot p_{j,k}^{(m)} > 0
+\]
+#+end_proof
+
+#+begin_proposition
+Given $i \neq j$, it holds:
+
+\[
+i \goto j \dimplies \expecti{V_j} > 0 \dimplies f_{i,j} > 0
+\]
+#+end_proposition
+
+#+begin_proof
+Straightforward from $\expecti{V_j} = \sum_{n = 1}^{\infty} p_{i,j}^{(n)}$ and 
+$\expecti{V_j} = f_{i,j}(1 + \expectj{V_j})$.
+#+end_proof
+
+#+begin_definition
+State $i\in S$ is essential if $i \goto j$ always implies $j \goto i$. We denote the set 
+of essential states by $E^{\ast}$.
+#+end_definiton
+
+#+begin_proposition
+If $i\in E^{\ast}$ and $i \goto j$, then $j \in E^{\ast}$
+#+end_proposition
+
+#+begin_proof
+Given $j \goto k$, then by transivity $i \goto k$. Since $i$ is essential, $k \goto i$, 
+which applying transitivity again from $i \goto j$, gives us $k \goto j$.
+#+end_proof
+
 
 * Bibliography
 :PROPERTIES:
