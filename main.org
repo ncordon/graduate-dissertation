@@ -351,9 +351,10 @@ to the start state $i$.
 
 $f_{i, j}$ can be computed using the recurrence:
 
-\[
+\begin{equation}
 f_{i,j} = \probi{X_1 = j} + \sum_{k \neq j} \probi {X_1 = k} \probi {\tau_j < \infty | X_1 = k } = p_{i,j} + \sum_{k\neq j} p_{i,k} f_{k,j}
-\]
+\label{eq:fij-recurrence}
+\end{equation}
 
 solving first the system formed by the equations given by $i\neq j$ (if we have $n$ states, that would be $n \cdot (n - 1)$ equations), and then substituting the computed $f_{k,j}$ values to get $f_{j,j}$.
 
@@ -528,29 +529,44 @@ It holds that $\expecti{V_j} = P_{i,j}(1)$
 Straightforward from $\expecti{V_j} = \sum_{n = 1}^{\infty} \expecti{\mathbb{1}_{X_n = j}} = \sum_{n = 1}^{\infty} p_{i,j}^{(n)}$
 #+end_proof
 
+#+begin_lemma
+There is an equivalence between:
+
+1. $\exists n >0 : p_{i,j}^{(n)} > 0$
+2. $j \dimplies \expecti{V_j} > 0$
+3. $f_{i,j} > 0$
+
+\label{lemma:fij-equivs}
+#+end_lemma
+
+*** Average arrival times
+
+#+begin_proof
+Easily deducible from: $\expecti{V_j} = \sum_{n = 1}^{\infty} p_{i,j}^{(n)}$ and 
+$\expecti{V_j} = f_{i,j}(1 + \expectj{V_j})$.
+#+end_proof
+
+#+begin_proposition
+If $f_{j,j} \neq 1$, we have:
+
+\[
+  \expecti{V_j} = \frac{f_{i,j}}{1 - f_{j,j}}
+\]
+
+Moreover, it holds $f_{i,i} = 1 \dimplies \expecti{V_i} = \infty$.
+\label{prop:fii-equiv}
+#+end_proposition
+
 ** Classification of states
 *** Communicating classes
 
 #+begin_definition
 The state $i\in E$ communicates with $j\in S$, and we will write it like $i \rightarrow j$
-iff $p_{i,j}^{(n)} > 0$ for some $n >= 0$.
+iff $p_{i,j}^{(n)} > 0$ for some $n > 0$.
 
 If $i \longrightarrow j$ and $j \longrightarrow i$ then we will say that both states communicate and
-we will represent it as $i \longleftrightarrow j$.
+we will represent it as $i \dgoto j$.
 #+end_definition
-
-#+begin_proposition
-$\longleftrightarrow$ is an equivalence relationship
-#+end_proposition
-
-#+begin_proof
-1. Reflexivity holds by definition of $p_{i,i}^{(0)} = 1$
-2. Transitivity holds trivially.
-3. Transitivity holds because if $p_{i,j}^{(n)} > 0$ and $p_{j,k}^{(m)} > 0$ then
-\[
-p_{i,k}^{(n + m)} \ge p_{i,j}^{(n)} \cdot p_{j,k}^{(m)} > 0
-\]
-#+end_proof
 
 #+begin_proposition
 Given $i \neq j$, it holds:
@@ -558,27 +574,175 @@ Given $i \neq j$, it holds:
 \[
 i \goto j \dimplies \expecti{V_j} > 0 \dimplies f_{i,j} > 0
 \]
+\label{goto-characterization}
 #+end_proposition
 
 #+begin_proof
-Straightforward from $\expecti{V_j} = \sum_{n = 1}^{\infty} p_{i,j}^{(n)}$ and 
-$\expecti{V_j} = f_{i,j}(1 + \expectj{V_j})$.
+Straightforward from Lemma \eqref{lemma:fij-equivs}.
 #+end_proof
 
 #+begin_definition
 State $i\in S$ is essential if $i \goto j$ always implies $j \goto i$. We denote the set 
-of essential states by $E^{\ast}$.
+of essential states by $S^{\ast}$.
 #+end_definiton
 
-#+begin_proposition
-If $i\in E^{\ast}$ and $i \goto j$, then $j \in E^{\ast}$
-#+end_proposition
+#+begin_lemma
+If $i\in S^{\ast}$ and $i \goto j$, then $j \in S^{\ast}$
+#+end_lemma
 
 #+begin_proof
 Given $j \goto k$, then by transivity $i \goto k$. Since $i$ is essential, $k \goto i$, 
 which applying transitivity again from $i \goto j$, gives us $k \goto j$.
 #+end_proof
 
+#+begin_proposition
+$\dgoto$ is an equivalence relationship in $S^{\ast}$, and we can decompose:
+
+\[
+S^{\ast} = C_1 \cup C_2 \cup \ldots \cup C_r
+\]
+
+where for every $i, j \in C_k$, it holds $i \dgoto j$, and if $i \in C_k, j \in C_l$ where $k \neq l$, then $i \not\goto j$ or $j \not\goto i$.
+
+\label{equiv-classes}
+#+end_proposition
+
+#+begin_proof
+1. Reflexivity holds because given $i \in S^{\ast}$, then $p_{i,j} > 0$ for some $j \in S$. Because of the previous lemma $j \in S^{\ast}$. Therefore $i \goto j$ implies $j \goto i$ because of the essentiality.
+2. Transitivity holds trivially.
+3. Transitivity holds because if $p_{i,j}^{(n)} > 0$ and $p_{j,k}^{(m)} > 0$ then
+\[
+p_{i,k}^{(n + m)} \ge p_{i,j}^{(n)} \cdot p_{j,k}^{(m)} > 0
+\]
+
+The second part is trivial from the deduced equivalence property.
+#+end_proof
+
+Therefore, reordering the states of the matrix, with $P_k$ is the transition matrix for the st
+states in $C_k$ (which only communicate with themselves), where the last rows are formed by the 
+transition probabilities from the non-essential states: $Q_k$,
+where those are the probabilities of going from $S - S^{\ast}$ to $C_k$ (and never returning), 
+and $W$ where that is the probability of the non-essential states of communicating with
+themselves.
+
+\[
+  \left(\begin{array}{cccccccccc}
+  \gcell P_1    &        &            &       &        &       &            &        & \\
+                & \rcell & \rcell     & \rcell&        &       &            &        & \\
+                & \rcell & \rcell P_2 & \rcell&        &       &            &        & \\
+                & \rcell & \rcell     & \rcell&        &       &            &        & \\
+                &        &            &       & \ddots &       &            &        & \\
+                &        &            &       &        &\bcell &   \bcell   & \bcell & \\
+                &        &            &       &        &\bcell & \bcell P_r & \bcell & \\
+                &        &            &       &        &\bcell &   \bcell   & \bcell & \\
+    \rowcolor{gray!20}
+      Q_1       &        &   Q_2      &       & \ldots &       &    Q_r     &        & W\\
+  \end{array}\right)
+\]
+
+Each $C_k$ is said to be an irreducible and closed sub-chain of the original transition matrix 
+$P$ (closed because from one state from $C_k$ we can only go back to another state in the same
+set. Irreducible because all their states communicate among themselves. The same structure of
+power matrices appears in $P^n$, $n > 2$:
+
+\[
+  \left(\begin{array}{cccccccccc}
+  \gcell P_1^{n}   &        &                  &       &        &       &                   &        & \\
+                   & \rcell & \rcell           & \rcell&        &       &                   &        & \\
+                   & \rcell & \rcell P_2^{n}   & \rcell&        &       &                   &        & \\
+                   & \rcell & \rcell           & \rcell&        &       &                   &        & \\
+                   &        &                  &       & \ddots &       &                   &        & \\
+                   &        &                  &       &        &\bcell &   \bcell          & \bcell & \\
+                   &        &                  &       &        &\bcell & \bcell P_r^{n}    & \bcell & \\
+                   &        &                  &       &        &\bcell &   \bcell          & \bcell & \\
+    \rowcolor{gray!20}
+      Q_1 \cdot P_1^{n-1} & & Q_2 \cdot P_2^{n-1} &    & \ldots &       & Q_r \cdot P_r^{n} &        & W^n\\
+  \end{array}\right)
+\]
+
+*** Recurrence and transience
+
+#+begin_definition
+An state $i\in S$ is called recurrent iff $f_{i,i} = 1$ and transient iff $f_{i,i} < 0$
+#+end_definition
+
+If an state is recurrent, then $\probi{V_i = \infty} = 1$ and $\expecti{V_i} = \infty$ and 
+$\probj{V_i = 0 \vee V_i = \infty} = 1$. If an state is transient, then $\probi{V_i < \infty}$ 
+and $\expecti{V_i} < \infty$.
+
+Therefore $\sum_{n = 1}^{\infty} p_{i,i}^{(n)}$ diverges when $i$ is recurrent and converges
+when $i$ is transient.
+
+#+begin_proposition
+If $i$ is a recurrent state and $j$ communicates with $i$, then $f_{j,i} = f_{i,j} = f_{j,j} = 1$, 
+and $j$ is recurrent. Therefore, all non essential states are transient.
+#+end_proposition
+
+#+begin_proof
+By Proposition \eqref{goto-characterization}, $f_{i,j} > 0$. Since $i$ is recurrent $f_{ii} = 0$
+and by Equation \eqref{eq:fij-recurrence}:
+
+\[
+1 = f_{i,i} = p_{i,i} + \sum_{k \neq i} p_{i,k} f_{k,i}
+\]
+
+$i \goto j$ means there exists $k_1, k_2, \ldots k_r$ verifying:
+
+\[
+p{i, k_1} \cdot p_{k_1, k_2} \cdots p_{k_{r}, k_j} > 0
+\]
+
+Since $\sum{k} p_{k,k} = 1$, and $0 \le f_{k,i} \le 1$, then it must hold $f_{k,i} = 1$ for all
+$k$ such that $p_{i,k} > 0$. In particular $f_{k_1,i} = 1$, and we deduce:
+
+\[
+1 = f_{k_1,i} = p_{k_1,k_1} + \sum_{k\neq k_1} p_{k_1,k} f_{k,i}
+\]
+
+We get $1 = f_{k_2, i}$ by an analogous argument, and we can recursively proceed until we 
+arrive at $f_{j,i} = 1$.
+
+Since we have proven $f_{i,i} > 0$, $f_{i,j} > 0$, $f_{j,i} = 1$ then by Lemma \eqref{lemma:fij-equivs}
+we deduce there exist $u, v, n$: $p_{i,j}^{(u)} > 0$, $p_{j,i}^{(v)}, $p_{i,i}^{(n)} > 0$.
+#+end_proof
+
+So for every $n \ge u + v$ we deduce:
+
+\[
+p_{j,j}^{(n)} \ge p_{j,i}^{(v)} p_{i,i}^{(n - u - v)} p_{i,j}^{(u)}
+\]
+
+Since $f_{i,i} = 1$, then $\sum_{n = 1}^{\infty} p_{i,i}^{(n)} = \infty$ by Proposition \eqref{prop:fii-equiv}, 
+and therefore $\sum_{n = u + v}^{\infty} p_{i,i}^{(n)} = \infty$
+
+\begin{align*}
+\sum_{n = 1}^{\infty} p_{j,j}^{(n)} \ge \sum_{n = u + v}^{\infty} p_{j,j}^{(n)} \ge
+p_{j,i}^{(v)} p_{i,j}^{(u)} \sum_{n = u + v}^{\infty} p_{i,i}^{(n)} = \infty
+\end{align*}
+
+Again from Proposition \eqref{prop:fii-equiv} we deduce $f_{j,j} = 1$. We have proved $j$ is
+recurrent, but also that $j \goto i$, and we can deduce $f_{i,j} = 1$ by the same procedure
+we started this demonstration with.
+
+*** =markovchain= package
+We can propose an alternative definition of communicating property, taking $n \ge 0$ instead of $n > 0$, which has been the one used in the software from the start:
+
+#+begin_definition
+The state $i\in E$ communicates with $j\in S$, and we will write it like $i \rightarrow j$
+iff $p_{i,j}^{(n)} > 0$ for some $n \ge 0$.
+#+end_definition
+
+Therefore, we can reformualte Proposition \eqref{equiv-classes} as:
+
+#+begin_proposition
+$\dgoto$ is an equivalence relationship in $S^{\ast}$, and we can decompose:
+
+\[
+S = C_1 \cup C_2 \cup \ldots \cup C_r
+\]
+
+where for every $i, j \in C_k$, it holds $i \dgoto j$, and if $i \in C_k, j \in C_l$ where $k \neq l$, then $i \not\goto j$ or $j \not\goto i$.
+#+end_proposition
 
 * Bibliography
 :PROPERTIES:

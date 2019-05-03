@@ -1,5 +1,7 @@
 * What does strong Markov property means (it is not described in the corresponding section)
 * p_{i,j}(n, m) is defined, whereas p_{i, j}^{(n)} is not (hitting times section, for example)
-* Add example on hitting times
+* DONE Add example on hitting times
 * Add information on docs restructuring for the package
 * Replace E by S and s \in S for i \in S
+* TODO Abel theorem to move F'_{i,j}(1) converges
+* TODO Change 1,2,... by i, ii, etc

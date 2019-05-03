@@ -30,6 +30,14 @@
 \newtheorem{note}{Note}
 \newtheorem{exampleth}{Example}
 
+% To be able to color matrices
+\usepackage{blkarray}
+\usepackage{colortbl}
+\newcommand\x{\times}
+\newcommand\rcell{\cellcolor{red!20}}
+\newcommand\bcell{\cellcolor{blue!20}}
+\newcommand\gcell{\cellcolor{green!20}}
+
 % ***************************************************************************************
 % Environment for examples and counterexamples
 % https://tex.stackexchange.com/questions/5223/command-for-argmin-or-argmax
@@ -74,8 +82,13 @@
 \newcommand{\mc}{$\{X_n\}$}
 \newcommand{\tildeprob}{\widetilde{p}}
 \newcommand{\expecti}[1]{\mathbb{E}_i\left[{#1}\right]}
+\newcommand{\expectj}[1]{\mathbb{E}_j\left[{#1}\right]}
 \newcommand{\probi}[1]{P_i\left({#1}\right)}
 \newcommand{\probj}[1]{P_j\left({#1}\right)}
+\newcommand{\prob}[1]{P\left({#1}\right)}
+\newcommand{\dimplies}{\Longleftrightarrow}
+\newcommand{\goto}{\rightarrow}
+\newcommand{\dgoto}{\leftrightarrow}
 
 % Commands to divide a definition into two parts
 \newcommand{\twopartdef}[4]{
@@ -84,12 +97,20 @@
         #3 & \textrm{if } #4
   \end{array}\right.
 }
+
 % and three parts
 \newcommand{\threepartdef}[6]{
   \left\{\begin{array}{ll}
         #1 & \textrm{if } #2 \\
         #3 & \textrm{if } #4 \\
         #5 & \textrm{if } #6
+  \end{array}\right.
+}
+
+\newcommand{\twoparteq}[2]{
+  \left\{\begin{array}{l}
+        #1\\
+        #2
   \end{array}\right.
 }
 
