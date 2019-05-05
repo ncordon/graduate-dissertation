@@ -876,7 +876,7 @@ Every irreducible Markov chain with a finite number of states is positive recurr
 Let us fix a $s \in [0,1[$. We have, using that $\sum_{n = 1}^{\infty} = \frac{s}{1 - s}$:
 
 \[
-\sum_{j \in S} (1-s) F_{i,j}(s) \bigg\{1 + P_{j,j}(s)\bigg\} \underset{\eqref{\label{eq:Fs-Ps-relation}}}{=} 
+\sum_{j \in S} (1-s) F_{i,j}(s) \bigg\{1 + P_{j,j}(s)\bigg\} \underset{\textrm{\eqref{eq:Fs-Ps-relation}}}{=} 
 (1 - s) \sum_{j \in S} P_{i,j}(s) = (1-s) \sum_{n = 1}^{\infty} s^n \underbrace{\sum_{j\in S} p_{i,j}^{(n)}}_{1} = s
 \]
 
@@ -926,21 +926,21 @@ f_{i,C}^{\ast} = \probi{\tau^{\ast} < \infty, X_{\tau^{\ast}} \in C}
 #+begin_proposition
 The following relations hold for each $i \not\in S^{\ast}$:
 
-1. $f_i^{\ast} &= \sum_{j \in S^{\ast}} p_{i,j} + \sum_{j \not\in S^{\ast}} p_{i,j} f_{j}^{\ast}$
+1. $f_i^{\ast} = \sum_{j \in S^{\ast}} p_{i,j} + \sum_{j \not\in S^{\ast}} p_{i,j} f_{j}^{\ast}$
 2. $f_{i,j} = p_{i,j} + \sum_{k \not\in S^{\ast}} p_{i,j} f_{k,j}^{\ast}$
-2. $f_{i,C}^{\ast} &= \sum_{j \in C} p_{i,j} + \sum_{j \not\in S^{\ast}} p_{i,j} f_{j}^{\ast}$
+2. $f_{i,C}^{\ast} = \sum_{j \in C} p_{i,j} + \sum_{j \not\in S^{\ast}} p_{i,j} f_{j}^{\ast}$
 #+end_proposition
 
 It is obvious that $f_{i,C}^{\ast} = \sum_{j \in C} f_{i,j}^{\ast}$. Once the chain enters the
 subchain, $C$, it does so with the initial probabilities 
-$(f_{i,j}^{\ast} / f_{i,C}^{\ast})_{j \in C }$.
+$(f_{i,j}^{\ast} / f_{i,C}^{\ast})_{j \in C}$.
 
 It we call $V = \bigg(\expecti{V_j}\bigg)_{i,j \not\in S^{\ast}}$, we have, taking a look at
 the matrix that \eqref{eq:irreducible-classes-pow-matrix} that $V = \sum_{n = 1}^{\infty} W^n$.
 
 Also, we can define $Q = (Q_1, \ldots, Q_r)$ the matrix of transition probabilities from 
-$S - S^{\ast}$ to $S^{\ast}$, and $q = Q \cdot \left(\begin{array}{c}{ 1 \\ 1 \\ vdots \\ 1 }\right)$
-(the row-wise sum of $Q$). And we will call $F^{\ast} = (f_{i,j}^{\ast})_{i \in S - S^{\ast}, j \in S^{\ast}}$,
+$S - S^{\ast}$ to $S^{\ast}$, and $q = Q \cdot \left(\begin{array}{c} 1 \\ 1 \\ vdots \\ 1 \end{array}\right)$ (the row-wise sum of $Q$). And we will call 
+$F^{\ast} = (f_{i,j}^{\ast})_{i \in S - S^{\ast}, j \in S^{\ast}}$,
 $f^{\ast} = (f_{i}^{\ast})_{i \in S - S^{\ast}}$.
 
 * =markovchain= package
