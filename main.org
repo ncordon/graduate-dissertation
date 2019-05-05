@@ -363,7 +363,7 @@ If $f_{i,j} = 1$ and $p_{i,k} > 0$, then $f_{k,j} = 1$
 #+end_lemma
 
 #+begin_proof
-Straightforward from Equation \eqref{eq:fij-recurrence} and the fact that $\sum{k \in S} p_{i,k} = 1$
+Straightforward from Equation \eqref{eq:fij-recurrence} and the fact that $\sum_{k \in S} p_{i,k} = 1$
 #+end_proof
 
 *** Computation through absorption
@@ -558,11 +558,11 @@ It holds: $f_{i,j}^{(1)} = p_{i,j}$ and $f_{i,j}^{(n)} = \sum_{k\neq j} p_{i,k} 
 Therefore, and having in mind that $f_{i,j} = 1$.
 
 \begin{align*}
-e_{i,j} &= \sum{n = 1}^{\infty} n f_{i,j}^{(n)} = p_{i,j} + \sum_{n = 2}^{\infty} n \sum_{k \neq j} p_{i,k} f_{k,j}^{(n-1)} \\
-        &= p_{i,j} + \sum{k \neq j} p_{i,k} \sum{n = 2}^{\infty} n f_{k,j}^{(n-1)} \\
-        &= p_{i,j} + \sum{k \neq j} p_{i,k} \bigg\{ \sum{n = 2}^{\infty} f_{k,j}^{(n-1)} + \sum{n = 2}^{\infty} (n-1)f_{k,j}^{(n-1)} \bigg\} \\
-        &= p_{i,j} + \sum{k \neq j} p_{i,k} f_{k,j} + \sum{k \neq j} p_{i,k} e_{k,j} \\
-        &\underset{\eqref{eq:fij-recurrence}}{=} 1 + \sum{k\neq j} p_{i,k} e_{k,j}
+e_{i,j} &= \sum_{n = 1}^{\infty} n f_{i,j}^{(n)} = p_{i,j} + \sum_{n = 2}^{\infty} n \sum_{k \neq j} p_{i,k} f_{k,j}^{(n-1)} \\
+        &= p_{i,j} + \sum_{k \neq j} p_{i,k} \sum_{n = 2}^{\infty} n f_{k,j}^{(n-1)} \\
+        &= p_{i,j} + \sum_{k \neq j} p_{i,k} \bigg\{ \sum_{n = 2}^{\infty} f_{k,j}^{(n-1)} + \sum_{n = 2}^{\infty} (n-1)f_{k,j}^{(n-1)} \bigg\} \\
+        &= p_{i,j} + \sum_{k \neq j} p_{i,k} f_{k,j} + \sum_{k \neq j} p_{i,k} e_{k,j} \\
+        &\underset{\eqref{eq:fij-recurrence}}{=} 1 + \sum_{k\neq j} p_{i,k} e_{k,j}
 \end{align*}
 #+end_proof
 
@@ -654,7 +654,7 @@ S^{\ast} = C_1 \cup C_2 \cup \ldots \cup C_r
 
 where for every $i, j \in C_k$, it holds $i \dgoto j$, and if $i \in C_k, j \in C_l$ where $k \neq l$, then $i \not\goto j$ or $j \not\goto i$.
 
-\label{equiv-classes}
+\label{prop:equiv-classes}
 #+end_proposition
 
 #+begin_proof
@@ -675,7 +675,7 @@ where those are the probabilities of going from $S - S^{\ast}$ to $C_k$ (and nev
 and $W$ where that is the probability of the non-essential states of communicating with
 themselves.
 
-\[
+\begin{equation}
   \left(\begin{array}{cccccccccc}
   \gcell P_1    &        &            &       &        &       &            &        & \\
                 & \rcell & \rcell     & \rcell&        &       &            &        & \\
@@ -688,14 +688,15 @@ themselves.
     \rowcolor{gray!20}
       Q_1       &        &   Q_2      &       & \ldots &       &    Q_r     &        & W\\
   \end{array}\right)
-\]
+\label{eq:irreducible-classes-matrix}
+\end{equation}
 
 Each $C_k$ is said to be an irreducible and closed sub-chain of the original transition matrix 
 $P$ (closed because from one state from $C_k$ we can only go back to another state in the same
 set. Irreducible because all their states communicate among themselves. The same structure of
 power matrices appears in $P^n$, $n > 2$:
 
-\[
+\begin{equation}
   \left(\begin{array}{cccccccccc}
   \gcell P_1^{n}   &        &                  &       &        &       &                   &        & \\
                    & \rcell & \rcell           & \rcell&        &       &                   &        & \\
@@ -708,7 +709,8 @@ power matrices appears in $P^n$, $n > 2$:
     \rowcolor{gray!20}
       Q_1 \cdot P_1^{n-1} & & Q_2 \cdot P_2^{n-1} &    & \ldots &       & Q_r \cdot P_r^{n} &        & W^n\\
   \end{array}\right)
-\]
+\label{eq:irreducible-classes-pow-matrix}
+\end{equation}
 
 #+begin_definition
 A Markov chain where all its states are essential and with only a communicating class is called 
@@ -747,7 +749,7 @@ $i \goto j$ means there exists $k_1, k_2, \ldots k_r$ verifying:
 p{i, k_1} \cdot p_{k_1, k_2} \cdots p_{k_{r}, k_j} > 0
 \]
 
-Since $\sum{k} p_{k,k} = 1$, and $0 \le f_{k,i} \le 1$, then it must hold $f_{k,i} = 1$ for all
+Since $\sum_{k} p_{k,k} = 1$, and $0 \le f_{k,i} \le 1$, then it must hold $f_{k,i} = 1$ for all
 $k$ such that $p_{i,k} > 0$. In particular $f_{k_1,i} = 1$, and we deduce:
 
 \[
@@ -795,7 +797,7 @@ non-essential.
 Let us fix some $i \in S$. We have 
 
 \[
-\sum{j \in S} \expecti{V_j} = \sum_{j \in S} \sum_{n = 1}^{\infty} p_{i,j}^{(n)} = 
+\sum_{j \in S} \expecti{V_j} = \sum_{j \in S} \sum_{n = 1}^{\infty} p_{i,j}^{(n)} = 
 \sum_{n = 1}^{\infty} \sum_{j \in S} p_{i,j}^{(n)} = \sum_{n = 1}^{\infty} 1 = \infty
 \]
 
@@ -814,14 +816,18 @@ We say that recurrent state $i \in S$ is:
 #+end_definition
 
 #+begin_lemma
-A recurrent state $i$ is recurrent positive iff:
+A state $i$ is recurrent positive iff:
 
 \[
 lim_{s\nearrow 1} \frac{1 - F_{i,i}(s)}{1 - s} < \infty \dimplies lim_{s\nearrow 1} (1 - s) \bigg\{1 + P_{i,i}(s)\bigg\} > 0
 \]
+
+\label{lemma:positive-rec-characterization}
 #+end_lemma
 
 #+begin_proof
+Let us observe that for the limit exists it must be $\lim_{s\nearrow 1} F_{i,i}(s) = f_{i,i} = 1$ iff $i$ is recurrent.
+
 \[
 \lim_{s\nearrow 1} \frac{1 - F_{i,i}(s)}{1 - s} = \frac{1}{1 - s} \sum_{n = 1}^{\infty} (1 - s^n) f_{i,i}^{(n)} = 
 \sum_{n = 1}^{\infty} (1 + s + \ldots + s^{n-1}) f_{i,i}^{(n)}
@@ -832,7 +838,8 @@ which tends to $\sum_{n = 1}^\infty n f_{i,i}^{(n)} = e_{i,i}$.
 The second part is deduced from Equation \eqref{eq:Fs-Ps-relation}.
 
 #+begin_proposition
-If $i,j$ are communicating recurrent states, they are both positive recurrent or null recurrent states.
+If $i,j$ are communicating recurrent states, then they are both positive recurrent or null recurrent states.
+\label{prop:all-positive-all-null}
 #+end_proposition
 
 #+begin_proof
@@ -858,10 +865,85 @@ Hence:
 \lim_{s\nearrow 1} (1-s) \bigg\{1 + P_{j,j}(s)\bigg\} \ge p_{i,j}^{(u)} p_{j,i}^{(v)} \lim_{s\nearrow 1} (1-s) \bigg\{1 + P_{i,i}(s)\bigg\}
 \]
 
-And interchanging the roles of $i$ and $j$, we deduce $i$ is positive recurrent iff $j$ is.
+And exchanging the roles of $i$ and $j$, we deduce $i$ is positive recurrent iff $j$ is.
 #+end_proof
 
-*** =markovchain= package
+#+begin_proposition
+Every irreducible Markov chain with a finite number of states is positive recurrent
+#+end_proposition
+
+#+begin_proof
+Let us fix a $s \in [0,1[$. We have, using that $\sum_{n = 1}^{\infty} = \frac{s}{1 - s}$:
+
+\[
+\sum_{j \in S} (1-s) F_{i,j}(s) \bigg\{1 + P_{j,j}(s)\bigg\} \underset{\eqref{\label{eq:Fs-Ps-relation}}}{=} 
+(1 - s) \sum_{j \in S} P_{i,j}(s) = (1-s) \sum_{n = 1}^{\infty} s^n \underbrace{\sum_{j\in S} p_{i,j}^{(n)}}_{1} = s
+\]
+
+Taking $\lim_{s \nearrow 1}$ we have $\sum_{j \in S} \lim_{s \nearrow  1} (1-s) F_{i,j}(s) = 1$
+
+Therefore, it must exist $j \in S$ with $\lim_{s \nearrow  1} (1-s) F_{i,j}(s) > 0$. By Lemma \eqref{lemma:positive-rec-characterization},
+we deduce $j$ is positive recurrent, therefore recurrent. By Proposition \eqref{prop:recurrent-classes} all states
+communicating with $j$ are also recurrent, and by Proposition \eqref{prop:all-positive-all-null}, all the states of
+the chain are positive recurrent.
+#+end_proof
+
+*** Absortion
+
+Although the concept of absorbing state has arisen before, we give a formal definition here:
+
+#+begin_definition
+A state $i\in S$ is absorbing iff $p_{i,i} = 1$.
+#+end_definition
+
+Let us observe the matrix \eqref{eq:irreducible-classes-matrix}. This matrix poses some interesting questions for
+the non-essential states. Let us take a non-essential state, namely $i$. Then it is likely that it will go to a
+state in $S^{\ast}$ at some point, and never comes back. 
+
+#+begin_definition
+We call the absorbing time to the following random variable:
+
+\[
+\tau^{\ast} = \min \{n > 0: X_n \in S^{\ast}\}
+\]
+
+If $\tau^{\ast} < \infty$, we can define the entry absorbing state as $X_{\tau^{\ast}}$.
+
+We define:
+
+1. The absorbing probability as $f_{i}^{\ast} = \probi{\tau^{\ast} < \infty}$.
+2. Taking $j\in S^{\ast}$, we can define the probability of being absorbed by $j$ as
+$f_{i,j}^{\ast} = \probi{\tau^{\ast} < \infty, X_{\tau^{\ast}} = j}$.
+3. Since we can decompse $S^{\ast} = C_1 \cup C_2 \cup \ldots \cup C_r$ by the Proposition
+\eqref{prop:equiv-classes}. Given $C = C_i$, we can define the probability of the state $i$
+being absorbed by the subchain $C$ as:
+
+\[
+f_{i,C}^{\ast} = \probi{\tau^{\ast} < \infty, X_{\tau^{\ast}} \in C}
+\]
+#+end_definition
+
+#+begin_proposition
+The following relations hold for each $i \not\in S^{\ast}$:
+
+1. $f_i^{\ast} &= \sum_{j \in S^{\ast}} p_{i,j} + \sum_{j \not\in S^{\ast}} p_{i,j} f_{j}^{\ast}$
+2. $f_{i,j} = p_{i,j} + \sum_{k \not\in S^{\ast}} p_{i,j} f_{k,j}^{\ast}$
+2. $f_{i,C}^{\ast} &= \sum_{j \in C} p_{i,j} + \sum_{j \not\in S^{\ast}} p_{i,j} f_{j}^{\ast}$
+#+end_proposition
+
+It is obvious that $f_{i,C}^{\ast} = \sum_{j \in C} f_{i,j}^{\ast}$. Once the chain enters the
+subchain, $C$, it does so with the initial probabilities 
+$(f_{i,j}^{\ast} / f_{i,C}^{\ast})_{j \in C }$.
+
+It we call $V = \bigg(\expecti{V_j}\bigg)_{i,j \not\in S^{\ast}}$, we have, taking a look at
+the matrix that \eqref{eq:irreducible-classes-pow-matrix} that $V = \sum_{n = 1}^{\infty} W^n$.
+
+Also, we can define $Q = (Q_1, \ldots, Q_r)$ the matrix of transition probabilities from 
+$S - S^{\ast}$ to $S^{\ast}$, and $q = Q \cdot \left(\begin{array}{c}{ 1 \\ 1 \\ vdots \\ 1 }\right)$
+(the row-wise sum of $Q$). And we will call $F^{\ast} = (f_{i,j}^{\ast})_{i \in S - S^{\ast}, j \in S^{\ast}}$,
+$f^{\ast} = (f_{i}^{\ast})_{i \in S - S^{\ast}}$.
+
+* =markovchain= package
 We can propose an alternative definition of communicating property, taking $n \ge 0$ instead of $n > 0$, which has been 
 the one used in the software from the start:
 
@@ -870,7 +952,7 @@ The state $i\in E$ communicates with $j\in S$, and we will write it like $i \rig
 iff $p_{i,j}^{(n)} > 0$ for some $n \ge 0$.
 #+end_definition
 
-Therefore, we can reformualte Proposition \eqref{equiv-classes} as:
+Therefore, we can reformualte Proposition \eqref{prop:equiv-classes} as:
 
 #+begin_proposition
 $\dgoto$ is an equivalence relationship in $S^{\ast}$, and we can decompose:
