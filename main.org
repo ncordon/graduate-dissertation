@@ -341,7 +341,7 @@ f_{i,j}^{(n)} = P_i\left(\tau_j = n\right) = P_i\left(X_n = j, X_m \neq j \quad 
 and we will define the total probability of reaching $j$ as $f_{i, j} := \sum_{n = 0}^{\infty} f_{i,j}^{(n)} = P_i\left(\tau_j < \infty\right)$
 #+end_definition
 
-Note that we coul have $f_{i, j} < 1$ iff $P_i\left(X_n \neq j \forall n \ge 1\right) > 0$.
+Note that we coul have $f_{i, j} < 1$ iff $P_i\left(X_n \neq j, \forall n \ge 1\right) > 0$.
 
 #+begin_definition
 We will call return time distribution for the state $i$ to $f_{i,i}^{(n)} = P_i \left(\tau_i = n\right)$, 
@@ -357,6 +357,14 @@ f_{i,j} = \probi{X_1 = j} + \sum_{k \neq j} \probi {X_1 = k} \probi {\tau_j < \i
 \end{equation}
 
 solving first the system formed by the equations given by $i\neq j$ (if we have $n$ states, that would be $n \cdot (n - 1)$ equations), and then substituting the computed $f_{k,j}$ values to get $f_{j,j}$.
+
+#+begin_lemma
+If $f_{i,j} = 1$ and $p_{i,k} > 0$, then $f_{k,j} = 1$
+#+end_lemma
+
+#+begin_proof
+Straightforward from Equation \eqref{eq:fij-recurrence} and the fact that $\sum{k \in S} p_{i,k} = 1$
+#+end_proof
 
 *** Computation through absorption
 Let us consider a fixed state $j$. The aim is to compute $f_{i,j}^{(n)}$ with $i\neq j$. 
@@ -499,9 +507,10 @@ where in $(\ast)$ it has been used that $\sum_{n = 1}^{\infty} \sum_{m = 1}^{\in
 
 We deduce:
 
-\[
+\begin{equation}
 F_{i,j}(s) = \frac{P_{i,j}(s)}{1 + P_{j,j}(s)}
-\]
+\label{eq:Fs-Ps-relation}
+\end{equation}
 
 Although this is just a theoretical relationship for the moment, we can observe, on the one hand:
 
@@ -529,22 +538,37 @@ It holds that $\expecti{V_j} = P_{i,j}(1)$
 Straightforward from $\expecti{V_j} = \sum_{n = 1}^{\infty} \expecti{\mathbb{1}_{X_n = j}} = \sum_{n = 1}^{\infty} p_{i,j}^{(n)}$
 #+end_proof
 
-#+begin_lemma
-There is an equivalence between:
-
-1. $\exists n >0 : p_{i,j}^{(n)} > 0$
-2. $j \dimplies \expecti{V_j} > 0$
-3. $f_{i,j} > 0$
-
-\label{lemma:fij-equivs}
-#+end_lemma
-
 *** Average arrival times
 
+#+begin_definition
+If $f_{i,j} = 1$, we define the average arrival time from $i$ to $j$ as:
+
+\[
+e_{i,j} = \expecti{\tau_j} = \sum_{n = 1}^{\infty} n f_{i,j}^{(n)}
+\]
+#+end_definition
+
+#+begin_proposition
+e_{i,j} = 1 + \sum_{k \neq j} p_{i, k} e_{k, j}
+#+end_proposition
+
 #+begin_proof
-Easily deducible from: $\expecti{V_j} = \sum_{n = 1}^{\infty} p_{i,j}^{(n)}$ and 
-$\expecti{V_j} = f_{i,j}(1 + \expectj{V_j})$.
+It holds: $f_{i,j}^{(1)} = p_{i,j}$ and $f_{i,j}^{(n)} = \sum_{k\neq j} p_{i,k} f_{k,j}^{(n-1)}$.
+
+Therefore, and having in mind that $f_{i,j} = 1$.
+
+\begin{align*}
+e_{i,j} &= \sum{n = 1}^{\infty} n f_{i,j}^{(n)} = p_{i,j} + \sum_{n = 2}^{\infty} n \sum_{k \neq j} p_{i,k} f_{k,j}^{(n-1)} \\
+        &= p_{i,j} + \sum{k \neq j} p_{i,k} \sum{n = 2}^{\infty} n f_{k,j}^{(n-1)} \\
+        &= p_{i,j} + \sum{k \neq j} p_{i,k} \bigg\{ \sum{n = 2}^{\infty} f_{k,j}^{(n-1)} + \sum{n = 2}^{\infty} (n-1)f_{k,j}^{(n-1)} \bigg\} \\
+        &= p_{i,j} + \sum{k \neq j} p_{i,k} f_{k,j} + \sum{k \neq j} p_{i,k} e_{k,j} \\
+        &\underset{\eqref{eq:fij-recurrence}}{=} 1 + \sum{k\neq j} p_{i,k} e_{k,j}
+\end{align*}
 #+end_proof
+
+Note this last proposition can be used to compute $e_{i,j}$ with a computer.
+
+*** Number of visits to an state
 
 #+begin_proposition
 If $f_{j,j} \neq 1$, we have:
@@ -556,6 +580,32 @@ If $f_{j,j} \neq 1$, we have:
 Moreover, it holds $f_{i,i} = 1 \dimplies \expecti{V_i} = \infty$.
 \label{prop:fii-equiv}
 #+end_proposition
+
+#+begin_proof
+From \eqref{eq:Fs-Ps-relation} we can deduce:
+
+\[
+P_{i,j}(1) = F_{i,j}(1) \bigg\{1 + P_{j,j}(1) \equiv \expecti{V_j}\bigg\} = \frac{f_{j,j}}{1 - f_{j,j}}
+\]
+
+If $f_{i,j} \neq 1$ then $\probi{\tau_j = \infty} > 0$ and hence $\expecti{\tau_j} = \infty$.
+#+end_proof
+
+#+begin_lemma
+There is an equivalence between:
+
+1. $\exists n >0 : p_{i,j}^{(n)} > 0$
+2. $\expecti{V_j} > 0$
+3. $f_{i,j} > 0$
+
+\label{lemma:fij-equivs}
+#+end_lemma
+
+#+begin_proof
+Since $\expecti{V_j} = \sum_{n = 1}^{\infty} p_{i,j}^{(n)}$, clearly i. is equivalent to ii.
+
+ii. is equivalent to iii. can be deduced from $\expecti{V_j} = f_{i,j}(1 + \expectj{V_j})$.
+#+end_proof
 
 ** Classification of states
 *** Communicating classes
@@ -660,6 +710,10 @@ power matrices appears in $P^n$, $n > 2$:
   \end{array}\right)
 \]
 
+#+begin_definition
+A Markov chain where all its states are essential and with only a communicating class is called 
+irreducible Markov chain.
+#+end_definition
 *** Recurrence and transience
 
 #+begin_definition
@@ -676,6 +730,7 @@ when $i$ is transient.
 #+begin_proposition
 If $i$ is a recurrent state and $j$ communicates with $i$, then $f_{j,i} = f_{i,j} = f_{j,j} = 1$, 
 and $j$ is recurrent. Therefore, all non essential states are transient.
+\label{prop:recurrent-classes}
 #+end_proposition
 
 #+begin_proof
@@ -723,9 +778,92 @@ p_{j,i}^{(v)} p_{i,j}^{(u)} \sum_{n = u + v}^{\infty} p_{i,i}^{(n)} = \infty
 Again from Proposition \eqref{prop:fii-equiv} we deduce $f_{j,j} = 1$. We have proved $j$ is
 recurrent, but also that $j \goto i$, and we can deduce $f_{i,j} = 1$ by the same procedure
 we started this demonstration with.
+#+end_proof
+
+#+begin_corollary
+If $i,j \in S$ are in the same communicating class they are both either recurrent or transient.
+\label{corollary:comm-classes}
+#+end_corollary
+
+#+begin_proposition
+All the closed irreducible subchains of a Markov chain (with finite space state S) are recurrent, 
+and every Markov chain has at least one subchain of such type. A state is transient iff it is 
+non-essential.
+#+end_proposition
+
+#+begin_proof
+Let us fix some $i \in S$. We have 
+
+\[
+\sum{j \in S} \expecti{V_j} = \sum_{j \in S} \sum_{n = 1}^{\infty} p_{i,j}^{(n)} = 
+\sum_{n = 1}^{\infty} \sum_{j \in S} p_{i,j}^{(n)} = \sum_{n = 1}^{\infty} 1 = \infty
+\]
+
+And therefore, it exits at least one $\expecti{V_j} = \infty \equiv f_{j,j} = 1$, so the subchain which
+contains $j$ is recurrent. The same argument can be applied to the other subchains. Therefore, if we have
+a chain and a certain state $j$ in that chain, $f_{j,j} = 1$ and $j$ cannot be transient. In other words,
+if $j$ is transient, $j$ is non-essential. 
+#+end_proof
+
+We are going to make the classification among the recurrent states even finer.
+
+#+begin_definition
+We say that recurrent state $i \in S$ is:
+1. positive recurrent iff $e_{i,i} < \infty$.
+2. null recurrent iff $e_{i,i} = \infty$.
+#+end_definition
+
+#+begin_lemma
+A recurrent state $i$ is recurrent positive iff:
+
+\[
+lim_{s\nearrow 1} \frac{1 - F_{i,i}(s)}{1 - s} < \infty \dimplies lim_{s\nearrow 1} (1 - s) \bigg\{1 + P_{i,i}(s)\bigg\} > 0
+\]
+#+end_lemma
+
+#+begin_proof
+\[
+\lim_{s\nearrow 1} \frac{1 - F_{i,i}(s)}{1 - s} = \frac{1}{1 - s} \sum_{n = 1}^{\infty} (1 - s^n) f_{i,i}^{(n)} = 
+\sum_{n = 1}^{\infty} (1 + s + \ldots + s^{n-1}) f_{i,i}^{(n)}
+\]
+
+which tends to $\sum_{n = 1}^\infty n f_{i,i}^{(n)} = e_{i,i}$.
+
+The second part is deduced from Equation \eqref{eq:Fs-Ps-relation}.
+
+#+begin_proposition
+If $i,j$ are communicating recurrent states, they are both positive recurrent or null recurrent states.
+#+end_proposition
+
+#+begin_proof
+By the procedure used in the proof of Proposition \eqref{prop:recurrent-classes}, we have:
+
+\[
+p_{j,j}^{(n)} \ge p_{j,i}^{(v)} \cdot p_{i,i}^{(n-u-v)} \cdot p_{i,j}^{(u)} > 0 \forall n > u + v
+\]
+
+Therefore:
+
+\begin{align*}
+(1-s) \bigg\{1 + P_{j,j}(s)\bigg\} = (1-s) \bigg\{1 + \sum_{n = 1}^{\infty} p_{j,j}^{(n)} s^n\bigg\} = \\
+(1-s) \bigg\{1 + \sum_{n = 1}^{u + v} p_{j,j}^{(n)} s^n + \sum_{n = u + v + 1}^{\infty} p_{j,j}^{(n)} s^n \bigg\} \ge \\
+(1-s) \bigg\{1 + \sum_{n = 1}^{u + v} p_{j,j}^{(n)} s^n + s^{u + v} p_{i,j}^{(u)} p_{j,i}^{(v)} \sum_{n = 1}^{\infty} p_{i,i}^{(n)} s^n \ge \\
+(1-s) \bigg\{1 + s^{u + v} p_{i,j}^{(u)} p_{j,i}^{(v)} P_{i,i}(s) \bigg\} =\\
+(1-s) \bigg\{1 + P_{i,i}(s)\bigg\}s^{u + v} p_{i,j}^{(u)} + (1-s) \bigg\{1 - s^{u + v} p_{i,j}^{(u)} p_{j,i}^{(v)} \bigg\}
+\end{align*}
+
+Hence:
+
+\[
+\lim_{s\nearrow 1} (1-s) \bigg\{1 + P_{j,j}(s)\bigg\} \ge p_{i,j}^{(u)} p_{j,i}^{(v)} \lim_{s\nearrow 1} (1-s) \bigg\{1 + P_{i,i}(s)\bigg\}
+\]
+
+And interchanging the roles of $i$ and $j$, we deduce $i$ is positive recurrent iff $j$ is.
+#+end_proof
 
 *** =markovchain= package
-We can propose an alternative definition of communicating property, taking $n \ge 0$ instead of $n > 0$, which has been the one used in the software from the start:
+We can propose an alternative definition of communicating property, taking $n \ge 0$ instead of $n > 0$, which has been 
+the one used in the software from the start:
 
 #+begin_definition
 The state $i\in E$ communicates with $j\in S$, and we will write it like $i \rightarrow j$
@@ -743,6 +881,8 @@ S = C_1 \cup C_2 \cup \ldots \cup C_r
 
 where for every $i, j \in C_k$, it holds $i \dgoto j$, and if $i \in C_k, j \in C_l$ where $k \neq l$, then $i \not\goto j$ or $j \not\goto i$.
 #+end_proposition
+
+The Corollary \eqref{corollary:comm-classes} is still valid with this definition, and gets used in the software.
 
 * Bibliography
 :PROPERTIES:
