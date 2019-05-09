@@ -939,9 +939,81 @@ It we call $V = \bigg(\expecti{V_j}\bigg)_{i,j \not\in S^{\ast}}$, we have, taki
 the matrix that \eqref{eq:irreducible-classes-pow-matrix} that $V = \sum_{n = 1}^{\infty} W^n$.
 
 Also, we can define $Q = (Q_1, \ldots, Q_r)$ the matrix of transition probabilities from 
-$S - S^{\ast}$ to $S^{\ast}$, and $q = Q \cdot \left(\begin{array}{c} 1 \\ 1 \\ vdots \\ 1 \end{array}\right)$ (the row-wise sum of $Q$). And we will call 
+$S - S^{\ast}$ to $S^{\ast}$, and $q = Q \cdot \left(\begin{array}{c} 1 \\ 1 \\ \vdots \\ 1 \end{array}\right)$ (the row-wise sum of $Q$). And we will call 
 $F^{\ast} = (f_{i,j}^{\ast})_{i \in S - S^{\ast}, j \in S^{\ast}}$,
 $f^{\ast} = (f_{i}^{\ast})_{i \in S - S^{\ast}}$.
+
+With those notations, we can establish the following proposition:
+
+#+begin_proposition
+The following relations hold:
+
+\begin{align}
+F^{\ast} &= (I + V)Q \label{prop:Fast-matrix}\\
+f^{\ast} &= (I + V)q \label{prop:fast-matrix}
+\end{align}
+
+The distribution for $\tau^{\ast}$ is $\probi{\tau^{\ast} = n} = B^{n - 1}q, \quad n \in \mathbb{N}$
+\label{prop:fast-matrices}
+#+end_proposition
+
+#+begin_proof
+Let us fix $i\in S - S^{\ast}, j \in S^{\ast}$. We have: 
+
+\begin{align}
+\probi{\tau^{\ast} = n + 1, X_{\tau^{\ast}} = j} = \sum_{k \in S - S^{\ast}} \probi{X_n = k, X_{n + 1} = j} = \sum_{k \in S - S^{\ast}} p_{i,k}^{(n)} p_{k,j}
+\label{eq:tau-ast-nat}
+\end{align}
+
+Using that for $i$ to get absorbed by $j$ in time $n + 1$, one cannot go through a state in $S^{\ast}$ (otherwise absorption would happen). Also, using $p_{i,j}^{(0)} = \delta_{i,j}$, we have:
+
+\begin{align}
+\probi{\tau^{\ast} < \infty, X_{\tau^{\ast}} = j} = \sum_{n = 0}^{\infty} \sum_{k \in S - S^{\ast}} p_{i,k}^{(n)} p_{k,j} = \sum_{k \in S - S^{\ast}} \bigg(\delta_{i,k} + \expecti{V_k}\bigg) p_{k,j}
+\label{eq:tau-ast-inf}
+\end{align}
+
+Let us note that this last equality is \eqref{prop:Fast-matrix} expressed matrix-wise.
+
+To get \eqref{prop:fast-matrix}, it suffices to sum in $j \in S^{\ast}$ in Equation \eqref{eq:tau-ast-inf}.
+
+Summing in $j \in S^{\ast}$ in \eqref{eq:tau-ast-nat} we arrive at:
+
+\[
+\probi{\tau^{\ast} = n + 1} \sum_{k \in S - S^{\ast}} p_{i,k}^{(n)} q_k = (B^n q)_i
+\]
+#+end_proof
+
+#+begin_proposition
+If $S - S^{\ast}$ is finite, the following relation holds:
+
+\begin{align}
+F^{\ast} = (I - W)^{-1} Q \\
+f^{\ast} = 1
+\end{align}
+
+where the last equation tells us the absorption would take place almost surely.
+#+end_proposition
+
+#+begin_proof
+It holds:
+\[
+(I + V)(I - W) = (I + W + W^2 + \ldots )(I - W) = I
+\]
+and therefore $(I + V) = (I - W)^{-1}$ (if we had not had finiteness we could not assure 
+uniqueness for the inverse).
+
+To check the other part, since the rows of the transition matrix from $S - S^{\ast}$ sum one,
+
+\[
+A1 + B_{S - S^{\ast}} = 1_{S - S^{\ast}} \equiv A1 = (B - I) 1_{S - S^{\ast}}
+\]
+
+Therefore:
+
+\[
+f^{\ast} = F^{\ast} 1 = (I - B)^{-1} \cdot A 1 = (I - B)^{-1}(I - B) 1_{S - S^{\ast}} = 1_{S - S^{\ast}}
+\]
+#+end_proof
 
 * =markovchain= package
 We can propose an alternative definition of communicating property, taking $n \ge 0$ instead of $n > 0$, which has been 
