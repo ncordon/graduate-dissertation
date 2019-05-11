@@ -339,6 +339,8 @@ f_{i,j}^{(n)} = P_i\left(\tau_j = n\right) = P_i\left(X_n = j, X_m \neq j \quad 
 \]
 
 and we will define the total probability of reaching $j$ as $f_{i, j} := \sum_{n = 0}^{\infty} f_{i,j}^{(n)} = P_i\left(\tau_j < \infty\right)$
+
+Note that $f_{i,j} = \probi{X_n = j \textrm{ for some } n\ge 1}$
 #+end_definition
 
 Note that we coul have $f_{i, j} < 1$ iff $P_i\left(X_n \neq j, \forall n \ge 1\right) > 0$.
@@ -578,6 +580,15 @@ If $f_{j,j} \neq 1$, we have:
 \]
 
 Moreover, it holds $f_{i,i} = 1 \dimplies \expecti{V_i} = \infty$.
+
+Let us note this is a characterization of $f_{i,i} = 1$. Since $\expecti{V_i} = 
+\sum_{n > 0} p_{i,i}^{(n)}$, it holds:
+
+\[
+  \probi{X_n = i \textrm{ for some } n} = 1 \dimplies
+  \probi{X_n = i \textrm{ for infinitely many } n} = 1
+\]
+
 \label{prop:fii-equiv}
 #+end_proposition
 
@@ -668,7 +679,7 @@ p_{i,k}^{(n + m)} \ge p_{i,j}^{(n)} \cdot p_{j,k}^{(m)} > 0
 The second part is trivial from the deduced equivalence property.
 #+end_proof
 
-Therefore, reordering the states of the matrix, with $P_k$ is the transition matrix for the st
+Therefore, reordering the states of the matrix, with $P_k$ is the transition matrix for the
 states in $C_k$ (which only communicate with themselves), where the last rows are formed by the 
 transition probabilities from the non-essential states: $Q_k$,
 where those are the probabilities of going from $S - S^{\ast}$ to $C_k$ (and never returning), 
@@ -692,8 +703,8 @@ themselves.
 \end{equation}
 
 Each $C_k$ is said to be an irreducible and closed sub-chain of the original transition matrix 
-$P$ (closed because from one state from $C_k$ we can only go back to another state in the same
-set. Irreducible because all their states communicate among themselves. The same structure of
+$P$; closed because from one state from $C_k$ we can only go back to another state in the same
+set; irreducible because all their states communicate among themselves. The same structure of
 power matrices appears in $P^n$, $n > 2$:
 
 \begin{equation}
@@ -721,6 +732,16 @@ irreducible Markov chain.
 #+begin_definition
 An state $i\in S$ is called recurrent iff $f_{i,i} = 1$ and transient iff $f_{i,i} < 0$
 #+end_definition
+
+By Proposition \eqref{prop:fii-equiv} it is easy to show the following characterization:
+
+#+begin_proposition
+It holds:
+
+1. $i\in S$ is recurrent iff $\probi{X_n = i \textrm{ for infinitely many } n} = 1$
+2. $i\in S$ is transient iff $\probi{X_n = i \textrm{ for infinitely many } n} = 0$
+\label{prop:rec-tran-characterization}
+#+end_proposition
 
 If an state is recurrent, then $\probi{V_i = \infty} = 1$ and $\expecti{V_i} = \infty$ and 
 $\probj{V_i = 0 \vee V_i = \infty} = 1$. If an state is transient, then $\probi{V_i < \infty}$ 
@@ -787,10 +808,16 @@ If $i,j \in S$ are in the same communicating class they are both either recurren
 \label{corollary:comm-classes}
 #+end_corollary
 
+#+begin_definition
+We will say a communicating class is recurrent (resp. transient) iff one of its states (iff
+all, by the previous corollary) are recurrent (resp. transient).
+#+end_definition
+
 #+begin_proposition
 All the closed irreducible subchains of a Markov chain (with finite space state S) are recurrent, 
 and every Markov chain has at least one subchain of such type. A state is transient iff it is 
 non-essential.
+\label{prop:one-recurrent-class}
 #+end_proposition
 
 #+begin_proof
@@ -805,6 +832,27 @@ And therefore, it exits at least one $\expecti{V_j} = \infty \equiv f_{j,j} = 1$
 contains $j$ is recurrent. The same argument can be applied to the other subchains. Therefore, if we have
 a chain and a certain state $j$ in that chain, $f_{j,j} = 1$ and $j$ cannot be transient. In other words,
 if $j$ is transient, $j$ is non-essential. 
+#+end_proof
+
+#+begin_corollary
+In a Markov chain with finitely many states, a communicating class is recurrent iff it is closed.
+#+end_corollary
+
+#+begin_proof
+If we have a non closed class $C$, there exist $i \in C, j \in S - C$ such that $p_{i,j} > 0$ and
+$p_{j, i} = 0$. Therefore $f_{j,i} = 0$ by \eqref{goto-characterization}.
+
+Therefore: 
+
+\begin{align*}
+f_{i,i} &= p_{i,i} + \sum_{k \neq i} p_{i, k} f_{k,i} = \\
+        &= p_{i,i} + \sum_{k \neq i, j} p_{i, k} f_{k, i} < \\
+        &< \sum_{k \neq j} p_{i, k} \underset{p_{i,j} > 0}{<} 1
+\end{align*}
+
+and the class would not be recurrent.
+
+Reciprocally, Proposition \eqref{prop:one-recurrent-class} gives us the result we want.
 #+end_proof
 
 We are going to make the classification among the recurrent states even finer.
@@ -888,7 +936,7 @@ communicating with $j$ are also recurrent, and by Proposition \eqref{prop:all-po
 the chain are positive recurrent.
 #+end_proof
 
-*** Absortion
+*** Absorption
 
 Although the concept of absorbing state has arisen before, we give a formal definition here:
 
@@ -1005,19 +1053,55 @@ uniqueness for the inverse).
 To check the other part, since the rows of the transition matrix from $S - S^{\ast}$ sum one,
 
 \[
-A1 + B_{S - S^{\ast}} = 1_{S - S^{\ast}} \equiv A1 = (B - I) 1_{S - S^{\ast}}
+Q1_{S^{\ast}} + W 1_{S - S^{\ast}} = 1_{S - S^{\ast}} \dimplies Q1_{S^{\ast}} = (I - W) 1_{S - S^{\ast}}
 \]
 
 Therefore:
 
 \[
-f^{\ast} = F^{\ast} 1 = (I - B)^{-1} \cdot A 1 = (I - B)^{-1}(I - B) 1_{S - S^{\ast}} = 1_{S - S^{\ast}}
+f^{\ast} = F^{\ast} 1 = (I - W)^{-1} \cdot Q 1 = (I - B)^{-1}(I - B) 1_{S - S^{\ast}} = 1_{S - S^{\ast}}
 \]
+
+#+end_proof
+
+#+begin_proposition
+$F^{\ast}$ is the unique solution, with all its elements in $[0,1]$, of the system $(I-B)X = a$ iff 
+absorption in $E^{\ast}$ is sure from every state in $E - E^{\ast}$.
+#+end_proposition
+
+#+begin_proof
+Let us fix some $i \in E - E^{\ast}$, and assume $A >= B$ as a matrix iff:
+
+\[
+\sum_{i, j}{a_{i,j}} < \sum_{i, j}{b_{i,j}}
+\]
+
+From $(I - W) X = Q$ with $X$ with all its entries in $[0,1]$, we deduce:
+
+\begin{align*}
+X = Q + XW \ge Q \underset{X = Q + XW}{\implies} X \ge Q + QW \underset{X = Q + XW}{\implies} \\
+X \ge Q + QW + AB^2 \implies \ldots \implies X \ge (I + V)Q = F^{\ast}
+\end{align*}
+
+Therefore $F^{\ast}$ is the minimum solution with entries in $[0,1]$ to the equation $(I - W)X = W$
+and analogously $f^{\ast}$ is the minimum solution to $(I-B)x = a$.
+
+On the one hand, if there exists solutions to $(I - W)X = Q$ with their elements on $[0,1]$ and not equal to $F^{\ast}$,
+then $x = X 1$ would be solution to $(I - W)x = q$ and $f^{\ast} < x$ cannot be $1$.
+
+On the other hand, if absorption is not sure, $x_i = 1 - f_i^{\ast}$ verify $x = Wx$. Therefore, $x = Bx$
+has some non null solution, with $0 \le x \le 1$ and $X = F^{\ast} + x1$ is a solution for 
+$(I - W)X = Q$ whose elements are in $[0,1]$, since:
+
+\[
+f_{i,j}^{\ast} + x_{i} = \probi{\tau^{\ast} < \infty, X_{\tau^{\infty}} = j} + \probi{\tau^{\ast} = \infty} \le \probi{\tau^{\ast} < \infty} + \probi{\tau^{\ast} = \infty} = 1
+\]
+
 #+end_proof
 
 * =markovchain= package
-We can propose an alternative definition of communicating property, taking $n \ge 0$ instead of $n > 0$, which has been 
-the one used in the software from the start:
+We can propose an alternative definition of communicating property, taking $n \ge 0$ instead of $n > 0$, 
+which has been the one used in the software from the start:
 
 #+begin_definition
 The state $i\in E$ communicates with $j\in S$, and we will write it like $i \rightarrow j$
@@ -1038,6 +1122,7 @@ where for every $i, j \in C_k$, it holds $i \dgoto j$, and if $i \in C_k, j \in 
 
 The Corollary \eqref{corollary:comm-classes} is still valid with this definition, and gets used in the software.
 
+With
 * Bibliography
 :PROPERTIES:
 :UNNUMBERED: t
