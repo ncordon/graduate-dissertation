@@ -23,6 +23,9 @@
 Markov chains are a mathematical area which encompasses probability, inference, algebra (more accurately graph theory), algorithms theory (since discrete markov chains can be simulated in a computer, and therefore, we intend to simulate them as efficiently as we can or use as big input sizes as we can, for example in markov chains with more states). All of the above conditions make markov chains an interesting study from both the mathematical and the computer science viewpoint.
 
 * Introduction to Markov chains
+This section is based in \cite{velez}, although other theoretical references such as \cite{takis}
+or \cite{zitkovic} have been used.
+
 ** Definition
 For convenience, unless otherwise indicated, we will consider $0\in \mathbb{N}$.
 
@@ -1122,8 +1125,84 @@ where for every $i, j \in C_k$, it holds $i \dgoto j$, and if $i \in C_k, j \in 
 
 The Corollary \eqref{corollary:comm-classes} is still valid with this definition, and gets used in the software.
 
-With
-* Bibliography
-:PROPERTIES:
-:UNNUMBERED: t
-:END:
+** Communicating classes algorithm
+The original algorithm to compute the communicating classes of a given markovchain, and whether
+they were closed or not, was based on \cite{feres}. The algorithm runs in $\algcomp{n^3}$ where
+$n$ is the number of states of the input Markov chain. The problem is that it is excessively 
+inefficient when it comes to easy inputs.
+
+\begin{algorithm}[H]
+\begin{algorithmic}[1]
+  \REQUIRE $P_{m \times m}$ an stochastic matrix
+  \NEWLINE
+  \FOR{$i \in \{1, \ldots, m\}$}
+    \STATE{$b = (\underset{(1)}{false}, \ldots \underset{(m)}{false})$}
+    \STATE{$b[i] \leftarrow true$ since $p_{i,i}^{(0)} = 1$}
+    \STATE{$k' = 0$}
+    \STATE{$k = 1$}
+    \STATE{$a = \{i\}$ a list with the states $i$ can communicate with}
+    \NEWLINE
+    \WHILE{$k' \neq k$}
+      \STATE{$k' = \sum_{l = 1}^{n} \mathbb{1}_{b[l] = true}$}
+      \STATE{Set $c[l] = \sum_{k \in a} (P(k,i))$ for $l \in \{1, \ldots n\}$}
+      \STATE{Set $a = \{l: c[l] > 0, l \in \{1, \ldots n\}\}$}
+      \STATE{Set $b[l] = true$ for each $l \in a$ and $k = \card{a}$}
+    \ENDWHILE
+    \NEWLINE
+    \STATE{Set $T(i,\_) = b$}
+  \ENDFOR
+  \NEWLINE
+  \STATE{Set $C(i,j) = T(j, i) \textrm{ and } T(i, j)$ (it holds $i \goto j$ and $j \goto i$)}
+  \STATE{Set $v[i] = \textrm{ true iff } \card{ \{j: C(i,j) = true \} }= \card{ \{j: T(i,j) = true \} }$}
+  \NEWLINE
+  \RETURN{$[C, v]$, where $C(i,j)$ is true iff $i,j$ are in the same communicating class,
+          and $v[i]$ is true iff the class for $i$ is closed}
+\end{algorithmic}
+\caption{Original \texttt{commClassesKernel} algorithm}
+\label{alg:commClassesKernel}
+\end{algorithm}
+
+
+\begin{algorithm}[H]
+\begin{algorithmic}[1]
+  \REQUIRE $P_{m \times m}$ an stochastic matrix
+  \STATE{Parse the graph for the states keeping an adjacency list for
+          each state $i \in \{1, \ldots, m\}$}
+  \NEWLINE
+  \FOR{$i \in \{1, \ldots, m\}$}
+    \STATE{$a = \{i\}$ a list with the states $i$ can communicate with}
+    \STATE{$a = backtrack(a)$ where the \textit{backtrack} visits each edge of the graph at most once}
+    \STATE{Set $T(i,j) = true$ for all $j \in a$}
+  \ENDFOR
+  \NEWLINE
+  \STATE{Set $C(i,j) = T(j, i) \textrm{ and } T(i, j)$ (it holds $i \goto j$ and $j \goto i$)}
+  \STATE{Set $v[i] = \textrm{ true iff } \card{ \{j: C(i,j) = true \} }= \card{ \{j: T(i,j) = true \} }$}
+  \NEWLINE
+  \RETURN{$[C, v]$, where $C(i,j)$ is true iff $i,j$ are in the same communicating class,
+          and $v[i]$ is true iff the class for $i$ is closed}
+\end{algorithmic}
+\caption{Improved \texttt{commClassesKernel} algorithm}
+\label{alg:commClassesKernel}
+\end{algorithm}
+
+
+For the homogeneous Markov chain with transition matrix as follows
+\[
+\left(\begin{array}{ccccc}
+0 & 1 & 0 & \ldots & 0\\
+0 & 0 & 1 & \ldots & 0\\
+\vdots & \vdots & \vdots & \ddots & \vdots \\
+0 & 0 & 0 & \ldots & 1 \\
+1 & 0 & 0 & \ldots & 0
+\end{array}\right)
+\]
+
+the original algorithm would also run in $\algcomp{n^4}$, whereas our improved algorithm would
+run in $\algcomp{n^2}$. In the general case (a matrix with $\approx n^2$ non-zero entries, 
+complexity of our algorithm would be $\algcomp{n^3}$ and the old one would be $\algcomp{n^4}$ 
+still.
+
+
+
+
+\bibliography{references} 

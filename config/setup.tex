@@ -16,3 +16,20 @@
 \setminted{fontsize=\small}
 \setminted[haskell]{linenos=false,fontsize=\small}
 \renewcommand{\theFancyVerbLine}{\sffamily\textcolor[rgb]{0.5,0.5,1.0}{\oldstylenums{\arabic{FancyVerbLine}}}}
+
+% Bibliography style
+\bibliographystyle{config/custom-dinat}
+\usepackage[sort&compress,square, comma, authoryear]{natbib}
+
+
+% Pseudocode for algorithms
+\usepackage{algorithm}
+\usepackage{algorithmic}
+%\floatname{algorithm}{Algoritmo}
+%\renewcommand{\listalgorithmname}{Lista de algoritmos}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+
+\makeatletter
+\def\NEWLINE{\STATE{}}
+\makeatother
