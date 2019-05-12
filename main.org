@@ -1131,7 +1131,7 @@ they were closed or not, was based on \cite{feres}. The algorithm runs in $\algc
 $n$ is the number of states of the input Markov chain. The problem is that it is excessively 
 inefficient when it comes to easy inputs.
 
-\begin{algorithm}[H]
+\begin{algorithm}[h]
 \begin{algorithmic}[1]
   \REQUIRE $P_{m \times m}$ an stochastic matrix
   \NEWLINE
@@ -1140,7 +1140,7 @@ inefficient when it comes to easy inputs.
     \STATE{$b[i] \leftarrow true$ since $p_{i,i}^{(0)} = 1$}
     \STATE{$k' = 0$}
     \STATE{$k = 1$}
-    \STATE{$a = \{i\}$ a list with the states $i$ can communicate with}
+    \STATE{$a = [i]$ a list with the states $i$ can communicate with}
     \NEWLINE
     \WHILE{$k' \neq k$}
       \STATE{$k' = \sum_{l = 1}^{n} \mathbb{1}_{b[l] = true}$}
@@ -1163,16 +1163,24 @@ inefficient when it comes to easy inputs.
 \end{algorithm}
 
 
-\begin{algorithm}[H]
+\begin{algorithm}[h]
 \begin{algorithmic}[1]
   \REQUIRE $P_{m \times m}$ an stochastic matrix
-  \STATE{Parse the graph for the states keeping an adjacency list for
+  \STATE{Parse the graph for the states keeping $S[i]$ an adjacency list for
           each state $i \in \{1, \ldots, m\}$}
   \NEWLINE
   \FOR{$i \in \{1, \ldots, m\}$}
-    \STATE{$a = \{i\}$ a list with the states $i$ can communicate with}
-    \STATE{$a = backtrack(a)$ where the \textit{backtrack} visits each edge of the graph at most once}
-    \STATE{Set $T(i,j) = true$ for all $j \in a$}
+    \STATE{$a = stack \{ i \}$ a list with the states $i$ can communicate with}
+    \STATE{$b = (\underset{(1)}{false}, \ldots \underset{(m)}{false})$}
+    \WHILE{$a$ is not empty}
+       \STATE{$k =$ \texttt{a.pop()}}
+       \STATE{$T(i,k) = true$}
+       \FOR{$l \in S[k]$}
+         \IF{$T(i,l) == false$}
+           \STATE{\texttt{a.push(l)}}
+         \ENDIF
+       \ENDFOR
+    \ENDWHILE
   \ENDFOR
   \NEWLINE
   \STATE{Set $C(i,j) = T(j, i) \textrm{ and } T(i, j)$ (it holds $i \goto j$ and $j \goto i$)}
