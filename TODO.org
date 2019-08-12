@@ -5,3 +5,8 @@
 * Replace E by S and s \in S for i \in S
 * TODO Abel theorem to move F'_{i,j}(1) converges
 * TODO Change 1,2,... by i, ii, etc
+
+
+
+* Notes:
+- is.accessible

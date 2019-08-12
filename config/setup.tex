@@ -33,3 +33,18 @@
 \makeatletter
 \def\NEWLINE{\STATE{}}
 \makeatother
+
+
+% Code listings
+\usepackage{listings}
+\renewcommand{\lstlistingname}{Code}
+\definecolor{light-gray}{gray}{0.97}
+
+\lstset{
+  language=C++,
+  basicstyle=\ttfamily,
+  keywordstyle=\color{blue}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  commentstyle=\color{green}\ttfamily,
+  morecomment=[l][\color{magenta}]{\#}
+}

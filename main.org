@@ -6,7 +6,7 @@
 
 #+latex_class: scrreprt
 #+latex_class_options: [oneside,english,openright,titlepage,numbers=noenddot,openany,headinclude,footinclude=true,cleardoublepage=empty,abstractoff,BCOR=5mm,paper=a4,fontsize=12pt,ngerman,american]
-#+latex_header_extra: \definecolor{ugrColor}{HTML}{c6474b} 
+#+latex_header_extra: \definecolor{ugrColor}{HTML}{c6474b}
 #+latex_header_extra: \input{frontmatter/titlepage}\usepackage{wallpaper}\ThisULCornerWallPaper{1}{imgs/ugrA4.pdf}
 #+latex_header_extra: \usepackage[T1]{fontenc}
 #+latex_header_extra: \usepackage{babel}
@@ -56,7 +56,7 @@ From left to right. By Markov chain definition, if $\{X_k\}_{k \in I}$ is indepe
 &P(X_{n + 1} = s_{n + 1} | X_n = s_n) \cdot P(X_{n - 1} = s_{n - 1}, \ldots, X_0 = s_0 | X_n = s_n)
 \end{align*}
 
-If we prove that 
+If we prove that
 
 \[
 \frac{P(X_{n + 1} = s_{n + 1}, X_{n - 1} = s_{n - 1}, \ldots, X_0 = s_0 | X_n = s_n)}{P(X_{n - 1} = s_{n - 1}, \ldots, X_0 = s_0 | X_n = s_n)} = P(X_{n + 1} = s_{n + 1} | X_n = s_n, \ldots, X_0 = s_0)
@@ -103,7 +103,7 @@ Therefore,
 & P(X_{n + m} = s_{n + m}, \ldots, X_{n + 1} = s_{n + 1} | X_n = s_n, \ldots, X_0 = s_0) =\\
 &= \frac{P(X_{n + m}, \ldots, X_0)}{P(X_{n + m - 1}, \ldots, X_0)} \cdot \frac{P(X_{n + m - 1}, \ldots, X_0)}{P(X_{n + m - 2}, \ldots, X_0)} \cdots \frac{P(X_{n + 1}, \ldots, X_0)}{P(X_{n}, \ldots, X_0)} = \\
 &= P(X_{n + m} | X_{n + m - 1}) \cdots P(X_{n + 1} | X_{n}) = \frac{P(X_{n + m} = s_{n + m}, \ldots X_{n + 1} = s_{n + 1})}{P(X_n = s_n)} =\\
-&= P(X_{n + m} = s_{n + m}, \ldots, X_{n + 1} = s_{n + 1} | X_n = s_n) 
+&= P(X_{n + m} = s_{n + m}, \ldots, X_{n + 1} = s_{n + 1} | X_n = s_n)
 \end{align*}
 #+end_proof
 
@@ -129,10 +129,10 @@ Given $\{X_n\}_{n\in I}$ a Markov chain with finite state space $S$, let us defi
 #+end_definition
 
 #+begin_definition
-Given $\{X_n\}_{n\in I}$ a Markov chain with finite state space $S$, let us define the transition probabilities as 
+Given $\{X_n\}_{n\in I}$ a Markov chain with finite state space $S$, let us define the transition probabilities as
 
 \begin{align*}
-& p_{s, t}(m, n) = P(X_n = t | X_m = s),\quad s,t \in S, \quad n,m \in \mathbb{N}, n\neq m \\ 
+& p_{s, t}(m, n) = P(X_n = t | X_m = s),\quad s,t \in S, \quad n,m \in \mathbb{N}, n\neq m \\
 & p_{s, t}(n, n) = \mathbb{1}_{s = t}
 \end{align*}
 #+end_definition
@@ -150,7 +150,7 @@ p_{s, t}(m, n) = \sum_{s^{(1)} \in S} \ldots \sum_{s^{(n - m - 1)} \in S} p_{s, 
 \label{eq:sum-probs}
 \end{equation}
 
-#+begin_definition 
+#+begin_definition
 We will define the matrix $P(m, n) = (p_{s, t}(m, n))_{s, t \in S}$ henceforth.
 #+end_definition
 
@@ -158,11 +158,11 @@ We will define the matrix $P(m, n) = (p_{s, t}(m, n))_{s, t \in S}$ henceforth.
 $P$ verifies the semigroup property, best known as Chapman-Kolmogorov equation:
 
 \[
-P(m, n) = P(m, l) \cdot P(l, n), \quad \forall m \le l \le n 
+P(m, n) = P(m, l) \cdot P(l, n), \quad \forall m \le l \le n
 \]
 #+end_proposition
 #+begin_proof
-Straightforward from Equation \eqref{eq:sum-probs} 
+Straightforward from Equation \eqref{eq:sum-probs}
 #+end_proof
 
 ** Time-homogeneous Markov chains
@@ -225,7 +225,7 @@ We say that $\{X_n\}$ is stationary iff $\{X_n\}_{n \ge 0}$ has the same law as 
 #+end_definition
 
 #+begin_proposition
-A Markov chain $\{X_n\}$ is stationary iff it is time homogeneous and all the $X_k$ have the same 
+A Markov chain $\{X_n\}$ is stationary iff it is time homogeneous and all the $X_k$ have the same
 distribution.
 #+end_proposition
 
@@ -233,11 +233,11 @@ distribution.
 From right to left, if $\{X_n\}$ is stationary, $P(X_0 = s) = P(X_m = s)$ for all $s\in S, m\in \mathbb{N}$
 #+end_proof
 
-We will assume all the Markov chains as time-homogeneous ones henceforth, unless stated 
+We will assume all the Markov chains as time-homogeneous ones henceforth, unless stated
 otherwise.
 ** Stopping times and strong Markov property
 #+begin_definition
-Given $\{X_n\}$ a Markov chain, defined over $(\Omega, \mathcal{F}, P)$, then a stopping time is a random variable 
+Given $\{X_n\}$ a Markov chain, defined over $(\Omega, \mathcal{F}, P)$, then a stopping time is a random variable
 $\tau : \Omega \mapsto \mathbb{N} \bigcap \{\infty\}$ such that:
 
 \[
@@ -252,9 +252,9 @@ A\bigcap \{\tau = n \} \in \mathcal{F}_n
 \]
 #+end_definition
 
-For example, in the case of a coin, the first instant (or coin toss) $\tau$ where we get 4 heads 
-in a row, is a valid stopping time, because we only have to account for the previous random 
-variables; whereas the first toss where we are just one toss away from having obtained 4 heads 
+For example, in the case of a coin, the first instant (or coin toss) $\tau$ where we get 4 heads
+in a row, is a valid stopping time, because we only have to account for the previous random
+variables; whereas the first toss where we are just one toss away from having obtained 4 heads
 is not a valid stopping time, since it involves future events.
 
 Given $S = \{i_1, i_2, \ldots\}$ we would denote $S^m = \{(i^{(1)}, \ldots, i^{(m)}): i^{(j)} \in S\}$.
@@ -265,7 +265,7 @@ Let $\tau$ be a stopping time. Then for all $m\in \mathbb{N}, C \subseteq S^m, A
 i \in S$, if $P(A \bigcap \{X_\tau = i\}) > 0$, then it holds:
 
 \begin{equation}
-P\left((X_{\tau + 1}, \ldots, X_{\tau + m}) \in C | A, X_{\tau} = i\right) = 
+P\left((X_{\tau + 1}, \ldots, X_{\tau + m}) \in C | A, X_{\tau} = i\right) =
 P\left((X_{\tau + 1}, \ldots, X_{\tau + m}) \in C | X_{\tau} = i\right)
 \label{ec:strong-mc}
 \end{equation}
@@ -282,7 +282,7 @@ P\left(X_{\tau + 1} = j, A, X_{\tau} = i\right) &=
 &= p_{i,j} \sum_{n = 0}^{\infty} P\left(\tau = n, A, X_n = i\right) = p_{i, j} P\left(A, X_{\tau} = i\right)
 \end{align*}
 
-where we have used $A\bigcap \{\tau = n\} \in \mathcal{F}_n$ to simplify 
+where we have used $A\bigcap \{\tau = n\} \in \mathcal{F}_n$ to simplify
 $P\left(X_{n + 1} = j | \tau = n, A, X_n = i\right)$
 as $P\left(X_{n + 1} = j | X_n = i\right)$. Therefore, using the proven equality we can show:
 
@@ -308,15 +308,15 @@ which shows the equality:
 
 \[
 P\left(X_{\tau + 1} = i_1, \ldots, X_{\tau + m} = i_m | A, X_{\tau} = i\right) =
-P\left(X_{\tau + 1} = i_1, \ldots, X_{\tau + m} = i_m | X_{\tau} = i\right) 
+P\left(X_{\tau + 1} = i_1, \ldots, X_{\tau + m} = i_m | X_{\tau} = i\right)
 \]
 
 We have shown that Equation \eqref{ec:strong-mc} holds for $C = \{(i_1, \ldots, i_m)\}$. For
 $C \subseteq S^m$ it would suffice summing over $(i_1, \ldots, i_m) \in C$.
 #+end_proof
 
-The previous result says us that all the Markov chains (in discrete time) have the strong Markov 
-property, and it can be interpreted as the Markov chain restarting each time it hits the state 
+The previous result says us that all the Markov chains (in discrete time) have the strong Markov
+property, and it can be interpreted as the Markov chain restarting each time it hits the state
 $i \in S$.
 
 ** Hitting times
@@ -329,19 +329,19 @@ We define the hitting time for the state $j \in S$ as:
 
 \[
 \tau_j = min \{n > 0 : X_n = j \}
-\] 
+\]
 #+end_definition
 
 #+begin_definition
 
-We call first hitting time probability of the state $j$, provided that the chain starts in the 
+We call first hitting time probability of the state $j$, provided that the chain starts in the
 state $i$, to:
 
 \[
 f_{i,j}^{(n)} = P_i\left(\tau_j = n\right) = P_i\left(X_n = j, X_m \neq j \quad \forall m = 1, \ldots, n - 1 \right)
 \]
 
-and we will define the total probability of reaching $j$ as $f_{i, j} := \sum_{n = 0}^{\infty} f_{i,j}^{(n)} = P_i\left(\tau_j < \infty\right)$
+and we will define the hitting probability for $j$ starting at $i$ as $f_{i, j} := \sum_{n = 0}^{\infty} f_{i,j}^{(n)} = P_i\left(\tau_j < \infty\right)$
 
 Note that $f_{i,j} = \probi{X_n = j \textrm{ for some } n\ge 1}$
 #+end_definition
@@ -349,8 +349,8 @@ Note that $f_{i,j} = \probi{X_n = j \textrm{ for some } n\ge 1}$
 Note that we coul have $f_{i, j} < 1$ iff $P_i\left(X_n \neq j, \forall n \ge 1\right) > 0$.
 
 #+begin_definition
-We will call return time distribution for the state $i$ to $f_{i,i}^{(n)} = P_i \left(\tau_i = n\right)$, 
-and we will denote $f_{i,i} = P_i\left(\tau_i < \infty\right)$ (i.e. the probability of ever returning 
+We will call return time distribution for the state $i$ to $f_{i,i}^{(n)} = P_i \left(\tau_i = n\right)$,
+and we will denote $f_{i,i} = P_i\left(\tau_i < \infty\right)$ (i.e. the probability of ever returning
 to the start state $i$.
 #+end_definition
 
@@ -372,12 +372,12 @@ Straightforward from Equation \eqref{eq:fij-recurrence} and the fact that $\sum_
 #+end_proof
 
 *** Computation through absorption
-Let us consider a fixed state $j$. The aim is to compute $f_{i,j}^{(n)}$ with $i\neq j$. 
+Let us consider a fixed state $j$. The aim is to compute $f_{i,j}^{(n)}$ with $i\neq j$.
 We could freeze the chain $\{X_n\}$ once it hits $j$ in that state, that is, taking:
 
 \[
-\tildemc = \twopartdef 
-             {X_n} { X_r \neq j \; \forall r < n } 
+\tildemc = \twopartdef
+             {X_n} { X_r \neq j \; \forall r < n }
              {j} {X_r = j \textrm{ for some } r  < n}
 \]
 
@@ -386,15 +386,15 @@ That is, $j$ has been transformed into an absorbing state, such that $\tildemc$ 
 The transition matrix for $\tildemc$ is given by:
 
 \[
-\tildeprob_{i, k} = \probi{\tildex_1 = k} = 
-  \threepartdef 
+\tildeprob_{i, k} = \probi{\tildex_1 = k} =
+  \threepartdef
     { p_{i,k} } { i\neq j }
     { 0 }       { i = j, k \neq j }
     { 1 }       { i = j, k = j }
 \]
 
-That is, the transition matrix $\tildeP$ has the same rows as $P$, except for the $j$ -th row, 
-which has been substituted by $(0, \ldots, 0, \underset{j}{1}, 0, \ldots, 0)$. Therefore 
+That is, the transition matrix $\tildeP$ has the same rows as $P$, except for the $j$ -th row,
+which has been substituted by $(0, \ldots, 0, \underset{j}{1}, 0, \ldots, 0)$. Therefore
 we have that the $i, j$ entry for the matrix $\tildeP^n$ is:
 
 \[
@@ -407,7 +407,7 @@ and hence:
 f_{i,j}^{(n)} = \probi{\tau_j \le n} - \probi{\tau_j \le n - 1} = \tildep_{i, j}^{(n)} - \tildep_{i, j}^{(n - 1)}
 \]
 
-So obtaining $f_{i,j}^{(n)}$ can be done by computing $\tildeP^{n - 1}$ and $\tildeP^n$, 
+So obtaining $f_{i,j}^{(n)}$ can be done by computing $\tildeP^{n - 1}$ and $\tildeP^n$,
 except for $j = i$. To compute that last probability, we could use:
 
 \[
@@ -438,7 +438,7 @@ To compute the time it takes us to reach the state $3$, we should consider:
   \frac{1}{4} & \frac{1}{2} & \frac{1}{4} \\
        0      &      0      &   1
   \end{array}
-\right) = \frac{1}{10} 
+\right) = \frac{1}{10}
 \threemat {1 & 2 & 4} {1 & -1 & 3} {1 & 0 & 0} \cdot
 \threemat {1 &   &  } {  &  0 &  } {  &   & \frac{5}{6}} \cdot
 \threemat {0 & 0 & 10}{3 & -4 & 1} {1 & 2 &-3}
@@ -470,7 +470,7 @@ $1$ since $p_{3,1} = 0$:
 
 \[
 P_3\left(\tau_3 = n\right) = \threepartdef
-  { \frac{1}{4} } { n = 1 } 
+  { \frac{1}{4} } { n = 1 }
   { \frac{3}{16} } { n = 2 }
   { \frac{3}{32} \alpha^{n - 3} } { n \ge 3 }
 \]
@@ -482,25 +482,25 @@ We could ask ourselves whether it is possible to relate $f_{i,j}^{(n)}$ to $p_{i
 directly. It holds:
 
 \begin{align}
-p_{i,j}^{(n)} &= \probi{X_n = j} = \sum_{m = 1}^{n} \probi{\tau_j = m} 
+p_{i,j}^{(n)} &= \probi{X_n = j} = \sum_{m = 1}^{n} \probi{\tau_j = m}
 \probi{X_n = j | \tau_j = = m} = \nonumber \\
-&= \sum_{m = 1}^{n} \probi{\tau_j = m} \probj{X_{n-m} = j} = 
+&= \sum_{m = 1}^{n} \probi{\tau_j = m} \probj{X_{n-m} = j} =
 \sum_{m = 1}^n f_{i, j}^{(m)} p_{j,j}^{(n - m)}
 \label{eq:ps-fs-relation}
-\end{align}   
+\end{align}
 
 It is not possible to express $f_{i,j}^{(n)}$ in terms of $p_{i,j}^{(n)}$, but taking the following generating functions, we can determine a theoretical relationship between both:
 
 \[
-P_{i,j}(s) = \sum_{n = 1}^{\infty} p_{i,j}^{(n)} s^n \qquad 
+P_{i,j}(s) = \sum_{n = 1}^{\infty} p_{i,j}^{(n)} s^n \qquad
 F_{i,j}(s) = \sum_{n = 1}^{\infty} f_{i,j}^{(n)} s^n
 \]
 
 According to $\eqref{eq:ps-fs-relation}$:
 
 \[
-P_{i,j}(s) = \sum_{n = 1}^{\infty} \sum_{m = 1}^n f_{i, j}^{(m)} p_{j,j}^{(n - m)} s^n = 
-\sum_{n = 1}^{\infty} \sum_{m = 1}^{n - 1} f_{i, j}^{(m)} p_{j,j}^{(n - m)} s^n + 
+P_{i,j}(s) = \sum_{n = 1}^{\infty} \sum_{m = 1}^n f_{i, j}^{(m)} p_{j,j}^{(n - m)} s^n =
+\sum_{n = 1}^{\infty} \sum_{m = 1}^{n - 1} f_{i, j}^{(m)} p_{j,j}^{(n - m)} s^n +
 \sum_{n = 1}^{\infty} f_{i, j}^{(n)} \underbrace{p_{j,j}^{(0)}}_{1} s^n \underset{(\ast)} = F_{i,j}(s) P_{j,j}(s) + F_{i,j}(s)
 \]
 
@@ -584,7 +584,7 @@ If $f_{j,j} \neq 1$, we have:
 
 Moreover, it holds $f_{i,i} = 1 \dimplies \expecti{V_i} = \infty$.
 
-Let us note this is a characterization of $f_{i,i} = 1$. Since $\expecti{V_i} = 
+Let us note this is a characterization of $f_{i,i} = 1$. Since $\expecti{V_i} =
 \sum_{n > 0} p_{i,i}^{(n)}$, it holds:
 
 \[
@@ -646,16 +646,16 @@ Straightforward from Lemma \eqref{lemma:fij-equivs}.
 #+end_proof
 
 #+begin_definition
-State $i\in S$ is essential if $i \goto j$ always implies $j \goto i$. We denote the set 
+State $i\in S$ is essential if $i \goto j$ always implies $j \goto i$. We denote the set
 of essential states by $S^{\ast}$.
-#+end_definiton
+#+end_definition
 
 #+begin_lemma
 If $i\in S^{\ast}$ and $i \goto j$, then $j \in S^{\ast}$
 #+end_lemma
 
 #+begin_proof
-Given $j \goto k$, then by transivity $i \goto k$. Since $i$ is essential, $k \goto i$, 
+Given $j \goto k$, then by transivity $i \goto k$. Since $i$ is essential, $k \goto i$,
 which applying transitivity again from $i \goto j$, gives us $k \goto j$.
 #+end_proof
 
@@ -683,9 +683,9 @@ The second part is trivial from the deduced equivalence property.
 #+end_proof
 
 Therefore, reordering the states of the matrix, with $P_k$ is the transition matrix for the
-states in $C_k$ (which only communicate with themselves), where the last rows are formed by the 
+states in $C_k$ (which only communicate with themselves), where the last rows are formed by the
 transition probabilities from the non-essential states: $Q_k$,
-where those are the probabilities of going from $S - S^{\ast}$ to $C_k$ (and never returning), 
+where those are the probabilities of going from $S - S^{\ast}$ to $C_k$ (and never returning),
 and $W$ where that is the probability of the non-essential states of communicating with
 themselves.
 
@@ -705,7 +705,7 @@ themselves.
 \label{eq:irreducible-classes-matrix}
 \end{equation}
 
-Each $C_k$ is said to be an irreducible and closed sub-chain of the original transition matrix 
+Each $C_k$ is said to be an irreducible and closed sub-chain of the original transition matrix
 $P$; closed because from one state from $C_k$ we can only go back to another state in the same
 set; irreducible because all their states communicate among themselves. The same structure of
 power matrices appears in $P^n$, $n > 2$:
@@ -727,9 +727,10 @@ power matrices appears in $P^n$, $n > 2$:
 \end{equation}
 
 #+begin_definition
-A Markov chain where all its states are essential and with only a communicating class is called 
+A Markov chain where all its states are essential and with only a communicating class is called
 irreducible Markov chain.
 #+end_definition
+
 *** Recurrence and transience
 
 #+begin_definition
@@ -746,21 +747,21 @@ It holds:
 \label{prop:rec-tran-characterization}
 #+end_proposition
 
-If an state is recurrent, then $\probi{V_i = \infty} = 1$ and $\expecti{V_i} = \infty$ and 
-$\probj{V_i = 0 \vee V_i = \infty} = 1$. If an state is transient, then $\probi{V_i < \infty}$ 
+If an state is recurrent, then $\probi{V_i = \infty} = 1$ and $\expecti{V_i} = \infty$ and
+$\probj{V_i = 0 \vee V_i = \infty} = 1$. If an state is transient, then $\probi{V_i < \infty}$
 and $\expecti{V_i} < \infty$.
 
 Therefore $\sum_{n = 1}^{\infty} p_{i,i}^{(n)}$ diverges when $i$ is recurrent and converges
 when $i$ is transient.
 
 #+begin_proposition
-If $i$ is a recurrent state and $j$ communicates with $i$, then $f_{j,i} = f_{i,j} = f_{j,j} = 1$, 
+If $i$ is a recurrent state and $j$ communicates with $i$, then $f_{j,i} = f_{i,j} = f_{j,j} = 1$,
 and $j$ is recurrent. Therefore, all non essential states are transient.
 \label{prop:recurrent-classes}
 #+end_proposition
 
 #+begin_proof
-By Proposition \eqref{goto-characterization}, $f_{i,j} > 0$. Since $i$ is recurrent $f_{ii} = 0$
+By Proposition \eqref{goto-characterization}, $f_{i,j} > 0$. Since $i$ is recurrent $f_{ii} = 1$
 and by Equation \eqref{eq:fij-recurrence}:
 
 \[
@@ -780,7 +781,7 @@ $k$ such that $p_{i,k} > 0$. In particular $f_{k_1,i} = 1$, and we deduce:
 1 = f_{k_1,i} = p_{k_1,k_1} + \sum_{k\neq k_1} p_{k_1,k} f_{k,i}
 \]
 
-We get $1 = f_{k_2, i}$ by an analogous argument, and we can recursively proceed until we 
+We get $1 = f_{k_2, i}$ by an analogous argument, and we can recursively proceed until we
 arrive at $f_{j,i} = 1$.
 
 Since we have proven $f_{i,i} > 0$, $f_{i,j} > 0$, $f_{j,i} = 1$ then by Lemma \eqref{lemma:fij-equivs}
@@ -793,7 +794,7 @@ So for every $n \ge u + v$ we deduce:
 p_{j,j}^{(n)} \ge p_{j,i}^{(v)} p_{i,i}^{(n - u - v)} p_{i,j}^{(u)}
 \]
 
-Since $f_{i,i} = 1$, then $\sum_{n = 1}^{\infty} p_{i,i}^{(n)} = \infty$ by Proposition \eqref{prop:fii-equiv}, 
+Since $f_{i,i} = 1$, then $\sum_{n = 1}^{\infty} p_{i,i}^{(n)} = \infty$ by Proposition \eqref{prop:fii-equiv},
 and therefore $\sum_{n = u + v}^{\infty} p_{i,i}^{(n)} = \infty$
 
 \begin{align*}
@@ -817,35 +818,36 @@ all, by the previous corollary) are recurrent (resp. transient).
 #+end_definition
 
 #+begin_proposition
-All the closed irreducible subchains of a Markov chain (with finite space state S) are recurrent, 
-and every Markov chain has at least one subchain of such type. A state is transient iff it is 
+All the closed irreducible subchains of a Markov chain (with finite space state S) are recurrent,
+and every Markov chain has at least one subchain of such type. A state is transient iff it is
 non-essential.
 \label{prop:one-recurrent-class}
 #+end_proposition
 
 #+begin_proof
-Let us fix some $i \in S$. We have 
+Let us fix some $i \in S$. We have
 
 \[
-\sum_{j \in S} \expecti{V_j} = \sum_{j \in S} \sum_{n = 1}^{\infty} p_{i,j}^{(n)} = 
+\sum_{j \in S} \expecti{V_j} = \sum_{j \in S} \sum_{n = 1}^{\infty} p_{i,j}^{(n)} =
 \sum_{n = 1}^{\infty} \sum_{j \in S} p_{i,j}^{(n)} = \sum_{n = 1}^{\infty} 1 = \infty
 \]
 
 And therefore, it exits at least one $\expecti{V_j} = \infty \equiv f_{j,j} = 1$, so the subchain which
 contains $j$ is recurrent. The same argument can be applied to the other subchains. Therefore, if we have
 a chain and a certain state $j$ in that chain, $f_{j,j} = 1$ and $j$ cannot be transient. In other words,
-if $j$ is transient, $j$ is non-essential. 
+if $j$ is transient, $j$ is non-essential.
 #+end_proof
 
 #+begin_corollary
 In a Markov chain with finitely many states, a communicating class is recurrent iff it is closed.
+\label{corollary:comm-recurrence}
 #+end_corollary
 
 #+begin_proof
 If we have a non closed class $C$, there exist $i \in C, j \in S - C$ such that $p_{i,j} > 0$ and
 $p_{j, i} = 0$. Therefore $f_{j,i} = 0$ by \eqref{goto-characterization}.
 
-Therefore: 
+Therefore:
 
 \begin{align*}
 f_{i,i} &= p_{i,i} + \sum_{k \neq i} p_{i, k} f_{k,i} = \\
@@ -880,13 +882,14 @@ lim_{s\nearrow 1} \frac{1 - F_{i,i}(s)}{1 - s} < \infty \dimplies lim_{s\nearrow
 Let us observe that for the limit exists it must be $\lim_{s\nearrow 1} F_{i,i}(s) = f_{i,i} = 1$ iff $i$ is recurrent.
 
 \[
-\lim_{s\nearrow 1} \frac{1 - F_{i,i}(s)}{1 - s} = \frac{1}{1 - s} \sum_{n = 1}^{\infty} (1 - s^n) f_{i,i}^{(n)} = 
+\lim_{s\nearrow 1} \frac{1 - F_{i,i}(s)}{1 - s} = \frac{1}{1 - s} \sum_{n = 1}^{\infty} (1 - s^n) f_{i,i}^{(n)} =
 \sum_{n = 1}^{\infty} (1 + s + \ldots + s^{n-1}) f_{i,i}^{(n)}
 \]
 
 which tends to $\sum_{n = 1}^\infty n f_{i,i}^{(n)} = e_{i,i}$.
 
 The second part is deduced from Equation \eqref{eq:Fs-Ps-relation}.
+#+end_proof
 
 #+begin_proposition
 If $i,j$ are communicating recurrent states, then they are both positive recurrent or null recurrent states.
@@ -927,7 +930,7 @@ Every irreducible Markov chain with a finite number of states is positive recurr
 Let us fix a $s \in [0,1[$. We have, using that $\sum_{n = 1}^{\infty} = \frac{s}{1 - s}$:
 
 \[
-\sum_{j \in S} (1-s) F_{i,j}(s) \bigg\{1 + P_{j,j}(s)\bigg\} \underset{\textrm{\eqref{eq:Fs-Ps-relation}}}{=} 
+\sum_{j \in S} (1-s) F_{i,j}(s) \bigg\{1 + P_{j,j}(s)\bigg\} \underset{\textrm{\eqref{eq:Fs-Ps-relation}}}{=}
 (1 - s) \sum_{j \in S} P_{i,j}(s) = (1-s) \sum_{n = 1}^{\infty} s^n \underbrace{\sum_{j\in S} p_{i,j}^{(n)}}_{1} = s
 \]
 
@@ -949,7 +952,7 @@ A state $i\in S$ is absorbing iff $p_{i,i} = 1$.
 
 Let us observe the matrix \eqref{eq:irreducible-classes-matrix}. This matrix poses some interesting questions for
 the non-essential states. Let us take a non-essential state, namely $i$. Then it is likely that it will go to a
-state in $S^{\ast}$ at some point, and never comes back. 
+state in $S^{\ast}$ at some point, and never comes back.
 
 #+begin_definition
 We call the absorbing time to the following random variable:
@@ -983,14 +986,14 @@ The following relations hold for each $i \not\in S^{\ast}$:
 #+end_proposition
 
 It is obvious that $f_{i,C}^{\ast} = \sum_{j \in C} f_{i,j}^{\ast}$. Once the chain enters the
-subchain, $C$, it does so with the initial probabilities 
+subchain, $C$, it does so with the initial probabilities
 $(f_{i,j}^{\ast} / f_{i,C}^{\ast})_{j \in C}$.
 
 It we call $V = \bigg(\expecti{V_j}\bigg)_{i,j \not\in S^{\ast}}$, we have, taking a look at
 the matrix that \eqref{eq:irreducible-classes-pow-matrix} that $V = \sum_{n = 1}^{\infty} W^n$.
 
-Also, we can define $Q = (Q_1, \ldots, Q_r)$ the matrix of transition probabilities from 
-$S - S^{\ast}$ to $S^{\ast}$, and $q = Q \cdot \left(\begin{array}{c} 1 \\ 1 \\ \vdots \\ 1 \end{array}\right)$ (the row-wise sum of $Q$). And we will call 
+Also, we can define $Q = (Q_1, \ldots, Q_r)$ the matrix of transition probabilities from
+$S - S^{\ast}$ to $S^{\ast}$, and $q = Q \cdot \left(\begin{array}{c} 1 \\ 1 \\ \vdots \\ 1 \end{array}\right)$ (the row-wise sum of $Q$). And we will call
 $F^{\ast} = (f_{i,j}^{\ast})_{i \in S - S^{\ast}, j \in S^{\ast}}$,
 $f^{\ast} = (f_{i}^{\ast})_{i \in S - S^{\ast}}$.
 
@@ -1009,7 +1012,7 @@ The distribution for $\tau^{\ast}$ is $\probi{\tau^{\ast} = n} = B^{n - 1}q, \qu
 #+end_proposition
 
 #+begin_proof
-Let us fix $i\in S - S^{\ast}, j \in S^{\ast}$. We have: 
+Let us fix $i\in S - S^{\ast}, j \in S^{\ast}$. We have:
 
 \begin{align}
 \probi{\tau^{\ast} = n + 1, X_{\tau^{\ast}} = j} = \sum_{k \in S - S^{\ast}} \probi{X_n = k, X_{n + 1} = j} = \sum_{k \in S - S^{\ast}} p_{i,k}^{(n)} p_{k,j}
@@ -1050,7 +1053,7 @@ It holds:
 \[
 (I + V)(I - W) = (I + W + W^2 + \ldots )(I - W) = I
 \]
-and therefore $(I + V) = (I - W)^{-1}$ (if we had not had finiteness we could not assure 
+and therefore $(I + V) = (I - W)^{-1}$ (if we had not had finiteness we could not assure
 uniqueness for the inverse).
 
 To check the other part, since the rows of the transition matrix from $S - S^{\ast}$ sum one,
@@ -1068,7 +1071,7 @@ f^{\ast} = F^{\ast} 1 = (I - W)^{-1} \cdot Q 1 = (I - B)^{-1}(I - B) 1_{S - S^{\
 #+end_proof
 
 #+begin_proposition
-$F^{\ast}$ is the unique solution, with all its elements in $[0,1]$, of the system $(I-B)X = a$ iff 
+$F^{\ast}$ is the unique solution, with all its elements in $[0,1]$, of the system $(I-B)X = a$ iff
 absorption in $E^{\ast}$ is sure from every state in $E - E^{\ast}$.
 #+end_proposition
 
@@ -1093,7 +1096,7 @@ On the one hand, if there exists solutions to $(I - W)X = Q$ with their elements
 then $x = X 1$ would be solution to $(I - W)x = q$ and $f^{\ast} < x$ cannot be $1$.
 
 On the other hand, if absorption is not sure, $x_i = 1 - f_i^{\ast}$ verify $x = Wx$. Therefore, $x = Bx$
-has some non null solution, with $0 \le x \le 1$ and $X = F^{\ast} + x1$ is a solution for 
+has some non null solution, with $0 \le x \le 1$ and $X = F^{\ast} + x1$ is a solution for
 $(I - W)X = Q$ whose elements are in $[0,1]$, since:
 
 \[
@@ -1103,7 +1106,7 @@ f_{i,j}^{\ast} + x_{i} = \probi{\tau^{\ast} < \infty, X_{\tau^{\infty}} = j} + \
 #+end_proof
 
 * =markovchain= package
-We can propose an alternative definition of communicating property, taking $n \ge 0$ instead of $n > 0$, 
+We can propose an alternative definition of communicating property, taking $n \ge 0$ instead of $n > 0$,
 which has been the one used in the software from the start:
 
 #+begin_definition
@@ -1125,10 +1128,10 @@ where for every $i, j \in C_k$, it holds $i \dgoto j$, and if $i \in C_k, j \in 
 
 The Corollary \eqref{corollary:comm-classes} is still valid with this definition, and gets used in the software.
 
-** Communicating classes algorithm
+** Communicating classes based algorithms
 The original algorithm to compute the communicating classes of a given markovchain, and whether
 they were closed or not, was based on \cite{feres}. The algorithm runs in $\algcomp{n^3}$ where
-$n$ is the number of states of the input Markov chain. The problem is that it is excessively 
+$n$ is the number of states of the input Markov chain. The problem is that it is excessively
 inefficient when it comes to easy inputs.
 
 \begin{algorithm}[h]
@@ -1159,7 +1162,7 @@ inefficient when it comes to easy inputs.
           and $v[i]$ is true iff the class for $i$ is closed}
 \end{algorithmic}
 \caption{Original \texttt{commClassesKernel} algorithm}
-\label{alg:commClassesKernel}
+\label{alg:commClassesKernelOld}
 \end{algorithm}
 
 
@@ -1205,12 +1208,253 @@ For the homogeneous Markov chain with transition matrix as follows
 \end{array}\right)
 \]
 
-the original algorithm would also run in $\algcomp{n^4}$, whereas our improved algorithm would
-run in $\algcomp{n^2}$. In the general case (a matrix with $\approx n^2$ non-zero entries, 
-complexity of our algorithm would be $\algcomp{n^3}$ and the old one would be $\algcomp{n^4}$ 
+the original algorithm would run in $\algcomp{n^4}$, whereas our improved algorithm would
+run in $\algcomp{n^3}$, due to the adjacency lists and the \textit{backtracking} approach to
+visit all the nodes In the general case (a matrix with $\approx n^2$ non-zero entries,
+complexity of our algorithm would be $\algcomp{n^3}$ and the old one would be $\algcomp{n^4}$
 still.
 
+*** Communicating classes
+*** Transient and recurrent classes
+For Markov chains with a finite number of states, Corollary \eqref{corollary:comm-recurrence}
+guarantees us that recurrent classes and closed classes are the same. An user open an issue
+in the repo[fn::[[https://github.com/spedygiorgio/markovchain/issues/171][markovchain issue#171]]] about this, because he noticed that closed classes for
+a Markov chain did not coincide with recurrent classes.
+
+Issue was researched and it turned out that closed classes were computed as those communicating
+classes which did not contain a transient state. Code used for that, in Rcpp, was:
+
+\begin{lstlisting}[language=C++]
+bool _intersected(CharacterVector v1, CharacterVector v2) {
+  CharacterVector::iterator first1 = v1.begin();
+  CharacterVector::iterator last1 = v1.end();
+  CharacterVector::iterator first2 = v2.begin();
+  CharacterVector::iterator last2 = v2.end();
+  while(first1!=last1 && first2!=last2) {
+    if(*first1 == *first2) return true;
+    else if(*first1 < *first2) ++first1;
+    else ++first2;
+  }
+  return false;
+}
+\end{lstlisting}
+
+*** Steady States
+\begin{algorithm}[h]
+\begin{algorithmic}[1]
+  \REQUIRE $P_{m \times m}$ an stochastic matrix
+  \STATE{If $P$ is stochastic by rows, do $P := P^t$}
+  \STATE{Call $S = \textrm{\texttt{computeSteadyStates}}(P)$}
+  \IF{There is any negative element in $S$}
+    \STATE{Compute $S =$\texttt{steadyStatesByRecurrentClasses}$(P)$}
+  \ENDIF
+  \NEWLINE
+  \IF{$P$ was stochastic by rows originally}
+     \STATE{$S:= S^t$}
+  \ENDIF
+  \NEWLINE
+  \RETURN{$S$}
+\end{algorithmic}
+\caption{Improved \texttt{steadyStates} algorithm}
+\label{alg:steadyStates}
+\end{algorithm}
 
 
+\begin{algorithm}[h]
+\begin{algorithmic}[1]
+  \REQUIRE $P_{m \times m}$ an stochastic matrix by columns
+  \STATE{Compute $v = (e_1, \ldots, e_k)$, eigen values for $P$, i.e.
+    \[
+      \forall e_j \in \mathbb{C} \quad \exists v_j =
+              \left(\begin{array}{c}
+                v_j^{(1)} \\
+                \vdots \\
+                v_j^{(m)}
+              \end{array}\right)
+      \in \mathbb{C}^m: Pv_i = e_k v_i
+    \]
+  }
+  \STATE{Compute $S = (Re(v_1), \ldots, Re(v_l)) = (u_1, \ldots, u_l)$, eigen vectors for eigen values $1$}
+  \FOR{$j = 1, \ldots, l$}
+    \STATE{$s_j = \sum_{i = 1}^m u_j^{(i)}$}
+    \IF{$s_j$ is $0$}
+      \STATE{$s_j = 1$}
+    \ENDIF
+  \ENDFOR
+  \STATE{Normalize each column $u_j := u_j / s_j$}
+  \NEWLINE
+  \RETURN{$S = (u_1, \ldots, u_l)$}
+\end{algorithmic}
+\caption{\texttt{computeSteadyStates} algorithm}
+\label{alg:computeSteadyStates}
+\end{algorithm}
 
-\bibliography{references} 
+
+\begin{algorithm}[h]
+\begin{algorithmic}[1]
+  \REQUIRE $P_{m \times m}$ an stochastic matrix by columns
+  \STATE{$C = \textrm{\texttt{recurrentClasses}}(P) = \{C_1, \ldots, C_l\}$, where for all $k=1, \ldots, l$
+         $C_k = \{i^{(k)}_1, \ldots, i^{(k)}_{l_k}\} \subseteq \{1, \ldots, m\}$ is a recurrent class}
+  \NEWLINE
+  \FOR{$k = 1, \ldots, l$}
+    \STATE{Compute the submatrix $P_k$ from the matrix \eqref{eq:irreducible-classes-matrix},
+           subseting $P_k = P[C_k, C_k]$}
+    \STATE{Call $v_k = \textrm{\texttt{computeSteadyStates}}(P_k)$}
+    \IF{Some element from $v_k$ is negative}
+      \STATE{Stop the algorithm, we cannot compute steady states}
+    \ENDIF
+    \STATE{Else do
+      \[
+        u_j = \twopartdefow{v_t}{j = i^{(k)}_t \textrm{ for some } t \in \{1, \ldots l_k\}}{0}
+      \]
+    }
+  \ENDFOR
+  \NEWLINE
+\end{algorithmic}
+\caption{\texttt{steadyStatesByRecurrentClasses} algorithm}
+\label{alg:steadyStatesByRecurrentClasses}
+\end{algorithm}
+
+** Hitting probabilities
+We want to come up with an algorithm to compute the hitting probabilities for a Markov chain.  We have not found anything documented in the literature with respect to the computation of these probabilities algorithmically, so we had tried to come up with our own algorithm.
+
+The first thought would be to re-write the system \eqref{eq:fij-recurrence} matrix-wise. Let us
+remember those equations:
+
+\[
+f_{i,j} = p_{i,j} + \sum_{k \neq j} p_{i,k} f_{k,j}
+\]
+
+Rewriting the system:
+
+\begin{equation*}
+A = \left(\begin{array}{c|c|c|c}
+  A_1 & \bigzero & \ldots & \bigzero \\
+\hline
+  \bigzero & A_2 & \ldots & \bigzero \\
+\hline
+  \vdots & \vdots & \ddots & \bigzero \\
+\hline
+  \bigzero & \bigzero & \ldots & A_n
+\end{array}\right)
+\end{equation*}
+
+\begin{eqnarray*}
+A_1 &=
+\left(\begin{matrix}
+  -1     & p_{1,2}       & p_{1,3}   & \ldots & p_{1,n} \\
+  0      & (p_{2,2} - 1) & p_{2,3}   & \ldots & p_{2,n} \\
+  \vdots & \vdots        & \vdots    & \ddots & \vdots  \\
+  0      & p_{n, 2}      & p_{n,3}   & \ldots & (p_{n,n} - 1)
+  \end{matrix}\right)\\
+A_2 &= \left(\begin{matrix}
+  (p_{1,1} - 1) & 0      & p_{1,3}   & \ldots & p_{1,n} \\
+  p_{2,1}       & -1     & p_{2,3}   & \ldots & p_{2,n} \\
+  \vdots        & \vdots & \vdots    & \ddots & \vdots  \\
+  p_{n,1}       & 0      & p_{n,3}   & \ldots & (p_{n,n} - 1)
+  \end{matrix}\right)\\
+\vdots & \vdots\\
+A_n &= \left(\begin{matrix}
+  (p_{1,1} - 1) & p_{1,2}      & p_{1,3}   & \ldots & 0 \\
+  p_{2,1}       & (p_{2,2} -1) & p_{2,3}   & \ldots & 0 \\
+  \vdots        & \vdots       & \vdots    & \ddots & \vdots  \\
+  p_{n,1}       & p_{n,2}      & p_{n,3}   & \ldots & -1
+  \end{matrix}\right)\\
+\end{eqnarray*}
+
+\begin{equation*}
+\begin{array}{rlrl}
+X = \left(\begin{array}{c}
+f_{1,1} \\
+f_{2,1} \\
+\vdots  \\
+f_{n,1} \\
+f_{1,2} \\
+\vdots  \\
+f_{n,2} \\
+\vdots  \\
+f_{1,n} \\
+\vdots  \\
+f_{n,n}
+\end{array}\right) &
+X_j = \left(\begin{array}{c}
+f_{1,j} \\
+f_{2,j} \\
+\vdots  \\
+f_{n,j}
+\end{array}\right) &
+C = - \left(\begin{array}{c}
+p_{1,1} \\
+p_{2,1} \\
+\vdots  \\
+p_{n,1} \\
+p_{2,2} \\
+\vdots  \\
+p_{n,2} \\
+\vdots  \\
+p_{1,n} \\
+\vdots  \\
+p_{n,n}
+\end{array}\right)
+\end{array}
+\end{equation*}
+
+And we end up with the system:
+
+\begin{equation}
+AX = C
+\end{equation}
+
+Let us remember that standard algorithms to compute the inverse of a matrix are $\algcomp{n^3}$ where $n$ is the number of rows / columns of the matrix. Clearly, we can solve this system, provided that it has solution, blockwise, solving $A_j X_j = C_j$, but the matrix $A$ may not be invertible in some cases. For example let us imagine the $i$ -th state has transition probabilities: $(0, \ldots, 0, \underset{i)}{1}, 0, \ldots, 0)$. Then that same row would turn into $(0,0, \ldots, 0)$ for some block, thus obtaining a singular matrix. Another case which may give us problems could be: state $i$ has the following transition probabilities: $(0, \ldots, 0, \underset{j)}{1}, 0, \ldots, 0)$ and the state $j$ has the following transition probabilities: $(0, \ldots, 0, \underset{i)}{1}, 0, \ldots, 0)$. Then when constructing some blocks we will end up with rows:
+
+\begin{eqnarray*}
+(0, \ldots, 0, \underset{i)}{-1}, 0, \ldots, 0, \underset{j)}{1}, 0, \ldots, 0) \\
+(0, \ldots, 0, \underset{i)}{1},  0, \ldots, 0, \underset{j)}{-1}, 0, \ldots, 0)
+\end{eqnarray*}
+
+which are linearly dependent. Our hypothesis is that if we treat the closed communicating classes differently (see \eqref{eq:irreducible-classes-matrix} for context), we are deleting the linearity in the system. This is an untested hypothesis of course, but computationally, the difference between proving it or not would be minimal (let us suppose we prove it, then some matrixes would still not be invertible due to numeric errors, numbers very close to zero, or to the overflow, etc, so the corresponding method would still have to perform a warning for not solvable problems).
+
+In conclusion using \eqref{corollary:comm-recurrence} and \eqref{prop:recurrent-classes}, if we have a closed communicating class $C$, then $f_{i,j} = 1$ for all $i,j \in C$ and $f_{k,j}  = 0$ for all $k\not\in C$. The algorithm we get would be something alike:
+
+\begin{algorithm}[h]
+\begin{algorithmic}[1]
+  \REQUIRE $P_{m \times m}$ an stochastic matrix
+  \STATE{\texttt{communicating} = Communicating classes for $P$}
+  \STATE{\texttt{closed} = Boolean vector where the $i$ -th position is true iff the communicating class for $i$ is closed}
+  \NEWLINE
+  \FOR{$j \in \{1, \ldots, m\}$}
+    \STATE{Compute the matrix $A_j$}
+    \STATE{Compute the indepent terms $C_j$}
+    \FOR{$i \in \{1, \ldots, m\}$}
+      \IF{\texttt{closed}(i)}
+        \FOR{$k \in \{1, \ldots, m\}$}
+           \IF{$k \neq i$}
+              \STATE{$A_j(i, k) = 0$}
+           \ELSE
+              \STATE{$A_j(i, i) = 1$}
+           \ENDIF
+        \ENDFOR
+        \NEWLINE
+        \IF{\texttt{communicating}(i, j)}
+          \STATE{$C_j(i) = 1$}
+        \ELSE
+          \STATE{$C_j(i) = 0$}
+        \ENDIF
+      \ENDIF
+    \ENDFOR
+    \NEWLINE
+    \STATE{Compute $X_j = A_j^{-1} \cdot C_j$}
+  \ENDFOR
+  \RETURN{$X = \left(\begin{array}{c}
+               X_1 \\
+               \vdots \\
+               X_m
+               \end{array}\right)$
+         }
+\end{algorithmic}
+\caption{Algorithm to compute hitting probabilities}
+\label{alg:hittingProbs}
+\end{algorithm}
+
+
+\bibliography{references}

@@ -98,6 +98,13 @@
   \end{array}\right.
 }
 
+\newcommand{\twopartdefow}[3]{
+  \left\{\begin{array}{ll}
+        #1 & \textrm{if } #2 \\
+        #3 & \textrm{otherwise }
+  \end{array}\right.
+}
+
 % and three parts
 \newcommand{\threepartdef}[6]{
   \left\{\begin{array}{ll}
@@ -126,3 +133,5 @@
 
 \newcommand{\algcomp}[1]{\mathcal{O}\left(#1\right)}
 \newcommand{\card}[1]{\#{#1}}
+
+\newcommand{\bigzero}{\mbox{\normalfont\Large\bfseries 0}}
