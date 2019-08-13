@@ -1218,7 +1218,7 @@ still.
 *** Transient and recurrent classes
 For Markov chains with a finite number of states, Corollary \eqref{corollary:comm-recurrence}
 guarantees us that recurrent classes and closed classes are the same. An user open an issue
-in the repo[fn::[[https://github.com/spedygiorgio/markovchain/issues/171][markovchain issue#171]]] about this, because he noticed that closed classes for
+in the repo [fn::[[https://github.com/spedygiorgio/markovchain/issues/171][markovchain issue#171]]] about this, because he noticed that closed classes for
 a Markov chain did not coincide with recurrent classes.
 
 Issue was researched and it turned out that closed classes were computed as those communicating
@@ -1240,6 +1240,11 @@ bool _intersected(CharacterVector v1, CharacterVector v2) {
 \end{lstlisting}
 
 *** Steady States
+
+**** First approach
+
+First idea was to try computing the eigen vectors for the eigen value $1$. If some negative value arose (even after normalizing and obtaining probability vectors), then we could refine the approach of using the recurrent states to compute the steady states.
+
 \begin{algorithm}[h]
 \begin{algorithmic}[1]
   \REQUIRE $P_{m \times m}$ an stochastic matrix
@@ -1256,7 +1261,7 @@ bool _intersected(CharacterVector v1, CharacterVector v2) {
   \RETURN{$S$}
 \end{algorithmic}
 \caption{Improved \texttt{steadyStates} algorithm}
-\label{alg:steadyStates}
+\label{alg:steadyStatesFirst}
 \end{algorithm}
 
 
@@ -1286,8 +1291,18 @@ bool _intersected(CharacterVector v1, CharacterVector v2) {
   \RETURN{$S = (u_1, \ldots, u_l)$}
 \end{algorithmic}
 \caption{\texttt{computeSteadyStates} algorithm}
-\label{alg:computeSteadyStates}
+\label{alg:computeSteadyStatesFirst}
 \end{algorithm}
+
+
+Note the step of taking $(u_1, \ldots, u_l) = (Re(v_1), \ldots, Re(v_l))$ is fundamented in the fact that every matrix if $e_j \in \mathbb{R}$ is eigen value for $P$, and $P \cdot u_j = e_j \cdot v_j$, i.e. $u_j$ is an eigen vector tied to $e_j$, then $Re(v_j$ and $Im(v_j)$ are also eigen vectors tied to $e_j$.
+
+However, the aforementioned algorithm, as the original one, has several problems:
+
+1. The computation of eigen values for a matrix in the general case, as described in [fn::[[https://en.wikipedia.org/wiki/Eigenvalue_algorithm#Iterative_algorithms][eigenAlgorithm]]] can take up to $\algcomp{m^3}$ or $\algcomp{m^4}$ and since iterative algorithms and their convergence is used, we could end up having rounding problems (i.e. how to securely search for the $1$ eigen values).
+2. Taking real parts does not ensure that we end up with linearly independent eigen vectors. The original algorithm also presented this problem. Let us propose a counterexample of this. If the matrix $P$ has real eigen vectors $\{u, v\}$ which are linearly independent and are tied to the eigen value $1$, $\{u + iu, u + iv\}$ are also independent eigen vectors whore real parts are $\{u,u\}$. We cannot assure that the eigen values computation method is going to output real eigen vectors only (we can only make assurances in the case the matrix $P$ is symmetric).
+
+As result, we could be using this algorithm and obtain less steady states than we should.
 
 
 \begin{algorithm}[h]
@@ -1310,10 +1325,54 @@ bool _intersected(CharacterVector v1, CharacterVector v2) {
     }
   \ENDFOR
   \NEWLINE
+  \RETURN{$S = (u_1, \ldots u_l)$}
 \end{algorithmic}
 \caption{\texttt{steadyStatesByRecurrentClasses} algorithm}
-\label{alg:steadyStatesByRecurrentClasses}
+\label{alg:steadyStatesByRecurrentClassesFirst}
 \end{algorithm}
+
+**** Second approach
+We could think of using only \eqref{alg:steadyStatesByRecurrentClassesFirst} and drop \eqref{alg:computeSteadyStatesFirst}, and therefore use only the recurrent classes to compute the steady states. But problem of not having assurances about the convergence (and later search for the unitary eigen values) and the algorithmic complexity of the method pushed us to find another algebraic approach with guaranteed algorithmic complexity of $\algcomp{m^3}$.
+
+Since we want to find for $k=1, \ldots, l$ $P_k \cdot u_k = u_k$, and by the theorem TODO each block has a unique steady state, we know the kernel of $P_k - I$ has dimension $1$ (because $u_k$ is not null and if it had more dimensionality than $1$ we would have more steady states). Hence, we cannot solve $(\alpha_{ij}) u_k = (P_k - I) \cdot u_k = 0$ with an unique solution $u_k$, but we can solve:
+
+\[
+\widetilde{P}_k = (\widetilde{p}_ij) = \twopartdefow{1}{i = 1}{\alpha_{ik}} \qquad
+\widetilde{P}_k \cdot u_k = \left(\begin{array}{c} 1 \\ 0 \\ \vdots 0 \end{array}\right)
+\]
+
+Solving this last system for each $k = 1, \ldots, l$ can be done in $\algcomp{m^2}$. Therefore, the total cost of the algorithm, since computing recurrent classes is $\algcomp{m^3}$, is $\algcomp{m^3}$, as we were aiming for.
+
+
+\begin{algorithm}[h]
+\begin{algorithmic}[1]
+  \REQUIRE $P_{m \times m}$ an stochastic matrix by columns
+  \STATE{If $P$ is stochastic by rows, do $P := P^t$}
+  \STATE{$C = \textrm{\texttt{recurrentClasses}}(P) = \{C_1, \ldots, C_l\}$, where for all $k=1, \ldots, l$
+         $C_k = \{i^{(k)}_1, \ldots, i^{(k)}_{l_k}\} \subseteq \{1, \ldots, m\}$ is a recurrent class}
+  \NEWLINE
+  \FOR{$k = 1, \ldots, l$}
+    \STATE{Compute the submatrix $P_k$ from the matrix \eqref{eq:irreducible-classes-matrix},
+           subseting $P_k = P[C_k, C_k]$}
+    \STATE{Compute $\widetilde{P}_k$}
+    \STATE{Compute $u_k$ solving the system:
+      \[
+         \widetilde{P}_k \cdot u_k = \left(\begin{array}{c} 1 \\ 0 \\ \vdots 0 \end{array}\right)
+      \]
+    }
+  \ENDFOR
+  \NEWLINE
+  \STATE{$S = (u_1, \ldots u_l)$}
+  \IF{$P$ was stochastic by rows originally}
+     \STATE{$S:= S^t$}
+  \ENDIF
+  \NEWLINE
+  \RETURN{$S$}
+\end{algorithmic}
+\caption{\texttt{steadyStates} algorithm}
+\label{alg:steadyStates}
+\end{algorithm}
+
 
 ** Hitting probabilities
 We want to come up with an algorithm to compute the hitting probabilities for a Markov chain.  We have not found anything documented in the literature with respect to the computation of these probabilities algorithmically, so we had tried to come up with our own algorithm.
