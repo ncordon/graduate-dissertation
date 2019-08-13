@@ -1310,6 +1310,47 @@ guarantees us that recurrent classes and closed classes are the same [fn::[[http
 \label{alg:transientClasses}
 \end{algorithm}
 
+\begin{algorithm}[h]
+\begin{algorithmic}[1]
+  \REQUIRE $P_{m \times m}$ an stochastic matrix
+  \IF{$P$ is stochastic by columns}
+    \STATE{$P := P^t$}
+  \ENDIF
+  \STATE{Do $[C, v] = \textrm{\texttt{commClassesKernel}}(P)$}
+  \STATE{Initialize $A = \emptyset$}
+  \NEWLINE
+  \FOR{$i \in \{1, \ldots, m\}$}
+    \IF{$w_i$}
+      \STATE{$A := A \bigcup \{i\}$}
+    \ENDIF
+  \ENDFOR
+  \NEWLINE
+  \RETURN{$A$}
+\end{algorithmic}
+\caption{\texttt{recurrentStates} algorithm}
+\label{alg:recurrentStates}
+\end{algorithm}
+
+\begin{algorithm}[h]
+\begin{algorithmic}[1]
+  \REQUIRE $P_{m \times m}$ an stochastic matrix
+  \IF{$P$ is stochastic by columns}
+    \STATE{$P := P^t$}
+  \ENDIF
+  \STATE{Do $[C, v] = \textrm{\texttt{commClassesKernel}}(P)$}
+  \STATE{Initialize $A = \emptyset$}
+  \NEWLINE
+  \FOR{$i \in \{1, \ldots, m\}$}
+    \IF{not $w_i$}
+      \STATE{$A := A \bigcup \{i\}$}
+    \ENDIF
+  \ENDFOR
+  \NEWLINE
+  \RETURN{$A$}
+\end{algorithmic}
+\caption{\texttt{transientStates} algorithm}
+\label{alg:transientStates}
+\end{algorithm}
 
 *** Steady States
 
