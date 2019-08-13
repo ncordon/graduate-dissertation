@@ -1192,7 +1192,7 @@ inefficient when it comes to easy inputs.
   \RETURN{$[C, v]$, where $C(i,j)$ is true iff $i,j$ are in the same communicating class,
           and $v[i]$ is true iff the class for $i$ is closed}
 \end{algorithmic}
-\caption{Improved \texttt{commClassesKernel} algorithm}
+\caption{\texttt{commClassesKernel} algorithm}
 \label{alg:commClassesKernel}
 \end{algorithm}
 
@@ -1215,29 +1215,101 @@ complexity of our algorithm would be $\algcomp{n^3}$ and the old one would be $\
 still.
 
 *** Communicating classes
-*** Transient and recurrent classes
-For Markov chains with a finite number of states, Corollary \eqref{corollary:comm-recurrence}
-guarantees us that recurrent classes and closed classes are the same. An user open an issue
-in the repo [fn::[[https://github.com/spedygiorgio/markovchain/issues/171][markovchain issue#171]]] about this, because he noticed that closed classes for
-a Markov chain did not coincide with recurrent classes.
 
-Issue was researched and it turned out that closed classes were computed as those communicating
-classes which did not contain a transient state. Code used for that, in Rcpp, was:
-
-\begin{lstlisting}[language=C++]
-bool _intersected(CharacterVector v1, CharacterVector v2) {
-  CharacterVector::iterator first1 = v1.begin();
-  CharacterVector::iterator last1 = v1.end();
-  CharacterVector::iterator first2 = v2.begin();
-  CharacterVector::iterator last2 = v2.end();
-  while(first1!=last1 && first2!=last2) {
-    if(*first1 == *first2) return true;
-    else if(*first1 < *first2) ++first1;
-    else ++first2;
+\begin{algorithm}[h]
+\begin{algorithmic}[1]
+  \REQUIRE $P_{m \times m}$ an stochastic matrix
+  \STATE{Do $[C, v] = \textrm{\texttt{commClassesKernel}}$}
+  \STATE{Mark all states' class as not computed :
+         $w = (\underset{(1)}{false}, \ldots, \underset{(m)}{false})$
   }
-  return false;
-}
-\end{lstlisting}
+  \STATE{Initialize $A = \emptyset$}
+  \NEWLINE
+  \FOR{$i \in \{1, \ldots, m\}$}
+    \STATE{$B = \emptyset$}
+    \IF{not $w_i$ (class not computed)}
+      \FOR{$j \in \{1, \ldots, m\}$}
+         \IF{$C(i,j)$}
+            \STATE{$B := B \bigcup \{j\}$}
+            \STATE{$w_j := true$}
+         \ENDIF
+      \ENDFOR
+      \STATE{$A := A \bigcup \{B\}$}
+    \ENDIF
+  \ENDFOR
+  \NEWLINE
+  \RETURN{$A$}
+\end{algorithmic}
+\caption{\texttt{communicatingClasses} algorithm}
+\label{alg:commClasses}
+\end{algorithm}
+
+*** Transient and recurrent classes / states
+For Markov chains with a finite number of states, Corollary \eqref{corollary:comm-recurrence}
+guarantees us that recurrent classes and closed classes are the same [fn::[[https://github.com/spedygiorgio/markovchain/issues/171][markovchain issue#171]]].
+
+\begin{algorithm}[h]
+\begin{algorithmic}[1]
+  \REQUIRE $P_{m \times m}$ an stochastic matrix
+  \IF{$P$ is stochastic by columns}
+    \STATE{$P := P^t$}
+  \ENDIF
+  \STATE{Do $[C, v] = \textrm{\texttt{commClassesKernel}}(P)$}
+  \STATE{Mark all states' class as not computed :
+         $w = (\underset{(1)}{false}, \ldots, \underset{(m)}{false})$
+  }
+  \STATE{Initialize $A = \emptyset$}
+  \NEWLINE
+  \FOR{$i \in \{1, \ldots, m\}$}
+    \STATE{$B = \emptyset$}
+    \IF{$v_i$ (class closed) and not $w_i$ (class not computed)}
+      \FOR{$j \in \{1, \ldots, m\}$}
+         \IF{$C(i,j)$}
+            \STATE{$B := B \bigcup \{j\}$}
+            \STATE{$w_j := true$}
+         \ENDIF
+      \ENDFOR
+      \STATE{$A := A \bigcup \{B\}$}
+    \ENDIF
+  \ENDFOR
+  \NEWLINE
+  \RETURN{$A$}
+\end{algorithmic}
+\caption{\texttt{recurrentClasses} algorithm}
+\label{alg:recurrentClasses}
+\end{algorithm}
+
+\begin{algorithm}[h]
+\begin{algorithmic}[1]
+  \REQUIRE $P_{m \times m}$ an stochastic matrix
+  \IF{$P$ is stochastic by columns}
+    \STATE{$P := P^t$}
+  \ENDIF
+  \STATE{Do $[C, v] = \textrm{\texttt{commClassesKernel}}(P)$}
+  \STATE{Mark all states' class as not computed :
+         $w = (\underset{(1)}{false}, \ldots, \underset{(m)}{false})$
+  }
+  \STATE{Initialize $A = \emptyset$}
+  \NEWLINE
+  \FOR{$i \in \{1, \ldots, m\}$}
+    \STATE{$B = \emptyset$}
+    \IF{not $v_i$ (class not closed) and not $w_i$ (class not computed)}
+      \FOR{$j \in \{1, \ldots, m\}$}
+         \IF{$C(i,j)$}
+            \STATE{$B := B \bigcup \{j\}$}
+            \STATE{$w_j := true$}
+         \ENDIF
+      \ENDFOR
+      \STATE{$A := A \bigcup \{B\}$}
+    \ENDIF
+  \ENDFOR
+  \NEWLINE
+  \RETURN{$A$}
+\end{algorithmic}
+\caption{\texttt{transientClasses} algorithm}
+\label{alg:transientClasses}
+\end{algorithm}
+
 
 *** Steady States
 
@@ -1248,7 +1320,9 @@ First idea was to try computing the eigen vectors for the eigen value $1$. If so
 \begin{algorithm}[h]
 \begin{algorithmic}[1]
   \REQUIRE $P_{m \times m}$ an stochastic matrix
-  \STATE{If $P$ is stochastic by rows, do $P := P^t$}
+  \IF{$P$ is stochastic by rows}
+    \STATE{$P := P^t$}
+  \ENDIF
   \STATE{Call $S = \textrm{\texttt{computeSteadyStates}}(P)$}
   \IF{There is any negative element in $S$}
     \STATE{Compute $S =$\texttt{steadyStatesByRecurrentClasses}$(P)$}
@@ -1260,7 +1334,7 @@ First idea was to try computing the eigen vectors for the eigen value $1$. If so
   \NEWLINE
   \RETURN{$S$}
 \end{algorithmic}
-\caption{Improved \texttt{steadyStates} algorithm}
+\caption{\texttt{steadyStates} algorithm}
 \label{alg:steadyStatesFirst}
 \end{algorithm}
 
@@ -1332,6 +1406,7 @@ As result, we could be using this algorithm and obtain less steady states than w
 \end{algorithm}
 
 **** Second approach
+
 We could think of using only \eqref{alg:steadyStatesByRecurrentClassesFirst} and drop \eqref{alg:computeSteadyStatesFirst}, and therefore use only the recurrent classes to compute the steady states. But problem of not having assurances about the convergence (and later search for the unitary eigen values) and the algorithmic complexity of the method pushed us to find another algebraic approach with guaranteed algorithmic complexity of $\algcomp{m^3}$.
 
 Since we want to find for $k=1, \ldots, l$ $P_k \cdot u_k = u_k$, and by the theorem TODO each block has a unique steady state, we know the kernel of $P_k - I$ has dimension $1$ (because $u_k$ is not null and if it had more dimensionality than $1$ we would have more steady states). Hence, we cannot solve $(\alpha_{ij}) u_k = (P_k - I) \cdot u_k = 0$ with an unique solution $u_k$, but we can solve:
@@ -1347,7 +1422,9 @@ Solving this last system for each $k = 1, \ldots, l$ can be done in $\algcomp{m^
 \begin{algorithm}[h]
 \begin{algorithmic}[1]
   \REQUIRE $P_{m \times m}$ an stochastic matrix by columns
-  \STATE{If $P$ is stochastic by rows, do $P := P^t$}
+  \IF{$P$ is stochastic by rows}
+    \STATE{$P := P^t$}
+  \ENDIF
   \STATE{$C = \textrm{\texttt{recurrentClasses}}(P) = \{C_1, \ldots, C_l\}$, where for all $k=1, \ldots, l$
          $C_k = \{i^{(k)}_1, \ldots, i^{(k)}_{l_k}\} \subseteq \{1, \ldots, m\}$ is a recurrent class}
   \NEWLINE
