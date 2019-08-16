@@ -24,7 +24,8 @@ Markov chains are a mathematical area which encompasses probability, inference, 
 
 * Introduction to Markov chains
 This section is based in \cite{velez}, although other theoretical references such as \cite{takis}
-or \cite{zitkovic} have been used.
+or \cite{zitkovic} have been used. Mean first passage time is mainly based in \cite{grinstead}, but
+\cite{velez} has also been used
 
 ** Definition
 For convenience, unless otherwise indicated, we will consider $0\in \mathbb{N}$.
@@ -108,7 +109,8 @@ Therefore,
 #+end_proof
 
 ** Chapman-Kolmogorov equation
-As stated before, in the right to left implication (that now we can assume as characterization of Markov chains), we have shown that transition probabilities can be expressed as:
+As stated before, in the right to left implication (that now we can assume as characterization of
+Markov chains), we have shown that transition probabilities can be expressed as:
 
 \begin{align}
 & P(X_0 = s_0, \ldots X_n = s_n) = \nonumber \\
@@ -1104,6 +1106,75 @@ f_{i,j}^{\ast} + x_{i} = \probi{\tau^{\ast} < \infty, X_{\tau^{\infty}} = j} + \
 \]
 
 #+end_proof
+
+** Ergodic Markov chains
+#+begin_definition
+We say that a Markov chain is ergodic iff all states communicate with each other
+#+end_definition
+
+#+begin_definition
+We say that a Markov chain is regular iff there exists some power of its transition matrix with
+all positive elements
+#+end_definition
+
+#+begin_proposition
+Every regular Markov chain is also ergodic. The opposite does not hold.
+#+end_proposition
+
+#+begin_proof
+If the Markov chain is regular, then there exists $n\in \naturals$ such that for every $i, j\in S$, then
+$p_{i,j}^{(n)} > 0$ and therefore $i \dgoto j$, with $i,j$ arbitrary states.
+
+For the counterexample, it suffices to take the Markov chain given by the transition matrix
+$P = \left(\begin{array}{cc} 0 & 1 \\ 1 & 0 \end{array}\right)$.
+#+end_proof
+
+#+begin_theorem
+Let $P_{m\times m}$ be the transition matrix of a regular Markov chain. Then $\{P^{n}\} \rightarrow W$ where
+$w \in \posreals$ and $W = \left(\begin{array}{c} w \\ \vdots \\ w \end{array}\right)$. Moreover, $w$ is a
+probability vector.
+#+end_theorem
+
+#+begin_proof
+TODO
+#+end_proof
+
+As consequence of this theorem, since each element $(i,j)$ of $P^n$ is $p_{i,j}^{(n)}$ and each row tends
+to the same value $w$, the probability of starting at state $i$ and being in $j$ after $n$ steps is
+independent of the starting state $i$.
+
+#+begin_definition
+Given a matrix $P$, a row vector $r = \left(r_1, \ldots, r_n\right)$ is called a fixed row vector
+iff $rP = r$ (it is a left eigenvector for the matrix). Analogously, a column vector $c = \left(\begin{array}{c} r_1 \\ \vdots \\ r_n\end{array}\right)$
+is called a fixed column vector iff $Pc = c$ (it is a right eigenvector for the matrix)
+
+We will note $\onecol$ to the column vector $\left(\begin{array}{c} 1 \\ \vdots \\ 1 \end{array}\right)$
+#+end_definition
+
+#+begin_definition
+Given a stochastic matrix $P$, we call steady state to a probability vector $v$ such that $vP = v$
+#+end_definition
+
+#+begin_proposition
+If $P_{m\times m}$ is a regular transition matrix and
+$W = \left(\begin{array}{c} w \\ \vdots \\ w \end{array}\right) = \ \lim_{n} W^n$, then it holds:
+
+1. $wP = w$ and every other fixed row vector $r$ holds $r = \lambda w$ for some $\lambda \in \mathbb{R}$
+2. $P\onecol = \onecol$ and every fixed column vector $c$ holds $c = \lambda \onecol$ for some $\lambda \in \mathbb{R}$
+
+As a consequence, there is a unique steady state for a regular stochastic matrix.
+#+end_proposition
+
+#+begin_proof
+
+1. If $P^{n + 1} = P^{n} \cdot P \goto WP = W$, then we deduce $wP = w$ row-wise. For other fixed row vector $r$
+it holds $r = rW = \big(\sum_{i = 1}^m r_i \big) W$
+
+2. Since $c = Pc = P^2 c = \ldots P^n c$, taking limits $c = Wc$, but then
+$c = \left(\begin{array}{c} w \cdot c \\ \vdots \\ w \cdot c \end{array}\right) = \onecol \cdot w \cdot c$
+#+end_proof
+
+
 
 * =markovchain= package
 We can propose an alternative definition of communicating property, taking $n \ge 0$ instead of $n > 0$,
