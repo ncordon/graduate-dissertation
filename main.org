@@ -1141,7 +1141,39 @@ We will note $\onecol$ to the column vector $\left(\begin{array}{c} 1 \\ \vdots 
 Given a stochastic matrix $P$, we call steady state to a probability vector $v$ such that $vP = v$
 #+end_definition
 
+#+begin_lemma
+Let $P_{m\times m}$ be a transition matrix with all its entries positve. Let us fix a probability column
+vector $y$ and name $M_0 = \max y$, $m_0 = \min y$, $M_1 = \max Py$ and $m_1 = \min Py$. Hence, it exists
+$k\in [0,1[: $
+
+\[
+M_1 - m_1 \le k (M_0 - m_0)
+\]
+
+\label{lemma:bound-pos-matrix}
+#+end_lemma
+
+#+begin_proof
+Let us call $d = \min\{p_{ij}: i,j\in \{1, \ldots, m\}\}$. If $m = 1$, it suffices to
+take $c = 0$. If $m > 1$, then $d \le \frac{1}{2}$ (no entry is null). Since $Py$ can be
+thought as a weighted average of the entries in $y$, the maximum value we can reach is bounded:
+
+\[ M_1 \le d m_0 + (1 - d)M_0 \]
+
+and likewise for the smallest possible one:
+
+\[ m_1 \ge d M_0 + (1 - d)m_0 \]
+
+Hence:
+
+\[ M_1 - m_1 \le d m_0 + (1 - d)M_0 - dM_0 - (1 - d)m_0 = (1 - 2d)(M_0 - m_0) \]
+
+and we can take $c = 1 - 2d$.
+#+end_proof
+
 #+begin_theorem
+**Fundamental limit theorem for regular Markov chains**
+
 Let $P_{m\times m}$ be the transition matrix of a regular Markov chain. Then $\{P^{n}\} \rightarrow W$ where
 $w \in \posreals$ and $W = \left(\begin{array}{c} w \\ \vdots \\ w \end{array}\right)$. Moreover, $w$ is a
 probability vector.
@@ -1150,15 +1182,72 @@ If $P_{m\times m}$ is a regular transition matrix and
 $W = \left(\begin{array}{c} w \\ \vdots \\ w \end{array}\right) = \ \lim_{n} W^n$, then it holds:
 
 1. $wP = w$ and every other fixed row vector $r$ holds $r = \lambda w$ for some $\lambda \in \mathbb{R}$
-2. $P\onecol = \onecol$ and every fixed column vector $c$ holds $c = \lambda \onecol$ for some $\lambda \in \mathbb{R}$
+2. $P\onecol = \onecol$ and every fixed column vector $c$ holds
+$c = \lambda \onecol$ for some $\lambda \in \mathbb{R}$
 
 Therefore an stochastic regular matrix has a unique steady state.
-
 \label{th:steady-regular}
 #+end_theorem
 
 #+begin_proof
-TODO
+/First part/
+
+Let us first prove the theorem for a matrix $P$ with all its elements strictly positive. Given $y$ a probability column
+vector, let us call:
+
+\begin{equation}
+M_n = \max (P^n y) \ge (P^n y)_{ij} \ge m_n = \min (P^n y)
+\label{eq:mns-sandwich}
+\end{equation}
+
+Since each time we multiply a vector by $P$ we do a weighted average, its maximum element would be lower
+than the previous maximum, and the contrary will happen for its minimum. Hence:
+
+\begin{equation}
+  m_0 \le m_1 \le \ldots m_n \le M_n \le \ldots M_1 \ldots M_0
+\label{eq:ms-sandwich}
+\end{equation}
+
+In other words, $\{m_n\}$ and $\{M_n\}$ are monotonic sequences of numbers, and their limit exits:
+
+\[
+  \{m_n\} \rightarrow m \qquad \{M_n\} \rightarrow M
+\]
+
+By the Lemma \eqref{lemma:bound-pos-matrix}
+
+\[
+  M_n - m_n \le k (M_{n-1} - m_{n-1}) \le \ldots \le k^n M_0 - m_0
+\]
+
+with $k\in [0,1[$. Therefore $v := \lim M_n = \lim m_n$, and \eqref{eq:mns-sandwich} let us observe that for
+every probability vector $y$ it holds
+$\{P^n y \} \rightarrow \left(\begin{array}{c} m \\ m \\ \vdots \\ m \end{array}\right)$.
+
+Let us observe that $v$ depends on $y$. If we take the column probability vector with $1$ only in the $j$ -th
+position, namely $e_j$, then calling $w_j$ the limit that depends on $e_j$, we have that:
+
+\[
+  \{P^n e_j \} \rightarrow v_j
+\]
+
+That is, the $j$ -th column of $P^n$ tends to a constant value $v_j$. In other words,
+$(P^n)_i \rightarrow w = (v_1, \ldots v_m)$, and
+$P^n \rightarrow W = \left\{\begin{array}{c} w \\ \vdots \\ w \end{array}\right\}$.
+
+Since $m_0 \ge 0$ and the sequence is strictly increasing, $v > 0$ and therefore all the entries for $w$ are
+strictly positive.
+
+To extend the demonstration to regular matrices $P$, it suffices to remember that by their definition there
+must exist a $l > 0$ such that $P^l$ has only positive entries. Hence, $\{m_{ln}\}$ and $\{M_{ln}\}$
+converge to the same limit. Equations \eqref{eq:mns-sandwich} and \eqref{eq:ms-sandwich} were obtained
+for regular stochastic matrices, and therefore for $n$ sufficiently large we can find a value $k$ such that
+$m_{lk} \le m_p \le M_p \le M_{lk} \forall p \ge n$. And therefore we can assure there is convergence of
+$\{m_n\}$ and $\{M_n\}$ and use the rest of the demonstration for the case of positive entries.
+
+Since $Py$ is a probability vector if $y$ is a probability vector, $\sum_{j=1}^m (P^n y)j = 1$ and taking
+limits in $n$, $\sum_{j=1}^m w_j = 1$ and $w \ge 0$ implies that it must be a probability vector.
+/Second part/
 
 1. If $P^{n + 1} = P^{n} \cdot P \goto WP = W$, then we deduce $wP = w$ row-wise. For other fixed row vector $r$
 it holds $r = rW = \big(\sum_{i = 1}^m r_i \big) W$
@@ -1171,7 +1260,7 @@ it holds $r = rW = \big(\sum_{i = 1}^m r_i \big) W$
 
 As consequence of this theorem, since each element $(i,j)$ of $P^n$ is $p_{i,j}^{(n)}$ and each row tends
 to the same value $w$, the probability of starting at state $i$ and being in $j$ after $n$ steps is
-independent of the starting state $i$. \eqref{prop:steady-regular} has an analogous theorem for ergodic
+independent of the starting state $i$. \eqref{th:steady-regular} has an analogous theorem for ergodic
 Markov chains. We will need some previous lemmas to show that.
 
 #+begin_lemma
@@ -1229,6 +1318,8 @@ and therefore $\frac{1}{2} P = \frac{1}{2}v$.
 #+end_proof
 
 #+begin_theorem
+**Fundamental limit theorem for ergodic Markov chains**
+
 If $P_{m\times m}$ is an ergodic transition matrix, then there exists a unique steady state $w$ with all its
 elements strictly positive. Moreover, every left eigenvector $r: rP = r$ is linearly dependent of $w$, and
 every right eigenvector $c: Pc = c$ is a multiple of $\onecol$.
