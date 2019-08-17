@@ -90,13 +90,21 @@
 \newcommand{\goto}{\rightarrow}
 \newcommand{\dgoto}{\leftrightarrow}
 
-% Commands to divide a definition into two parts
+% Commands to divide a definition / equality into two parts
 \newcommand{\twopartdef}[4]{
   \left\{\begin{array}{ll}
         #1 & \textrm{if } #2 \\
         #3 & \textrm{if } #4
   \end{array}\right.
 }
+
+\newcommand{\twopartsys}[4]{
+  \left\{\begin{array}{lcl}
+        #1 & = & #2 \\
+        #3 & = & #4
+  \end{array}\right.
+}
+
 
 \newcommand{\twopartdefow}[3]{
   \left\{\begin{array}{ll}
@@ -141,4 +149,7 @@
 \newcommand{\reals}{\mathbb{R}}
 \newcommand{\complexes}{\mathbb{C}}
 \newcommand{\posreals}{\mathbb{R}^{+}}
+
+% bold 1 to represent a row / col full of 1s
 \newcommand{\onecol}{\mathbf{1}}
+\newcommand{\onerow}{\onecol}

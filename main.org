@@ -1129,24 +1129,10 @@ For the counterexample, it suffices to take the Markov chain given by the transi
 $P = \left(\begin{array}{cc} 0 & 1 \\ 1 & 0 \end{array}\right)$.
 #+end_proof
 
-#+begin_theorem
-Let $P_{m\times m}$ be the transition matrix of a regular Markov chain. Then $\{P^{n}\} \rightarrow W$ where
-$w \in \posreals$ and $W = \left(\begin{array}{c} w \\ \vdots \\ w \end{array}\right)$. Moreover, $w$ is a
-probability vector.
-#+end_theorem
-
-#+begin_proof
-TODO
-#+end_proof
-
-As consequence of this theorem, since each element $(i,j)$ of $P^n$ is $p_{i,j}^{(n)}$ and each row tends
-to the same value $w$, the probability of starting at state $i$ and being in $j$ after $n$ steps is
-independent of the starting state $i$.
-
 #+begin_definition
 Given a matrix $P$, a row vector $r = \left(r_1, \ldots, r_n\right)$ is called a fixed row vector
 iff $rP = r$ (it is a left eigenvector for the matrix). Analogously, a column vector $c = \left(\begin{array}{c} r_1 \\ \vdots \\ r_n\end{array}\right)$
-is called a fixed column vector iff $Pc = c$ (it is a right eigenvector for the matrix)
+is called a fixed column vector iff $Pc = c$ (it is a right eigenvector for the matrix).
 
 We will note $\onecol$ to the column vector $\left(\begin{array}{c} 1 \\ \vdots \\ 1 \end{array}\right)$
 #+end_definition
@@ -1155,25 +1141,133 @@ We will note $\onecol$ to the column vector $\left(\begin{array}{c} 1 \\ \vdots 
 Given a stochastic matrix $P$, we call steady state to a probability vector $v$ such that $vP = v$
 #+end_definition
 
-#+begin_proposition
+#+begin_theorem
+Let $P_{m\times m}$ be the transition matrix of a regular Markov chain. Then $\{P^{n}\} \rightarrow W$ where
+$w \in \posreals$ and $W = \left(\begin{array}{c} w \\ \vdots \\ w \end{array}\right)$. Moreover, $w$ is a
+probability vector.
+
 If $P_{m\times m}$ is a regular transition matrix and
 $W = \left(\begin{array}{c} w \\ \vdots \\ w \end{array}\right) = \ \lim_{n} W^n$, then it holds:
 
 1. $wP = w$ and every other fixed row vector $r$ holds $r = \lambda w$ for some $\lambda \in \mathbb{R}$
 2. $P\onecol = \onecol$ and every fixed column vector $c$ holds $c = \lambda \onecol$ for some $\lambda \in \mathbb{R}$
 
-As a consequence, there is a unique steady state for a regular stochastic matrix.
-#+end_proposition
+Therefore an stochastic regular matrix has a unique steady state.
+
+\label{th:steady-regular}
+#+end_theorem
 
 #+begin_proof
+TODO
 
 1. If $P^{n + 1} = P^{n} \cdot P \goto WP = W$, then we deduce $wP = w$ row-wise. For other fixed row vector $r$
 it holds $r = rW = \big(\sum_{i = 1}^m r_i \big) W$
 
-2. Since $c = Pc = P^2 c = \ldots P^n c$, taking limits $c = Wc$, but then
-$c = \left(\begin{array}{c} w \cdot c \\ \vdots \\ w \cdot c \end{array}\right) = \onecol \cdot w \cdot c$
+2. Since $c = Pc = P^2 c = \ldots P^n c$, taking limits $c = Wc$, and therefore
+\[
+  c = \left(\begin{array}{c} w \cdot c \\ \vdots \\ w \cdot c \end{array}\right) = \onecol \cdot w \cdot c
+\]
 #+end_proof
 
+As consequence of this theorem, since each element $(i,j)$ of $P^n$ is $p_{i,j}^{(n)}$ and each row tends
+to the same value $w$, the probability of starting at state $i$ and being in $j$ after $n$ steps is
+independent of the starting state $i$. \eqref{prop:steady-regular} has an analogous theorem for ergodic
+Markov chains. We will need some previous lemmas to show that.
+
+#+begin_lemma
+If $P_{m\times m}$ is an ergodic transition matrix for a Markov chain with states $\{1, \ldots, m\}$, then
+it is possible to reach each state $j$ from $i$ in $m-1$ steps at most.
+
+\label{lemma:reachability}
+#+end_lemma
+
+#+begin_proof
+The proof is based on graphs. Given a path of positive transition probabilities from
+$i$ to $j$, $i, k_1, k_2, \ldots, k_n = j \in S$, since $S$ is finite, if there were two states repeated,
+$k_l, k_p$ with $p > l$, we could delete the subpath $k_l, k_{l + 1}, \ldots $k_{p-1}$ and we would still
+have a path of states that would take us to $j$. Therefore we cannot have repeated elements in that path,
+and $n$ can be at most $m - 1$.
+#+end_proof
+
+#+begin_lemma
+If $P$ is an ergodic stochastic matrix with $p_ii > 0$ for all $i \in \{1, \ldots, m\}$ then is a regular
+stochastic matrix.
+
+As a consequence $\frac{1}{2} (I + P)$ is a regular stochastic matrix given an ergodic $P$.
+#+end_lemma
+
+#+begin_proof
+Fixed $i,j$ and because of the previous lemma \eqref{lemma:reachability} we know that there exists a
+power $P^{m_{ij}}$ such that $p_{ij} > 0$. It suffices to prove that $\widetilde{P} = \prod_{i = 1}^m \prod{j = 1}^m P^{m_{ij}}$
+is a matrix with all possitive entries.
+
+If $P^{m_ij}$ has $\{p_{lk}\}$ positive entries, it is inmediate (since the diagonal of $P$ is non null), that
+$P\cdot P^{m_ij}$ has all those positive entries (at least). Using that argument recursively, we prove that
+$\widetilde{P}$ has all of its entries positive.
+
+For the second part, $\frac{1}{2} (I + P)$ has all the diagonal elements postive and is stochastic: all the elements are positive and the
+sum for the $i$ -th row is:
+
+\[ \frac{1}{2} + \frac{1}{2} \sum_{j = 1}^m p_{ij} = \frac{1}{2} + \frac{1}{2} = 1 \]
+
+To show that it is ergodic, fixed $i,j$, we must show that it exists a power matrix $\underbrace{\left\{\frac{1}{2}(I + P)\right\}}_{A}^m$ such that
+$(A^m)_{ij} > 0$. Since $P$ is ergodic, it exists $P^k$ such that $(P^k)_{ij} > 0$, and
+$\left\{\frac{1}{2}(I + P)\right\}^k = R + P^k$ where all of the elements of $R$ are non negative.
+This ends our proof.
+#+end_proof
+
+#+begin_lemma
+Given $P$ an ergodic stochastic matrix, then $P$ and $\frac{1}{2}(I + P)$ have the same eigenvectors.
+\label{lemma:ergodic-regular-rel}
+#+end_lemma
+
+#+begin_proof
+Given $v: vP = v$, then $\frac{1}{2}(I + P)v = \frac{1}{2} (v + v) = v$.
+
+To prove the other implication: let $v: \frac{1}{2}(I + P)v = v \implies \frac{1}{2}v + \frac{1}{2}P = v$,
+and therefore $\frac{1}{2} P = \frac{1}{2}v$.
+#+end_proof
+
+#+begin_theorem
+If $P_{m\times m}$ is an ergodic transition matrix, then there exists a unique steady state $w$ with all its
+elements strictly positive. Moreover, every left eigenvector $r: rP = r$ is linearly dependent of $w$, and
+every right eigenvector $c: Pc = c$ is a multiple of $\onecol$.
+
+\label{prop:steady-ergodic}
+#+end_theorem
+
+#+begin_proof
+Lemma \eqref{lemma:ergodic-regular-rel} and Theorem \eqref{th:steady-regular} suffice to reach the result.
+#+end_proof
+
+#+begin_lemma
+An ergodic stochastic matrix $P_{m \times m}$ has a unique steady state $w$ that can be computed as a unique solution
+of the system:
+
+\[
+\twopartsys{(I - P^t)w}{0}{\onerow \cdot w}{1}
+\]
+#+end_lemma
+
+#+begin_proof
+By means of \eqref{prop:steady-ergodic} we have unicity and that the system
+
+\[
+  \left(\begin{array}{rcl}
+    1 & 1 \ldots & 1 \\
+    \hline
+    & I - P^t & \\
+  \end{array}\right) \cdot w =
+  \left(\begin{array}{c}
+    1 \\
+    0 \\
+    \vdots \\
+    0
+  \end{array}\right)
+\]
+
+must have a unique solution.
+#+end_proof
 
 
 * =markovchain= package
@@ -1519,9 +1613,14 @@ As result, we could be using this algorithm and obtain less steady states than w
 
 **** Second approach
 
-We could think of using only \eqref{alg:steadyStatesByRecurrentClassesFirst} and drop \eqref{alg:computeSteadyStatesFirst}, and therefore use only the recurrent classes to compute the steady states. But problem of not having assurances about the convergence (and later search for the unitary eigen values) and the algorithmic complexity of the method pushed us to find another algebraic approach with guaranteed algorithmic complexity of $\algcomp{m^3}$.
+We could think of using only \eqref{alg:steadyStatesByRecurrentClassesFirst} and drop \eqref{alg:computeSteadyStatesFirst},
+and therefore use only the recurrent classes to compute the steady states. But problem of not having assurances about the
+convergence (and later search for the unitary eigen values) and the algorithmic complexity of the method pushed us to find
+ another algebraic approach with guaranteed algorithmic complexity of $\algcomp{m^3}$.
 
-Since we want to find for $k=1, \ldots, l$ $P_k \cdot u_k = u_k$, and by the theorem TODO each block has a unique steady state, we know the kernel of $P_k - I$ has dimension $1$ (because $u_k$ is not null and if it had more dimensionality than $1$ we would have more steady states). Hence, we cannot solve $(\alpha_{ij}) u_k = (P_k - I) \cdot u_k = 0$ with an unique solution $u_k$, but we can solve:
+Since we want to find for $k=1, \ldots, l$ $P_k \cdot u_k = u_k$, and by the theorem TODO each block has a unique steady state, we know the
+kernel of $P_k - I$ has dimension $1$ (because $u_k$ is not null and if it had more dimensionality than $1$ we would have more steady states).
+Hence, we cannot solve $(\alpha_{ij}) u_k = (P_k - I) \cdot u_k = 0$ with an unique solution $u_k$, but we can solve:
 
 \[
 \widetilde{P}_k = (\widetilde{p}_ij) = \twopartdefow{1}{i = 1}{\alpha_{ik}} \qquad
