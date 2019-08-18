@@ -153,3 +153,14 @@
 % bold 1 to represent a row / col full of 1s
 \newcommand{\onecol}{\mathbf{1}}
 \newcommand{\onerow}{\onecol}
+
+
+% Custom date formats
+\usepackage{datetime}
+\newdateformat{septdate}{\THEDAY \ de Septiembre de \THEYEAR}
+
+\newcommand{\img}[2]{
+  \begin{center}
+  \includegraphics[width=#2\textwidth]{#1}
+  \end{center}
+}

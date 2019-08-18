@@ -10,22 +10,84 @@
 #+latex_header_extra: \input{frontmatter/titlepage}\usepackage{wallpaper}\ThisULCornerWallPaper{1}{imgs/ugrA4.pdf}
 #+latex_header_extra: \usepackage[T1]{fontenc}
 #+latex_header_extra: \usepackage{babel}
+#+latex_header_extra: \usepackage[normalem]{ulem}
 #+latex_header_extra: \usepackage[beramono,eulerchapternumbers,linedheaders,parts,a5paper,dottedtoc,manychapters]{classicthesis}
 #+latex_header_extra: \input{config/setup}
 #+latex_header_extra: \input{config/classicthesis}
 #+latex_header: \input{config/macros}
+
+* Acknowledgments
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
+
+I would like to thank my family and my friends, because they are always and important part of what I do,
+providing me great support.
+
+Also, many thanks to Giorgio, my tutor, since he always kept an open mind when it
+came to me proposing work to do on his package. He encouraged me to try different approaches and I had
+plenty of proposals from his side to work on. That always poses good challenges to dive in, learn and
+apply new knowledge.
 
 * Abstract
 :PROPERTIES:
 :UNNUMBERED: t
 :END:
 
-Markov chains are a mathematical area which encompasses probability, inference, algebra (more accurately graph theory), algorithms theory (since discrete markov chains can be simulated in a computer, and therefore, we intend to simulate them as efficiently as we can or use as big input sizes as we can, for example in markov chains with more states). All of the above conditions make markov chains an interesting study from both the mathematical and the computer science viewpoint.
+Markov chains are a mathematical area which encompasses probability, inference, algebra (more accurately graph theory),
+algorithms theory (since discrete markov chains can be simulated in a computer, and therefore, we intend to simulate
+them as efficiently as we can or use as big input sizes as we can, for example in markov chains with more states). All
+of the above conditions make markov chains an interesting study from both the mathematical and the computer science viewpoint.
 
-* Introduction to Markov chains
+
+\vspace*{\fill}
+\textsc{Keywords}: Markov chains, algorithms, graphs, probability, linear algebra
+
+\newpage
+* Authenticity declaration :ignore:
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
+
+\thispagestyle{empty}
+
+\vspace*{3cm}
+
+\begin{center}
+\textsc{Declaración}
+\end{center}
+
+\vspace*{3.5cm}
+
+En cumplimiento de la normativa aprobada en Consejo de Gobierno de 4 de marzo de 2013,
+sobre Directrices de la Universidad de Granada para el desarrollo de la asignatura "Trabajo Fin
+de Máster" de sus títulos de máster (Art 8,4)
+
+\vspace*{1cm}
+\begin{center}
+\Large \textbf{D.D\textordfeminine} \dotuline{\textsc{Ignacio Cordón Castillo}\hspace*{\fill}} \normalsize
+\end{center}
+
+\vspace*{1cm}
+
+Asume la originalidad del trabajo fin de máster, entendida en el sentido de que no ha utilizado
+fuentes sin citarlas debidamente.
+
+\vspace*{1cm}
+Granada, a \septdate\today
+
+\begin{flushright}
+ \begin{tabular}{m{5.5cm}}
+     \img{imgs/firma_nacho.png}{0.45} \\
+     Fdo: Ignacio Cordón Castillo
+ \end{tabular}
+\end{flushright}
+
+* Introduction
+* Markov chains
 This section is based in \cite{velez}, although other theoretical references such as \cite{takis}
-or \cite{zitkovic} have been used. Mean first passage time is mainly based in \cite{grinstead}, but
-\cite{velez} has also been used
+or \cite{zitkovic} have been used. Ergodic Markov chains section is based on \cite{horn} and
+\cite{grinstead}. Mean first passage time section is mainly based in \cite{grinstead}.
 
 ** Definition
 For convenience, unless otherwise indicated, we will consider $0\in \mathbb{N}$.
@@ -575,7 +637,7 @@ e_{i,j} &= \sum_{n = 1}^{\infty} n f_{i,j}^{(n)} = p_{i,j} + \sum_{n = 2}^{\inft
 
 Note this last proposition can be used to compute $e_{i,j}$ with a computer.
 
-*** Number of visits to an state
+*** Number of visits to a state
 
 #+begin_proposition
 If $f_{j,j} \neq 1$, we have:
@@ -1537,8 +1599,8 @@ Obviously by the definition $m_{ii} = 0$
 If the initial state of an ergodic Markov is $i$, then we define the mean recurrence time for $i$ as:
 
 \begin{eqnarray*}
-  & \tau_{i}^{\asterisk} &= \min \{t: X_t = i, X_{l} \neq i, t > 0, l < t\} \\
-  & r_{i}   &= \expecti{\tau_{i}^{\asterisk}}
+  & \tau_{i}^{*} &= \min \{t: X_t = i, X_{l} \neq i, t > 0, l < t\} \\
+  & r_{i}   &= \expecti{\tau_{i}^{*}}
 \end{eqnarray*}
 #+end_definition
 
@@ -1557,7 +1619,7 @@ It holds
 The following recurrence holds:
 
 \[
-  m_{ij}  &= p_{ij} + \sum_{k \neq j} p_{ik} (m_{kj} + 1)
+  m_{ij} = p_{ij} + \sum_{k \neq j} p_{ik} (m_{kj} + 1)
   \underset{\sum_{k} p_{ik} = 1}{=} 1 + \sum_{k \neq j} p_{ik} m_{kj}
 \]
 
@@ -2127,5 +2189,10 @@ In conclusion using \eqref{corollary:comm-recurrence} and \eqref{prop:recurrent-
 \label{alg:hittingProbs}
 \end{algorithm}
 
-
+* Conclusions and future work
+ #+LaTeX: \appendix
+* Appendix
+** Installation of markovchain
+** Examples
+* Bibliography :ignore:
 \bibliography{references}
