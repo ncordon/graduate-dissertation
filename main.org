@@ -1263,13 +1263,13 @@ Let us split $P^{m + s(m - 2)} = P^{m - s}(P^s)^{m -1}$ and we partition:
 P^{m - s} =
 \left(\begin{array}{c|c}
   \underbrace{X_{11}}_{s\times s} & \underbrace{X_{12}}_{s \times (n - s)} \\
-  \hline \\
+  \hline
   \underbrace{X_{21}}_{(n - s)\times s} & \underbrace{X_{22}}_{(n - s) \times (n - s)}
 \end{array}\right)
 \qquad
 (P^s)^{m-1} = \left(\begin{array}{c|c}
   \underbrace{Y_{11}}_{s\times s} & \underbrace{Y_{12}}_{s \times (n - s)} \\
-  \hline \\
+  \hline
   \underbrace{Y_{21}}_{(n - s)\times s} & \underbrace{Y_{22}}_{(n - s) \times (n - s)}
 \end{array}\right)
 \]
@@ -1291,19 +1291,19 @@ To end the proof, it suffices to write:
 P^{m - s} \cdot (P^s)^{m-1} =
   \left(\begin{array}{c|c}
   X_{11} & X_{12} \\
-  \hline \\
+  \hline
   X_{21} & X_{22}
   \end{array}\right)
 \cdot
   \left(\begin{array}{c|c}
   Y_{11} & Y_{12} \\
-  \hline \\
+  \hline
   Y_{21} & Y_{22}
   \end{array}\right)
 \ge
   \left(\begin{array}{c|c}
   X_{11} \cdot Y_{11} & X_{11} \cdot Y_{12} \\
-  \hline \\
+  \hline
   X_{21} \cdot Y_{11} & X_{21} \cdot Y_{12}
   \end{array}\right)
 \]
@@ -1669,19 +1669,21 @@ Let $x$ such that $(I - P + W)x = 0$. Since $w P = w$ then $\{w P^n \} \rightarr
 $W \onecol = \onecol$. Therefore $w(I - P + W)x = wx = 0 \implies Wx = 0 \implies (I - P)x = 0$. Hence,
 this means $Px = x$. By Theorem \eqref{th:steady-ergodic} this implies
 $x = \lambda \onecol$, but $wx = 0$ and $w$ has only positive elements. Therefore $x = 0$, and we can use
-$A$ is invertible iff $Ax = 0 \implies x = 0 \forall x$.
+$A_{m \times m}$ is invertible iff $\forall x \in \reals^m, Ax = 0 \implies x = 0$.
 
 $\onecol = (I - P + W)c$ and multiplying by $Z$ in both sides: $Zc = C$. Similarly, we can show $wZ = w$.
 
-Since $Zc$ and $ZW = Z \left(\begin{array}{c|c|c|} w_1\onecol & \ldots & w_m\onecol \end{array}\right) =
+Since $Zc$ and $ZW = Z \left(\begin{array}{c|c|c} w_1\onecol & \ldots & w_m\onecol \end{array}\right) =
 W$. Then $Z(I - P) = Z(I -P + W - W) = I - ZW = I - W$.
 #+end_proof
 
 #+begin_theorem
-Given $P$ an ergodic matrix, $w$ its steady state, $M = (m_{ij})$ and $Z = (I - P + W)^{-1} = (z_{ij})$,
+Given $P$ an ergodic matrix, $w$ its steady state, $Z = (I - P + W)^{-1} = (z_{ij})$ and $M = (m_{ij})$,
 it holds:
 
 \[ m_{ij} = \frac{z_{jj} - z_{ij}}{w_j} \]
+
+\label{th:mfpt-computation}
 #+end_theorem
 
 #+begin_proof
@@ -2286,6 +2288,32 @@ In conclusion using \eqref{corollary:comm-recurrence} and \eqref{prop:recurrent-
 \caption{Algorithm to compute hitting probabilities}
 \label{alg:hittingProbs}
 \end{algorithm}
+
+** Mean first passage time
+Based on Theorem \eqref{th:mfpt-computation}, we ported and polished the following algorithm to C++ (a
+version of it was already in the package, although it did not made checkings about the matrix being
+regular). Due to backward compatibility with the previous version, the algorithm can be called with an
+ergodic matrix and a set of states \texttt{destination} and it would compute the mean first passage time
+from the states not in \texttt{destination} to any of the states there.
+
+\begin{algorithm}[h]
+\begin{algorithmic}[1]
+  \REQUIRE $P_{m \times m}$ an \textbf{ergodic} matrix
+  \REQUIRE \texttt{destination} a subset of $\{1, \ldots, m \}$. Empty by default.
+  \NEWLINE
+  \IF{\texttt{destination} is empty}
+    \STATE{Compute $w = \texttt{steadyStates}(P)$ (there should be only one)}
+    \STATE{Compute $Z = (I - P + W)^{-1}$}
+    \STATE{Compute $m_{ij} = (Z_{jj} - Z_{ij}) * w^{-j}$ for all $i, j \in \{1, \ldots, m\}$}
+    \RETURN{$M = (m_{ij})$}
+  \ELSE
+    \STATE{$M = \texttt{computeMeanAborptionTimes}(P, \texttt{destination})$}
+  \ENDIF
+\end{algorithmic}
+\caption{\texttt{meanFirstPassageTime} algorithm}
+\label{alg:isRegular}
+\end{algorithm}
+
 
 * Conclusions and future work
  #+LaTeX: \appendix
