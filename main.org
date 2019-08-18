@@ -2047,6 +2047,57 @@ Solving this last system for each $k = 1, \ldots, l$ can be done in $\algcomp{m^
 \label{alg:steadyStates}
 \end{algorithm}
 
+** Ergodic Markov chains
+
+\begin{algorithm}[h]
+\begin{algorithmic}[1]
+  \REQUIRE $P_{m \times m}$ an stochastic matrix
+  \NEWLINE
+  \STATE{${C_1, \ldots, C_n} = \texttt{CommunicatingClasses}(P)$}
+  \IF{$n = 1$}
+    \RETURN{True}
+  \ELSE
+    \RETURN{False}
+  \ENDIF
+\end{algorithmic}
+\caption{\texttt{is.irreducible} algorithm}
+\label{alg:isIrreducible}
+\end{algorithm}
+
+\begin{algorithm}[h]
+\begin{algorithmic}[1]
+  \REQUIRE $P_{m \times m}$ an stochastic matrix
+  \REQUIRE $n$ the exponent
+  \NEWLINE
+  \STATE{$R:= I_{m \times m}$}
+  \STATE{$A = P$}
+  \WHILE{$n > 0$}
+    \IF{$n mod(2) = 1$}
+      \STATE{$R := R + A$}
+    \ENDIF
+    \STATE{$A = A * A$}
+    \STATE{$n := n / 2$}
+  \ENDWHILE
+  \RETURN{$R$}
+\end{algorithmic}
+\caption{$\algcomp{log(n)}$ \texttt{matrixPow} algorithm}
+\label{alg:matrixPow}
+\end{algorithm}
+
+\begin{algorithm}[h]
+\begin{algorithmic}[1]
+  \REQUIRE $P_{m \times m}$ an stochastic matrix
+  \NEWLINE
+  \IF{Some element $p_ii > 0$}
+    \STATE{$d = \#\{i \in \{1, \ldots, m\}: p_ii > 0\}$}
+    \RETURN{$\texttt{matrixPow}(P, 2m - d - 1) > 0$}
+  \ELSE
+    \STATE{$\texttt{matrixPow}(P, m^2 - 2m + 2) > 0$}
+  \ENDIF
+\end{algorithmic}
+\caption{\texttt{is.regular} algorithm}
+\label{alg:isRegular}
+\end{algorithm}
 
 ** Hitting probabilities
 We want to come up with an algorithm to compute the hitting probabilities for a Markov chain.  We have not found anything documented in the literature with respect to the computation of these probabilities algorithmically, so we had tried to come up with our own algorithm.
