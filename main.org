@@ -1546,7 +1546,7 @@ If $P_{m\times m}$ is an ergodic transition matrix, then there exists a unique s
 elements strictly positive. Moreover, every left eigenvector $r: rP = r$ is linearly dependent of $w$, and
 every right eigenvector $c: Pc = c$ is a multiple of $\onecol$.
 
-\label{prop:steady-ergodic}
+\label{th:steady-ergodic}
 #+end_theorem
 
 #+begin_proof
@@ -1563,7 +1563,7 @@ of the system:
 #+end_lemma
 
 #+begin_proof
-By means of \eqref{prop:steady-ergodic} we have unicity and that the system
+By means of Theorem \eqref{th:steady-ergodic} we have unicity and that the system
 
 \[
   \left(\begin{array}{rcl}
@@ -1645,6 +1645,8 @@ M = PM + C - D
 
 #+begin_proposition
 Given an ergodic Markov chain, then $r_i = w_i^{-1}$ where $w$ is its unique steady state.
+
+\label{prop:ss-and-recurrence-prob}
 #+end_proposition
 
 #+begin_proof
@@ -1654,8 +1656,53 @@ Therefore $w\cdot C = \onerow = (w_1\cdot r_1, \ldots w_n r_n)$, and $r_i = w_i^
 #+end_proof
 
 #+begin_proposition
+Let $P_{m\times m}$ an ergodic matrix, $w$ its steady state and $W$ the matrix formed by $w$ as rows.
+Then $I - P + W$ is invertible and $Z = (I - P + W)^{-1}$ holds:
 
+1. $Z \cdot \onecol = \onecol$, $w\cdot Z = w$
+2. $Z(I - P) = I - W$
+\label{prop:z-invertible}
 #+end_proposition
+
+#+begin_proof
+Let $x$ such that $(I - P + W)x = 0$. Since $w P = w$ then $\{w P^n \} \rightarrow wW = w$ and similarly
+$W \onecol = \onecol$. Therefore $w(I - P + W)x = wx = 0 \implies Wx = 0 \implies (I - P)x = 0$. Hence,
+this means $Px = x$. By Theorem \eqref{th:steady-ergodic} this implies
+$x = \lambda \onecol$, but $wx = 0$ and $w$ has only positive elements. Therefore $x = 0$, and we can use
+$A$ is invertible iff $Ax = 0 \implies x = 0 \forall x$.
+
+$\onecol = (I - P + W)c$ and multiplying by $Z$ in both sides: $Zc = C$. Similarly, we can show $wZ = w$.
+
+Since $Zc$ and $ZW = Z \left(\begin{array}{c|c|c|} w_1\onecol & \ldots & w_m\onecol \end{array}\right) =
+W$. Then $Z(I - P) = Z(I -P + W - W) = I - ZW = I - W$.
+#+end_proof
+
+#+begin_theorem
+Given $P$ an ergodic matrix, $w$ its steady state, $M = (m_{ij})$ and $Z = (I - P + W)^{-1} = (z_{ij})$,
+it holds:
+
+\[ m_{ij} = \frac{z_{jj} - z_{ij}}{w_j} \]
+#+end_theorem
+
+#+begin_proof
+From \eqref{prop:mfpt-rec-mat} we have $(I - P) M = C - D$ and:
+
+\[
+Z(I - P)M = ZC - ZD \underset{\textrm{Lemma \eqref{prop:z-invertible}}}{\dimplies} M - WM = C -ZD
+\dimplies M = C -ZD + WM
+\]
+
+and from that equation an $m_{jj} = 0$, we deduce:
+
+\[
+  (w M)_{j} = \twopartdef{z_{ij}r_j - 1 - m_{ij}}{i \neq j}{z_{jj}r_j - 1}{i = j}
+\]
+
+and therefore, subtracting and using Proposition \eqref{prop:ss-and-recurrence-prob}:
+
+\[ m_{ij} = \frac{z_{jj} - z_{ij}}{w_j} \]
+#+end_proof
+
 * =markovchain= package
 We can propose an alternative definition of communicating property, taking $n \ge 0$ instead of $n > 0$,
 which has been the one used in the software from the start:
@@ -2089,7 +2136,7 @@ Solving this last system for each $k = 1, \ldots, l$ can be done in $\algcomp{m^
   \REQUIRE $P_{m \times m}$ an stochastic matrix
   \NEWLINE
   \IF{Some element $p_ii > 0$}
-    \STATE{$d = \#\{i \in \{1, \ldots, m\}: p_ii > 0\}$}
+    \STATE{$d = \#\{i \in \{1, \ldots, m\}: p_{ii} > 0\}$}
     \RETURN{$\texttt{matrixPow}(P, 2m - d - 1) > 0$}
   \ELSE
     \STATE{$\texttt{matrixPow}(P, m^2 - 2m + 2) > 0$}
