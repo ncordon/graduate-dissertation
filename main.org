@@ -1129,6 +1129,196 @@ For the counterexample, it suffices to take the Markov chain given by the transi
 $P = \left(\begin{array}{cc} 0 & 1 \\ 1 & 0 \end{array}\right)$.
 #+end_proof
 
+#+begin_lemma
+If $P_{m\times m}$ is an ergodic transition matrix for a Markov chain with states $\{1, \ldots, m\}$, then
+it is possible to reach each state $j$ from $i$ in $m-1$ steps at most.
+
+\label{lemma:reachability}
+#+end_lemma
+
+#+begin_proof
+The proof is based on graphs. Given a path of positive transition probabilities from
+$i$ to $j$, $i, k_1, k_2, \ldots, k_n = j \in S$, since $S$ is finite, if there were two states repeated,
+$k_l, k_p$ with $p > l$, we could delete the subpath $k_l, k_{l + 1}, \ldots $k_{p-1}$ and we would still
+have a path of states that would take us to $j$. Therefore we cannot have repeated elements in that path,
+and $n$ can be at most $m - 1$.
+#+end_proof
+
+#+begin_lemma
+Given $P_{m\times m}$ regular, then $P^n$ is regular for every $n\in \naturals$
+\label{lemma:power-regular}
+#+end_lemma
+
+#+begin_proof
+$P$ is regular, so all of its entries are positive. Therefore $P\cdot P$ gives a matrix of positive entries,
+and we can do induction on the number of products.
+#+end_proof
+
+The last lemma makes possible to define:
+
+#+begin_definition
+Given $P$ a regular matrix, we will call $\gamma(P) = \min\{n \in \naturals: P^n > 0\}$
+#+end_definition
+
+#+begin_theorem
+Let $P_{m \times m}$ be a regular matrix. Let $L_i = \{k_1^{(i)}, k_2^{(i)}, \ldots \}$ the set of lengths
+of all directed paths of $G(P)$ which start and end at the node $i$, with $i = 1, \ldots, n$. Let
+$g_i = gcd(L_i)$ (which we shown in previous sections that it was well defined for infinite sets). Then
+$P$ is regular iff $g_i = 1 \forall i = 1, \ldots, n$.
+
+\label{th:regular-characterization}
+#+end_theorem
+
+#+begin_proof
+We are going to prove only that if $P$ is regular, then $g_i = 1 \forall i = 1, \ldots, n$, since this part is
+will be used by another result later on. But the counterpart is also true, although it lies out of the
+scope of this work.
+
+Since $A$ is primitive, there exists $m \in \naturals$ such that $A^m > 0$. Because of Lemma
+\eqref{lemma:power-regular} we have $A^{m + p} > 0$ for all $p \ge 0$. Therefore there exists a path of
+(large enough) prime length in each $L_i$ and therefore $g_i = 1$.
+#+end_proof
+
+#+begin_theorem
+If $P_{m\times m}$ is regular and the shortest cycle in $G(P)$ has length $s$, then
+$\gamma(P) \le m + s(m - 2)$, and $A^{m + s(m - 2)} > 0$.
+
+\label{th:regular-gamma-bound}
+#+end_theorem
+
+#+begin_proof
+We may assume, w.l.o.g. that we have a shortest cycle is formed by the sequence with no repeated elements
+given by $[1, \ldots, s]$ (since in a stochastic matrix we
+can reorder the states and the related properties of reachability such as states classification, powers, etc
+translate correctly from the original to the reordered matrix)
+
+Since $P$ is ergodic (regular $implies$ ergodic), it exists a path from every node $i$ to every other node
+$j$, and that path has at most length $m-1$ by Lemma \eqref{lemma:reachability}.
+
+Let us split $P^{m + s(m - 2)} = P^{m - s}(P^s)^{m -1}$ and we partition:
+
+\[
+P^{m - s} =
+\left(\begin{array}{c|c}
+  \underbrace{X_{11}}_{s\times s} & \underbrace{X_{12}}_{s \times (n - s)} \\
+  \hline \\
+  \underbrace{X_{21}}_{(n - s)\times s} & \underbrace{X_{22}}_{(n - s) \times (n - s)}
+\end{array}\right)
+\qquad
+(P^s)^{m-1} = \left(\begin{array}{c|c}
+  \underbrace{Y_{11}}_{s\times s} & \underbrace{Y_{12}}_{s \times (n - s)} \\
+  \hline \\
+  \underbrace{Y_{21}}_{(n - s)\times s} & \underbrace{Y_{22}}_{(n - s) \times (n - s)}
+\end{array}\right)
+\]
+
+Since $[1, \ldots, s]$ form a cycle we can go from every $i$ to every other $j$ with $i,j \in \{1, \ldots, s\}$.
+Therefore there must be at least one positive element in each row of $X_{11}$. From the fact that the matrix
+is irreducible, in $r \le m - s$ steps we must be able to go from one state in $i \in \{s + 1, \ldots, m\}$ to another
+state $j \in \{1, \ldots s\}$ and stay inside the path $j, \ldots s, 1, 2, \ldots s$ for the remaining
+$m - s - r$ steps. Therefore every row in $X_{21}$ must contain one strictly positive value.
+
+Since $[1, \ldots, s]$ form a cycle in $G(P)$ we have a self cycles $[1], [2], \ldots, [s]$ in G(P^s)$.
+$P$ is regular and by Lemma \eqref{lemma:power-regular} $P^s$ is also regular and thus ergodic. Therefore,
+there must exist a path $[i, \ldots, j]$ of length $m - 1$ at most, with $i,j \in \{1, \ldots, m\}$. And
+looping enough steps in the cycle $[i]$ before, we have that $Y_{11} > 0$ and $Y_{12} > 0$.
+
+To end the proof, it suffices to write:
+
+\[
+P^{m - s} \cdot (P^s)^{m-1} =
+  \left(\begin{array}{c|c}
+  X_{11} & X_{12} \\
+  \hline \\
+  X_{21} & X_{22}
+  \end{array}\right)
+\cdot
+  \left(\begin{array}{c|c}
+  Y_{11} & Y_{12} \\
+  \hline \\
+  Y_{21} & Y_{22}
+  \end{array}\right)
+\ge
+  \left(\begin{array}{c|c}
+  X_{11} \cdot Y_{11} & X_{11} \cdot Y_{12} \\
+  \hline \\
+  X_{21} \cdot Y_{11} & X_{21} \cdot Y_{12}
+  \end{array}\right)
+\]
+
+and using the fact that if we have a matrix $A > 0, x \ge 0, x\neq 0$, then $Ax > 0$ (and analogously by
+row-wise products instead of column-wise), we have shown $P^{m + s(m - 2)} > 0$.
+#+end_proof
+
+
+#+begin_corollary
+$P_{m \times m}$ is regular iff $P^{m^2 - 2m + 2} > 0$
+#+end_corollary
+
+#+begin_proof
+One implication is clear by the definition of regular.
+
+The counterpart: if $P$ is regular, then there are cycles. If the shortest one had length $n$
+(all have length lower or equal than $n$ because we need at most $n-1$ steps to go from a state to
+antoher), then by Theorem \eqref{th:regular-characterization} $g_i = n$ for all $i = 1, \ldots, m$
+and matrix could not be regular. Then the shortest cycle must have length $s \le n - 1$, and by
+\eqref{th:regular-gamma-bound} we would have:
+
+\[\gamma(P) \le n + s(n - 2) \le n + (n - 1)(n - 2) = n^2 - 2n + 2 \]
+#+end_proof
+
+#+begin_lemma
+If $P_{m \times m}$ is ergodic and it has some $1 \le d \le m$ diagonal entries strictly positive, then
+$P$ is regular and $\gamma(P) \le 2m - d - 1$
+#+end_lemma
+
+#+begin_proof
+$A$ must be primitive, since there would exist at least one cycle $[i]$, and the matrix is ergodic, so we
+can have as many loops as necessary and then a path $[i, \ldots j]$ (of length lower or equal than $m$) or
+$[j, \ldots i]$ and appropriate number of loops in $[i]$, or junction of paths $[j, \ldots, i]$ plus
+enough loops in $[i]$, plus the path $[i, \ldots, k]$. To sum up, we can prove $A^{2m} > 0$.
+
+Now we know $A$ must have $d$ cycles with length one. Let us suppose, w.l.o.g., that they are at
+$1, \ldots, d$ states. We can partition:
+
+\[
+P^{m - d} =
+\left(\begin{array}{c|c}
+  \underbrace{X_{11}}_{d\times d} & \underbrace{X_{12}}_{s \times (m - d)} \\
+  \hline
+  \underbrace{X_{21}}_{(m - d)\times d} & \underbrace{X_{22}}_{(m - d) \times (m -d)}
+\end{array}\right)
+\qquad
+(P^1)^{m - 1} = \left(\begin{array}{c|c}
+  \underbrace{Y_{11}}_{d\times d} & \underbrace{Y_{12}}_{s \times (m - d)} \\
+  \hline
+  \underbrace{Y_{21}}_{(m - d)\times d} & \underbrace{Y_{22}}_{(m - d) \times (m -d)}
+\end{array}\right)
+\]
+
+and by a similar argument to the one in the demonstration of \eqref{th:regular-gamma-bound} we can show
+that $X_{11}$ and $X_{21}$ contain at least one positive entry per row and that $Y_{11} > 0$ and
+$Y_{12} > 0$. For this last part it suffices to use the argument that we can loop in $[i] for $n - 1 - r_i$
+times and then in $r_i \le n - 1$ steps we can reach from $i \in \{1, \ldots, d\}$ to
+$j \in \{1, \ldots, m\}$.
+#+end_proof
+
+#+begin_lemma
+If $P$ is an ergodic stochastic matrix with $p_ii > 0$ for all $i \in \{1, \ldots, m\}$ then is a regular
+stochastic matrix.
+\label{lemma:ergodic-pos-diagonal}
+#+end_lemma
+
+#+begin_proof
+Fixed $i,j$ and because of the previous lemma \eqref{lemma:reachability} we know that there exists a
+power $P^{m_{ij}}$ such that $p_{ij} > 0$. It suffices to prove that $\widetilde{P} = \prod_{i = 1}^m \prod{j = 1}^m P^{m_{ij}}$
+is a matrix with all possitive entries.
+
+If $P^{m_ij}$ has $\{p_{lk}\}$ positive entries, it is inmediate (since the diagonal of $P$ is non null), that
+$P\cdot P^{m_ij}$ has all those positive entries (at least). Using that argument recursively, we prove that
+$\widetilde{P}$ has all of its entries positive.
+#+end_proof
+
 #+begin_definition
 Given a matrix $P$, a row vector $r = \left(r_1, \ldots, r_n\right)$ is called a fixed row vector
 iff $rP = r$ (it is a left eigenvector for the matrix). Analogously, a column vector $c = \left(\begin{array}{c} r_1 \\ \vdots \\ r_n\end{array}\right)$
@@ -1143,8 +1333,8 @@ Given a stochastic matrix $P$, we call steady state to a probability vector $v$ 
 
 #+begin_lemma
 Let $P_{m\times m}$ be a transition matrix with all its entries positve. Let us fix a probability column
-vector $y$ and name $M_0 = \max y$, $m_0 = \min y$, $M_1 = \max Py$ and $m_1 = \min Py$. Hence, it exists
-$k\in [0,1[: $
+vector $y$ and name $M_0 = \max y$, $m_0 = \min y$, $M_1 = \max Py$ and $m_1 = \min Py$. Hence, there exists
+$k\in [0,1[$
 
 \[
 M_1 - m_1 \le k (M_0 - m_0)
@@ -1176,7 +1366,7 @@ and we can take $c = 1 - 2d$.
 
 Let $P_{m\times m}$ be the transition matrix of a regular Markov chain. Then $\{P^{n}\} \rightarrow W$ where
 $w \in \posreals$ and $W = \left(\begin{array}{c} w \\ \vdots \\ w \end{array}\right)$. Moreover, $w$ is a
-probability vector.
+probability vector with all its components strictly positive.
 
 If $P_{m\times m}$ is a regular transition matrix and
 $W = \left(\begin{array}{c} w \\ \vdots \\ w \end{array}\right) = \ \lim_{n} W^n$, then it holds:
@@ -1261,56 +1451,26 @@ it holds $r = rW = \big(\sum_{i = 1}^m r_i \big) W$
 As consequence of this theorem, since each element $(i,j)$ of $P^n$ is $p_{i,j}^{(n)}$ and each row tends
 to the same value $w$, the probability of starting at state $i$ and being in $j$ after $n$ steps is
 independent of the starting state $i$. \eqref{th:steady-regular} has an analogous theorem for ergodic
-Markov chains. We will need some previous lemmas to show that.
+Markov chains. We will need some previous lemma to show that.
+
 
 #+begin_lemma
-If $P_{m\times m}$ is an ergodic transition matrix for a Markov chain with states $\{1, \ldots, m\}$, then
-it is possible to reach each state $j$ from $i$ in $m-1$ steps at most.
-
-\label{lemma:reachability}
+Given $P$ an ergodic stochastic matrix, then $P$ and $\frac{1}{2}(I + P)$ is regular and they have the same
+eigenvectors.
+\label{lemma:ergodic-regular-rel}
 #+end_lemma
 
 #+begin_proof
-The proof is based on graphs. Given a path of positive transition probabilities from
-$i$ to $j$, $i, k_1, k_2, \ldots, k_n = j \in S$, since $S$ is finite, if there were two states repeated,
-$k_l, k_p$ with $p > l$, we could delete the subpath $k_l, k_{l + 1}, \ldots $k_{p-1}$ and we would still
-have a path of states that would take us to $j$. Therefore we cannot have repeated elements in that path,
-and $n$ can be at most $m - 1$.
-#+end_proof
-
-#+begin_lemma
-If $P$ is an ergodic stochastic matrix with $p_ii > 0$ for all $i \in \{1, \ldots, m\}$ then is a regular
-stochastic matrix.
-
-As a consequence $\frac{1}{2} (I + P)$ is a regular stochastic matrix given an ergodic $P$.
-#+end_lemma
-
-#+begin_proof
-Fixed $i,j$ and because of the previous lemma \eqref{lemma:reachability} we know that there exists a
-power $P^{m_{ij}}$ such that $p_{ij} > 0$. It suffices to prove that $\widetilde{P} = \prod_{i = 1}^m \prod{j = 1}^m P^{m_{ij}}$
-is a matrix with all possitive entries.
-
-If $P^{m_ij}$ has $\{p_{lk}\}$ positive entries, it is inmediate (since the diagonal of $P$ is non null), that
-$P\cdot P^{m_ij}$ has all those positive entries (at least). Using that argument recursively, we prove that
-$\widetilde{P}$ has all of its entries positive.
-
-For the second part, $\frac{1}{2} (I + P)$ has all the diagonal elements postive and is stochastic: all the elements are positive and the
+$\frac{1}{2} (I + P)$ has all the diagonal elements postive and is stochastic: all the elements are positive and the
 sum for the $i$ -th row is:
 
 \[ \frac{1}{2} + \frac{1}{2} \sum_{j = 1}^m p_{ij} = \frac{1}{2} + \frac{1}{2} = 1 \]
 
 To show that it is ergodic, fixed $i,j$, we must show that it exists a power matrix $\underbrace{\left\{\frac{1}{2}(I + P)\right\}}_{A}^m$ such that
 $(A^m)_{ij} > 0$. Since $P$ is ergodic, it exists $P^k$ such that $(P^k)_{ij} > 0$, and
-$\left\{\frac{1}{2}(I + P)\right\}^k = R + P^k$ where all of the elements of $R$ are non negative.
-This ends our proof.
-#+end_proof
+$\left\{\frac{1}{2}(I + P)\right\}^k = R + P^k$ where all of the elements of $R$ are non negative. Since its
+diagonal is positive Lemma \eqref{lemma:ergodic-pos-diagonal} ends our proof.
 
-#+begin_lemma
-Given $P$ an ergodic stochastic matrix, then $P$ and $\frac{1}{2}(I + P)$ have the same eigenvectors.
-\label{lemma:ergodic-regular-rel}
-#+end_lemma
-
-#+begin_proof
 Given $v: vP = v$, then $\frac{1}{2}(I + P)v = \frac{1}{2} (v + v) = v$.
 
 To prove the other implication: let $v: \frac{1}{2}(I + P)v = v \implies \frac{1}{2}v + \frac{1}{2}P = v$,
@@ -1360,7 +1520,80 @@ By means of \eqref{prop:steady-ergodic} we have unicity and that the system
 must have a unique solution.
 #+end_proof
 
+** Mean first passage time
+#+begin_definition
+Given an ergodic Markov chain, we call the expected number of steps to reach a state $j$ from initial state $i$
+as mean first passage time from $i$ to $j$. We note it $m_{ij}$. Formally:
 
+\begin{eqnarray*}
+  & \tau_{j} &= \min \{t: X_t = j, X_{l} \neq j, t >= 0, l < t\} \\
+  & m_{ij}   &= \expecti{\tau_{j}}
+\end{eqnarray*}
+
+Obviously by the definition $m_{ii} = 0$
+#+end_definition
+
+#+begin_definition
+If the initial state of an ergodic Markov is $i$, then we define the mean recurrence time for $i$ as:
+
+\begin{eqnarray*}
+  & \tau_{i}^{\asterisk} &= \min \{t: X_t = i, X_{l} \neq i, t > 0, l < t\} \\
+  & r_{i}   &= \expecti{\tau_{i}^{\asterisk}}
+\end{eqnarray*}
+#+end_definition
+
+#+begin_proposition
+It holds
+
+\begin{eqnarray*}
+  & m_{ij}  &= 1 + \sum_{k \neq j} p_{ik} m_{kj} \\
+  & m_{ij}   &= 1 + \sum_{k} p_{ik} m_{ki}
+\end{eqnarray*}
+
+\label{prop:mfpt-rec}
+#+end_proposition
+
+#+begin_proof
+The following recurrence holds:
+
+\[
+  m_{ij}  &= p_{ij} + \sum_{k \neq j} p_{ik} (m_{kj} + 1)
+  \underset{\sum_{k} p_{ik} = 1}{=} 1 + \sum_{k \neq j} p_{ik} m_{kj}
+\]
+
+Analogously:
+
+\[
+  r_i = \sum_{k} p_{ik}(m_{ki} + 1) = 1 + \sum_{k} p_{ik} m_{ki}
+\]
+#+end_proof
+
+Matricially, we can define $M = (m_{ij})$, $D = (\delta_{ij} \cdot r_i)$,
+$C = \left(\begin{array}{cccc} 1 & 1 &\ldots & 1 \\
+                               1 & 1 &\ldots & 1 \\
+                              \vdots & \vdots & \ddots & \vdots \\
+                               1 & 1 &\ldots & 1 \end{array}\right)$
+
+And for the recurrence \eqref{prop:mfpt-rec} we have:
+
+\begin{equation}
+M = PM + C - D
+\label{prop:mfpt-rec-mat}
+\end{equation}
+
+#+begin_proposition
+Given an ergodic Markov chain, then $r_i = w_i^{-1}$ where $w$ is its unique steady state.
+#+end_proposition
+
+#+begin_proof
+By Equation \eqref{prop:mfpt-rec-mat} we have $w(I - P)M = 0 = w(C -D)$.
+
+Therefore $w\cdot C = \onerow = (w_1\cdot r_1, \ldots w_n r_n)$, and $r_i = w_i^{-1}$
+#+end_proof
+
+#+begin_proposition
+
+#+end_proposition
 * =markovchain= package
 We can propose an alternative definition of communicating property, taking $n \ge 0$ instead of $n > 0$,
 which has been the one used in the software from the start:
