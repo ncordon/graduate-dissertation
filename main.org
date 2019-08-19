@@ -1846,7 +1846,7 @@ still.
 
 *** Transient and recurrent classes / states
 For Markov chains with a finite number of states, Corollary \eqref{corollary:comm-recurrence}
-guarantees us that recurrent classes and closed classes are the same [fn::[[https://github.com/spedygiorgio/markovchain/issues/171][markovchain issue#171]]].
+guarantees us that recurrent classes and closed classes are the same [fn::[[https://github.com/spedygiorgio/markovchain/issues/171][markovchain issue#171]]]
 
 \begin{algorithm}[h]
 \begin{algorithmic}[1]
@@ -2289,7 +2289,7 @@ In conclusion using \eqref{corollary:comm-recurrence} and \eqref{prop:recurrent-
 \label{alg:hittingProbs}
 \end{algorithm}
 
-** Mean first passage time
+** Mean first passage time and recurrence times
 Based on Theorem \eqref{th:mfpt-computation}, we ported and polished the following algorithm to C++ (a
 version of it was already in the package, although it did not made checkings about the matrix being
 regular). Due to backward compatibility with the previous version, the algorithm can be called with an
@@ -2311,14 +2311,53 @@ from the states not in \texttt{destination} to any of the states there.
   \ENDIF
 \end{algorithmic}
 \caption{\texttt{meanFirstPassageTime} algorithm}
-\label{alg:isRegular}
+\label{alg:mfpt}
 \end{algorithm}
 
+\begin{algorithm}[h]
+\begin{algorithmic}[1]
+  \REQUIRE $P_{m \times m}$ an stochastic matrix
+  \STATE{$[u_1, \ldots, u_n] = \texttt{steadyStates}(P)$}
+  \STATE{$r = (0, \ldots, 0)$}
+  \FOR{Each steady state $u_i$}
+    \FOR{$j = 1, \ldots, m$}
+      \IF{$u_{ij} > 0$}
+         \STATE{$r_j := u_{ij}^{-1}$}
+      \ENDIF
+    \ENDFOR
+  \ENDFOR
+  \RETURN{$r = \{(j, r_j): r_j > 0\}$}
+\end{algorithmic}
+\caption{\texttt{meanRecurrenceTime} algorithm}
+\label{alg:mrt}
+\end{algorithm}
 
 * Conclusions and future work
  #+LaTeX: \appendix
 * Appendix
 ** Installation of markovchain
+As prerequisite, R [fn::[[https://cloud.r-project.org][https://cloud.r-project.org]]] should be installed. In \textit{Debian} based distributions can be installed as:
+
+\begin{lstlisting}[language=R,numbers=none]
+  sudo apt install r-base rbase-dev
+\end{lstlisting}
+
+In \textit{Arch Linux} based distributions as:
+
+\begin{lstlisting}[language=R,numbers=none]
+  sudo pacman -S r
+\end{lstlisting}
+
+It could be useful to have RStudio [fn::[[https://www.rstudio.com][https://www.rstudio.com]]] installed too (although it is not mandatory to execute the software).
+
+To install and load the markovchain [fn::[[https://github.com/spedygiorgio/markovchain][https://github.com/spedygiorgio/markovchain]]] package, one could do (from an R terminal or inside RStudio):
+
+\begin{lstlisting}[language=R,numbers=none]
+  install.packages("markovchain")
+  library("markovchain")
+\end{lstlisting}
+
 ** Examples
+** Mathematical tests for the package
 * Bibliography :ignore:
 \bibliography{references}
