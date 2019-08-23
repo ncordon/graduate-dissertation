@@ -766,7 +766,7 @@ themselves.
     \rowcolor{gray!20}
       Q_1       &        &   Q_2      &       & \ldots &       &    Q_r     &        & W\\
   \end{array}\right)
-\label{eq:irreducible-classes-matrix}
+\label{eq:canonic-form}
 \end{equation}
 
 Each $C_k$ is said to be an irreducible and closed sub-chain of the original transition matrix
@@ -787,7 +787,7 @@ power matrices appears in $P^n$, $n > 2$:
     \rowcolor{gray!20}
       Q_1 \cdot P_1^{n-1} & & Q_2 \cdot P_2^{n-1} &    & \ldots &       & Q_r \cdot P_r^{n} &        & W^n\\
   \end{array}\right)
-\label{eq:irreducible-classes-pow-matrix}
+\label{eq:canonic-form-pow}
 \end{equation}
 
 #+begin_definition
@@ -1014,7 +1014,7 @@ Although the concept of absorbing state has arisen before, we give a formal defi
 A state $i\in S$ is absorbing iff $p_{i,i} = 1$.
 #+end_definition
 
-Let us observe the matrix \eqref{eq:irreducible-classes-matrix}. This matrix poses some interesting questions for
+Let us observe the matrix \eqref{eq:canonic-form}. This matrix poses some interesting questions for
 the non-essential states. Let us take a non-essential state, namely $i$. Then it is likely that it will go to a
 state in $S^{\ast}$ at some point, and never comes back.
 
@@ -1054,7 +1054,7 @@ subchain, $C$, it does so with the initial probabilities
 $(f_{i,j}^{\ast} / f_{i,C}^{\ast})_{j \in C}$.
 
 It we call $V = \bigg(\expecti{V_j}\bigg)_{i,j \not\in S^{\ast}}$, we have, taking a look at
-the matrix that \eqref{eq:irreducible-classes-pow-matrix} that $V = \sum_{n = 1}^{\infty} W^n$.
+the matrix that \eqref{eq:canonic-form-pow} that $V = \sum_{n = 1}^{\infty} W^n$.
 
 Also, we can define $Q = (Q_1, \ldots, Q_r)$ the matrix of transition probabilities from
 $S - S^{\ast}$ to $S^{\ast}$, and $q = Q \cdot \left(\begin{array}{c} 1 \\ 1 \\ \vdots \\ 1 \end{array}\right)$ (the row-wise sum of $Q$). And we will call
@@ -1581,6 +1581,59 @@ By means of Theorem \eqref{th:steady-ergodic} we have unicity and that the syste
 
 must have a unique solution.
 #+end_proof
+** Steady states
+We are now in conditions of giving of depicting how steady states of a general stochastic matrix can be computed.
+
+#+begin_proposition
+Given $P_{m\times m}$ an stochastic matrix, then every steady state $v$ assigns $0$ to the transient states, i.e. if
+$i$ -th state is transient, then $(vP)_i = 0$
+
+\label{prop:ss-transient-zero}
+#+end_proposition
+
+#+begin_proof
+Looking at the canonic matrix from Equation \eqref{eq:irreducible-classes-matrix}, if $v$ is a steady state, then
+if $[l, \ldots, m]$ are transient states (we can suppose w.l.o.g. they are ordered as in the canonic form), we would
+have:
+
+\[
+(v_l, \ldots, v_m) W = (v_l, \ldots, v_m) \equiv (v_l, \ldots, v_m) \cdot (W - I) = 0
+\]
+
+$(W - I)$ is invertible by TODO. Hence, $(v_l, \ldots, v_m) = 0$
+
+#+end_proof
+
+Each matrix $P_1, \ldots, P_r$ from \eqref{eq:canonic-form} is irreducible. Therefore, by the fundamental Theorem \eqref{th:steady-ergodic},
+each $P_i$ has a unique steady vector $v^{(i)}$. If $P_i$ corresponds to the states $[l_i, l_i + 1 \ldots, u_i]$ We are going
+to call $\widetilde{v}^{(i)}_j$ = \twopartdef{0}{j < l_i \textrm{ or } j > u_i}{v^{(i)}_k}{j = l_{i + k - 1}}$.
+
+
+#+begin_proposition
+Given an stochastic matrix $P$ written in its canonic form, then its space of steady states is a convex hull given by:
+
+\[
+\bigg\{\sum_{i = 1}^r \alpha_i \widetilde{v}^{(i)}: 0 \le \alpha_i, \sum_{i = 1}^{r} \alpha_i = 1\bigg\}
+\]
+
+#+end_proposition
+
+#+begin_proof
+Since $P \sum_{i = 1}^r \alpha_i \widetilde{v}^{(i)} = \sum_{i = 1}^r \alpha_i P \widetilde{v}^{(i)} = \sum_{i = 1}^r \alpha_i \widetilde{v}^{(i)}$,
+and $\sum_{j = 1}^m \bigg(\sum_{i = 1}^r \alpha_i \widetilde{v}^{(i)} \bigg)_j = \sum_{i = 1}^m \alpha_i \sum_{j = 1}^m \widetilde{v}^{(i)}_j = \sum_{i = 1}^m \alpha_i = 1$
+then it is clear that every convex combination of $\widetilde{v}^{(i)}, i = 1, \ldots, r$ is a steady state for the matrix.
+
+They are also linearly independent, trivially, since they are not null by the Theorem \eqref{th:steady-ergodic} and the positive regions
+of each one do not overlap by construction.
+
+Given a steady state $\widetilde{w}$, by the Proposition \eqref{prop:ss-transient-zero} we know $(\widetilde{w} P)_{j} = 0$ for $j= u_{r + 1}, \ldots, m$. And
+by the shape of the matrix, $(P_i \widetilde{w})_j = v_j$ for each $j = l_j, \ldots, u_j$. By Theorem \eqref{th:steady-ergodic}, again, then
+$w^{(i)} = (\widetilde{w}_{l_i}, \ldots, \widetilde{u_i})$ is $w^{(i)} = \alpha_i v^{(i)}$. But it has to hold:
+
+\[
+1 = \sum_{j = 1}^m \widetilde{w}_j = \sum_{i = 1}^{r} \sum_{j} w^{(i)}_j = \sum_{i = 1}^{r} \alpha_i \sum_{j} v^{(j)} = \sum_{i = 1}^{r} \alpha_i
+\]
+#+end_proof
 
 ** Mean first passage time
 #+begin_definition
@@ -2027,7 +2080,7 @@ As result, we could be using this algorithm and obtain less steady states than w
          $C_k = \{i^{(k)}_1, \ldots, i^{(k)}_{l_k}\} \subseteq \{1, \ldots, m\}$ is a recurrent class}
   \NEWLINE
   \FOR{$k = 1, \ldots, l$}
-    \STATE{Compute the submatrix $P_k$ from the matrix \eqref{eq:irreducible-classes-matrix},
+    \STATE{Compute the submatrix $P_k$ from the matrix \eqref{eq:canonic-form},
            subseting $P_k = P[C_k, C_k]$}
     \STATE{Call $v_k = \textrm{\texttt{computeSteadyStates}}(P_k)$}
     \IF{Some element from $v_k$ is negative}
@@ -2075,7 +2128,7 @@ Solving this last system for each $k = 1, \ldots, l$ can be done in $\algcomp{m^
          $C_k = \{i^{(k)}_1, \ldots, i^{(k)}_{l_k}\} \subseteq \{1, \ldots, m\}$ is a recurrent class}
   \NEWLINE
   \FOR{$k = 1, \ldots, l$}
-    \STATE{Compute the submatrix $P_k$ from the matrix \eqref{eq:irreducible-classes-matrix},
+    \STATE{Compute the submatrix $P_k$ from the matrix \eqref{eq:canonic-form},
            subseting $P_k = P[C_k, C_k]$}
     \STATE{Compute $\widetilde{P}_k$}
     \STATE{Compute $u_k$ solving the system:
@@ -2245,7 +2298,7 @@ Let us remember that standard algorithms to compute the inverse of a matrix are 
 (0, \ldots, 0, \underset{i)}{1},  0, \ldots, 0, \underset{j)}{-1}, 0, \ldots, 0)
 \end{eqnarray*}
 
-which are linearly dependent. Our hypothesis is that if we treat the closed communicating classes differently (see \eqref{eq:irreducible-classes-matrix} for context), we are deleting the linearity in the system. This is an untested hypothesis of course, but computationally, the difference between proving it or not would be minimal (let us suppose we prove it, then some matrixes would still not be invertible due to numeric errors, numbers very close to zero, or to the overflow, etc, so the corresponding method would still have to perform a warning for not solvable problems).
+which are linearly dependent. Our hypothesis is that if we treat the closed communicating classes differently (see \eqref{eq:canonic-form} for context), we are deleting the linearity in the system. This is an untested hypothesis of course, but computationally, the difference between proving it or not would be minimal (let us suppose we prove it, then some matrixes would still not be invertible due to numeric errors, numbers very close to zero, or to the overflow, etc, so the corresponding method would still have to perform a warning for not solvable problems).
 
 In conclusion using \eqref{corollary:comm-recurrence} and \eqref{prop:recurrent-classes}, if we have a closed communicating class $C$, then $f_{i,j} = 1$ for all $i,j \in C$ and $f_{k,j}  = 0$ for all $k\not\in C$. The algorithm we get would be something alike:
 
