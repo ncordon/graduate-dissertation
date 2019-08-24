@@ -2433,26 +2433,206 @@ from the states not in \texttt{destination} to any of the states there.
 ** Installation of markovchain
 As prerequisite, R [fn::[[https://cloud.r-project.org][https://cloud.r-project.org]]] should be installed. In \textit{Debian} based distributions can be installed as:
 
-\begin{lstlisting}[language=R,numbers=none]
+#+attr_latex: :options style=vs, bgcolor=light-gray
+#+begin_src bash :eval no
   sudo apt install r-base rbase-dev
-\end{lstlisting}
+#+end_src
 
 In \textit{Arch Linux} based distributions as:
 
-\begin{lstlisting}[language=R,numbers=none]
+#+attr_latex: :options style=vs, bgcolor=light-gray
+#+begin_src bash :eval no
   sudo pacman -S r
-\end{lstlisting}
+#+end_src
 
 It could be useful to have RStudio [fn::[[https://www.rstudio.com][https://www.rstudio.com]]] installed too (although it is not mandatory to execute the software).
 
-To install and load the markovchain [fn::[[https://github.com/spedygiorgio/markovchain][https://github.com/spedygiorgio/markovchain]]] package, one could do (from an R terminal or inside RStudio):
+To install the =markovchain= [fn::[[https://github.com/spedygiorgio/markovchain][https://github.com/spedygiorgio/markovchain]]] package, one could do (from an R terminal or inside RStudio):
 
-\begin{lstlisting}[language=R,numbers=none]
+#+attr_latex: :options style=vs, bgcolor=light-gray
+#+begin_src R :eval no
   install.packages("markovchain")
-  library("markovchain")
-\end{lstlisting}
+#+end_src
 
 ** Examples
+First we need to load =markovchain=
+
+#+attr_latex: :options style=vs, bgcolor=light-gray
+#+begin_src R :session examples :results output silent
+library("markovchain")
+#+end_src
+
+We define the data. We will be using Drunkard's Walk from \cite{grinstead}.
+
+#+attr_latex: :options style=vs, bgcolor=light-gray
+#+begin_src R :session examples :results output :exports both
+# Define Drunkard's Walk transition matrix
+# It is a by row stochastic marix
+drunkardsMatrix <- matrix(c(  1,   0,   0,   0,   0,
+                            0.5,   0, 0.5,   0,   0,
+                              0, 0.5,   0, 0.5,   0,
+                              0,   0, 0.5,   0, 0.5,
+                              0,   0,   0,   0,   1), nrow = 5, byrow = TRUE)
+# Define states as 1: home, 5: bar, rest numbered corners
+states <- c("home", "2", "3", "4", "bar")
+# Create the Markov chain from the matrix
+mc <- new("markovchain", name = "Drunkard's walk",
+          transitionMatrix = drunkardsMatrix, states = states)
+mc
+#+end_src
+
+#+RESULTS:
+#+begin_example
+Drunkard's walk
+ A  5 - dimensional discrete Markov Chain defined by the following states:
+ home, 2, 3, 4, bar
+ The transition matrix  (by rows)  is defined as follows:
+     home   2   3   4 bar
+home  1.0 0.0 0.0 0.0 0.0
+2     0.5 0.0 0.5 0.0 0.0
+3     0.0 0.5 0.0 0.5 0.0
+4     0.0 0.0 0.5 0.0 0.5
+bar   0.0 0.0 0.0 0.0 1.0
+#+end_example
+
+Communicating classes are $\{\textrm{home}\}, \{2, 3, 4\}, \{\textrm{bar}\}$:
+
+#+attr_latex: :options style=vs, bgcolor=light-gray
+#+begin_src R :session examples :results output :exports both
+communicatingClasses(mc)
+#+end_src
+
+#+RESULTS:
+: [[1]]
+: [1] "home"
+:
+: [[2]]
+: [1] "2" "3" "4"
+:
+: [[3]]
+: [1] "bar"
+
+
+#+begin_src R :session examples :results output silent :exports none
+set.seed(450)
+#+end_src
+
+#+attr_latex: :options style=vs, bgcolor=light-gray
+#+header: :width 5 :height 5 :R-dev-args
+#+begin_src R :session examples :results output graphics :file imgs/drunkards-mc.svg :exports both
+plot(mc, package = "diagram", box.size = 0.1)
+#+end_src
+
+#+RESULTS:
+[[file:imgs/drunkards-mc.png]]
+
+
+Recurrent states are:
+
+#+attr_latex: :options style=vs, bgcolor=light-gray
+#+begin_src R :session examples :results output :exports both
+recurrentStates(mc)
+#+end_src
+
+#+RESULTS:
+: [1] "home" "bar"
+
+which of course are absorbing:
+
+#+attr_latex: :options style=vs, bgcolor=light-gray
+#+begin_src R :session examples :results output :exports both
+recurrentStates(mc) == absorbingStates(mc)
+#+end_src
+
+#+RESULTS:
+: [1] TRUE TRUE
+
+Transient states are:
+
+#+attr_latex: :options style=vs, bgcolor=light-gray
+#+begin_src R :session examples :results output :exports both
+transientStates(mc)
+#+end_src
+
+#+RESULTS:
+: [1] "2" "3" "4"
+
+Hitting probabilities are:
+
+#+attr_latex: :options style=vs, bgcolor=light-gray
+#+begin_src R :session examples :results output :exports both
+hittingProbabilities(mc)
+#+end_src
+
+#+RESULTS:
+:      home         2   3         4  bar
+: home 1.00 0.0000000 0.0 0.0000000 0.00
+: 2    0.75 0.3333333 0.5 0.3333333 0.25
+: 3    0.50 0.6666667 0.5 0.6666667 0.50
+: 4    0.25 0.3333333 0.5 0.3333333 0.75
+: bar  0.00 0.0000000 0.0 0.0000000 1.00
+
+which means that if the drunk person starts in corner $2$ (state $2$) the probability of ever returning
+there is $0.333333$, of ever reaching home, $0.75$ and of ever reaching the bar, $0.25$. Of course this
+last two former probabilities should coincide with the =absorptionProbabilities=, since they are absorbing
+states:
+
+#+attr_latex: :options style=vs, bgcolor=light-gray
+#+begin_src R :session examples :results output :exports both
+absorptionProbabilities(mc)
+#+end_src
+
+#+RESULTS:
+:   home  bar
+: 2 0.75 0.25
+: 3 0.50 0.50
+: 4 0.25 0.75
+
+And the mean absorption time (that is, how much is the drunk person going to take to go home / bar in average) is given by:
+
+#+attr_latex: :options style=vs, bgcolor=light-gray
+#+begin_src R :session examples :results output :exports both
+hittingProbabilities(mc)
+#+end_src
+
+#+RESULTS:
+:      home         2   3         4  bar
+: home 1.00 0.0000000 0.0 0.0000000 0.00
+: 2    0.75 0.3333333 0.5 0.3333333 0.25
+: 3    0.50 0.6666667 0.5 0.6666667 0.50
+: 4    0.25 0.3333333 0.5 0.3333333 0.75
+: bar  0.00 0.0000000 0.0 0.0000000 1.00
+
+which means that if the drunk person starts in corner $2$ (state $2$) the probability of ever returning
+there is $0.333333$, of ever reaching home, $0.75$ and of ever reaching the bar, $0.25$. Of course this
+last two former probabilities should coincide with the =absorptionProbabilities=, since they are absorbing
+states:
+
+#+attr_latex: :options style=vs, bgcolor=light-gray
+#+begin_src R :session examples :results output :exports both
+absorptionProbabilities(mc)
+#+end_src
+
+#+RESULTS:
+:   home  bar
+: 2 0.75 0.25
+: 3 0.50 0.50
+: 4 0.25 0.75
+
+And the mean absorption time (that is, how many setps going to take for the drunk person to reach home /
+the bar in average) from each corner is:
+
+#+attr_latex: :options style=vs, bgcolor=light-gray
+#+begin_src R :session examples :results output :exports both
+meanAbsorptionTime(mc)
+#+end_src
+
+#+RESULTS:
+: 2 3 4
+: 3 4 3
+
+that is, $3$ steps if that person start in corner $2, 4$, otherwise $4$ steps.
+
 ** Mathematical tests for the package
 * Bibliography :ignore:
 \bibliography{references}
