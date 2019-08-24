@@ -1101,6 +1101,17 @@ Summing in $j \in S^{\ast}$ in \eqref{eq:tau-ast-nat} we arrive at:
 \]
 #+end_proof
 
+#+begin_definition
+The matrix $N = (I - W)^{-1}$ is called fundamental matrix for $P$. The entry $n_{ij}$ represents the
+number of times the process is in trasient state $_{j}$ if it is started in also transient state $s_{i}$,
+(counting the initial state as $1$ step)
+#+end_definition
+
+#+begin_definition
+Let $t_i$ be the number of steps before the chain is absorbed, given that the chain starts in state $s_i$.
+Then $t = N\cdot \onecol$
+#+end_definition
+
 #+begin_proposition
 If $S - S^{\ast}$ is finite, the following relation holds:
 
@@ -1592,7 +1603,7 @@ $i$ -th state is transient, then $(vP)_i = 0$
 #+end_proposition
 
 #+begin_proof
-Looking at the canonic matrix from Equation \eqref{eq:irreducible-classes-matrix}, if $v$ is a steady state, then
+Looking at the canonic matrix from Equation \eqref{eq:canonic-form}, if $v$ is a steady state, then
 if $[l, \ldots, m]$ are transient states (we can suppose w.l.o.g. they are ordered as in the canonic form), we would
 have:
 
@@ -1606,7 +1617,7 @@ $(W - I)$ is invertible by TODO. Hence, $(v_l, \ldots, v_m) = 0$
 
 Each matrix $P_1, \ldots, P_r$ from \eqref{eq:canonic-form} is irreducible. Therefore, by the fundamental Theorem \eqref{th:steady-ergodic},
 each $P_i$ has a unique steady vector $v^{(i)}$. If $P_i$ corresponds to the states $[l_i, l_i + 1 \ldots, u_i]$ We are going
-to call $\widetilde{v}^{(i)}_j$ = \twopartdef{0}{j < l_i \textrm{ or } j > u_i}{v^{(i)}_k}{j = l_{i + k - 1}}$.
+to call $\widetilde{v}^{(i)}_j = \twopartdef{0}{j < l_i \textrm{ or } j > u_i}{v^{(i)}_k}{j = l_{i + k - 1}}$.
 
 
 #+begin_proposition
@@ -1758,6 +1769,7 @@ and therefore, subtracting and using Proposition \eqref{prop:ss-and-recurrence-p
 \[ m_{ij} = \frac{z_{jj} - z_{ij}}{w_j} \]
 #+end_proof
 
+**
 * =markovchain= package
 We can propose an alternative definition of communicating property, taking $n \ge 0$ instead of $n > 0$,
 which has been the one used in the software from the start:
@@ -2149,7 +2161,7 @@ Solving this last system for each $k = 1, \ldots, l$ can be done in $\algcomp{m^
 \label{alg:steadyStates}
 \end{algorithm}
 
-** Ergodic Markov chains
+** Markov chain classification
 
 \begin{algorithm}[h]
 \begin{algorithmic}[1]
@@ -2201,6 +2213,36 @@ Solving this last system for each $k = 1, \ldots, l$ can be done in $\algcomp{m^
 \label{alg:isRegular}
 \end{algorithm}
 
+** Absorption
+\begin{algorithm}[h]
+\begin{algorithmic}[1]
+  \REQUIRE $P_{m \times m}$ an stochastic matrix
+  \NEWLINE
+  \STATE{$T = \texttt{transientStates}(P)$}
+  \STATE{$R = \texttt{recurrentStates}(R)$}
+  \STATE{Compute $W = P[T, T]$}
+  \STATE{Compute the fundamental matrix $N = (I - W)^{-1}$}
+  \STATE{Compute $t = N \cdot c$}
+  \RETURN{$t$}
+\caption{\texttt{meanAbsorptionTime} algorithm}
+\label{alg:meanAbsorptionTime}
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[h]
+\begin{algorithmic}[1]
+  \REQUIRE $P_{m \times m}$ an stochastic matrix
+  \NEWLINE
+  \STATE{$T = \texttt{transientStates}(P)$}
+  \STATE{$R = \texttt{recurrentStates}(R)$}
+  \STATE{Compute $W = P[T, T]$}
+  \STATE{Compute the fundamental matrix $N = (I - W)^{-1}$}
+  \STATE{Compute $F^{*} = N \cdot P[transient, recurrent$}
+  \RETURN{$F^{\ast}$}
+\caption{\texttt{absorptionProbabilities} algorithm}
+\label{alg:absorptionProbabilities}
+\end{algorithmic}
+\end{algorithm}
 ** Hitting probabilities
 We want to come up with an algorithm to compute the hitting probabilities for a Markov chain.  We have not found anything documented in the literature with respect to the computation of these probabilities algorithmically, so we had tried to come up with our own algorithm.
 
