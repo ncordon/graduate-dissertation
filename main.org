@@ -98,22 +98,22 @@ matemáticos adquiridos a través de la bibliografía.
 
 Los algoritmos mejorados / reprogramados oscilan desde la identificación de clases comunicantes, pasando por
 el cálculo de los tiempos medios de llegada o la descripción de clases recurrentes y transitorias. Como
-consecuencia de ellos, ha sido redise\-ñada la clasificación de estados de una manera más eficiente.
-Además, el algoritmo del cálculo de distribuciones estacionarias ha sido altamente mejorado, puesto que
-el antiguo podía devolver resultados incorrectos. Las nuevas incorporaciones versan principalmente sobre
-cantidades relacionadas con la absorción (tiempo medio de absorción, probabilidad de absorción), el tiempo
-medio de recurrencia, las probabilidades de llegada, el cálculo eficiente de la accesibilidad a estados,
-de potencias y la clasificación de cadenas (regulares, ergódicas, no ergódicas).
+consecuencia de ellos, ha sido redise\-ñada la clasificación de estados de una manera más eficiente, así como
+la transformación a forma canónica. Además, el algoritmo del cálculo de distribuciones estacionarias ha sido
+altamente mejorado, puesto que el antiguo podía devolver resultados incorrectos. Las nuevas incorporaciones
+versan principalmente sobre cantidades relacionadas con la absorción (tiempo medio de absorción, probabilidad
+de absorción), número esperado de visitas a un estado, el tiempo medio de recurrencia, las probabilidades de
+llegada, el cálculo eficiente de la accesibilidad a estados, de potencias y la clasificación de cadenas
+(regulares, ergódicas, no ergódicas).
 
 En el capítulo [[Conclusions and future work]] se esbozan ideas para trabajo futuro en el sofware, a tenor del
 conocimiento ganado durante el estudio teórico y práctico de la librería, que en conjunción deberían llevar
 a la publicación de dicho software en una revista académica de alto impacto.
 
-El anexo [[Appendix]] cubre una breve introducción a la complejidad algorítmica. También incluye instrucciones sobre cómo
-instalar y usar el sofware. Por último, se explican otras labores realizadas en el marco de este proyecto:
-incorporación de /tests/ a la librería basados en la comprobación de propiedades matemáticas, revisión de
-documentación así como el diseño de una página web para incrementar la visibilidad del paquete y mejorar el
-acceso a la documentación del mismo.
+El anexo [[Appendix]] incluye instrucciones sobre cómo instalar y usar el sofware. Asimismo, se explican otras
+labores realizadas en el marco de este proyecto: incorporación de /tests/ a la librería basados en la
+comprobación de propiedades matemáticas, revisión de documentación así como el diseño de una página web
+para incrementar la visibilidad del paquete y mejorar el acceso a la documentación del mismo.
 
 \vspace*{1cm}
 \textsc{Palabras clave}: Cadenas de Markov, algoritmos, probabilidad, álgebra lineal, grafos
@@ -144,20 +144,21 @@ mathematics knowledge acquired from the bibliography.
 
 The improved / recoded algorithms range from communicating classes identification, to mean first passage
 times computation or recurrent (resp. transient) classes description. Also as a consequence of those, state
-classification has been redesigned in a more efficient manner. Moreover, steady states algorithm has been highly improved, due to the fact that
-incorrect results could arise from the former one. The added algorithms are mainly related to absorption
-related quantities (mean aborption time, absorption probability), mean recurrence times, hitting
-probabilities, efficient reachability, power computation and Markov chain classification (regular, ergodic
-or non ergodic).
+classification has been redesigned in a more efficient manner, as well as conversion to canonic form. Moreover,
+steady states algorithm has been highly improved, due to the fact that incorrect results could arise
+from the former one. The added algorithms are mainly related to absorption related quantities (mean
+aborption time, absorption probability), mean number of visits to a state, mean recurrence times, hitting
+probabilities, efficient reachability, power computation and Markov chain classification
+(regular, ergodic or non ergodic).
 
 In chapter [[Conclusions and future work]] we outline future work that could be done in the package, in light
 of the knowledge we have gathered during the theoretical and practical study of the library, and that should
 cumminate with its publication in a high impact journal.
 
-Appendix [[Appendix]] covers a brief introduction to computational complexity. It also includes instructions on how to
-install and use the software. Lastly, it explains more work developed within this project: addition
-of tests for the libary based in check of mathematical properties, review of documentation and design of
-a web page to increase the visibility of the sofware and improve access to its documentation.
+Appendix [[Appendix]] includes instructions on how to install and use the software. Furthermore, it explains more
+work developed within this project: addition of tests for the libary based in check of mathematical
+properties, review of documentation and design of a web page to increase the visibility of the
+sofware and improve access to its documentation.
 
 \vspace*{1cm}
 \textsc{Keywords}: Markov chains, algorithms, probability, linear algebra, graphs
@@ -726,14 +727,15 @@ e_{i,j} &= \sum_{n = 1}^{\infty} n f_{i,j}^{(n)} = p_{i,j} + \sum_{n = 2}^{\inft
 
 Note this last proposition can be used to compute $e_{i,j}$ with a computer.
 
-*** Number of visits to a state
+*** Mean number of visits to a state
 
 #+begin_proposition
 If $f_{j,j} \neq 1$, we have:
 
-\[
+\begin{equation}
   \expecti{V_j} = \frac{f_{i,j}}{1 - f_{j,j}}
-\]
+  \label{eq:char-mean-number-visits}
+\end{equation}
 
 Moreover, it holds $f_{i,i} = 1 \dimplies \expecti{V_i} = \infty$.
 
@@ -1204,10 +1206,10 @@ Then $t = N\cdot \onecol$
 #+begin_proposition
 If $S - S^{\ast}$ is finite, the following relation holds:
 
-\begin{align}
-F^{\ast} = (I - W)^{-1} Q \\
-f^{\ast} = 1
-\end{align}
+\begin{eqnarray}
+F^{\ast} = (I - W)^{-1} Q \label{eq:char-absorption-probs}\\
+f^{\ast} = 1 \nonumber
+\end{eqnarray}
 
 where the last equation tells us the absorption would take place almost surely.
 #+end_proposition
@@ -1858,7 +1860,6 @@ and therefore, subtracting and using Proposition \eqref{prop:ss-and-recurrence-p
 \[ m_{ij} = \frac{z_{jj} - z_{ij}}{w_j} \]
 #+end_proof
 
-**
 * =markovchain= package
 We can propose an alternative definition of communicating property, taking $n \ge 0$ instead of $n > 0$,
 which has been the one used in the software from the start:
@@ -2722,6 +2723,134 @@ meanAbsorptionTime(mc)
 
 that is, $3$ steps if that person start in corner $2, 4$, otherwise $4$ steps.
 
-** Mathematical tests for the package
+To compute the steady states of the matrix:
+
+#+attr_latex: :options style=vs, bgcolor=light-gray
+#+begin_src R :session examples :results output :exports both
+steadyStates(mc)
+#+end_src
+
+The number of visits to each state $j$ if we start in $i$:
+
+#+attr_latex: :options style=vs, bgcolor=light-gray
+#+begin_src R :session examples :results output :exports both
+meanNumVisits(mc)
+#+end_src
+
+#+RESULTS:
+:      home   2 3   4 bar
+: home  Inf 0.0 0 0.0   0
+: 2     Inf 0.5 1 0.5 Inf
+: 3     Inf 1.0 1 1.0 Inf
+: 4     Inf 0.5 1 0.5 Inf
+: bar     0 0.0 0 0.0 Inf
+
+Is the matrix regular? And ergodic? Give me its canonic form:
+
+#+attr_latex: :options style=vs, bgcolor=light-gray
+#+begin_src R :session examples :results output :exports both
+is.regular(mc)
+is.irreducible(mc)
+canonic <- canonicForm(mc)
+canonic
+#+end_src
+
+#+RESULTS:
+#+begin_example
+[1] FALSE
+[1] FALSE
+Drunkard's walk
+ A  5 - dimensional discrete Markov Chain defined by the following states:
+ home, bar, 2, 3, 4
+ The transition matrix  (by rows)  is defined as follows:
+     home bar   2   3   4
+home  1.0 0.0 0.0 0.0 0.0
+bar   0.0 1.0 0.0 0.0 0.0
+2     0.5 0.0 0.0 0.5 0.0
+3     0.0 0.0 0.5 0.0 0.5
+4     0.0 0.5 0.0 0.5 0.0
+#+end_example
+
+** Further work on the package
+*** Mathematical tests for the package
+Old way of testing algorithms in the package before this project took off was to take an example (or a
+couple of examples) of reduced dimension from a book, find the analytical solutions, store them in a
+variable, and check that the result of the methods coded in the package did not change against this
+solution across different revisions of the software.
+
+This has the problem that it lacks edge cases, and it is misses the point of testing a mathematical
+property $\forall x P(x)$, because the $\forall$ becomes just a couple of examples.
+
+We have designed a better approach for testing the package:
+
+1. Still test against known examples taken from books (giving them credit for that). More examples in
+this regard have been added.
+1. Generate random Markov chains of random dimnension, given both by by-rows stochastic matrices and
+by-column ones. We cannot generate non numerable infinite instances of course, to cover the $\forall$
+that quantifies the property, but at least gets a little more closer than just a couple of examples.
+1. Of course we cannot compute the solution for random instances by hand, so we have decided to check
+against different implications, equivalences and characteristic equation systems inspired from the
+chapter [[Markov chains]].
+1. All algorithms coded in chapter [[=markovchain= package]] have been tested using this approach, and work
+done in this sense can be consulted in the [[https://github.com/spedygiorgio/markovchain/tree/master/tests/testthat][testhat]] folder from the project.
+
+Below we describe the structure of that folder and some of the most important tests carried out (those
+tests have been made for a dataset of randomly generated Markov chains):
+
+**** =setupData.R=
+Generates random instances for general Markov chains, Markov chains with identity transition matrix
+or Markov chains with strictly positive matrices.
+
+**** =testHittingProbabilities.R=
++ All hitting probabilities are non negative
++ Hitting probabilities hold their characteristic system \eqref{eq:fij-recurrence}.
++ Hitting probabilities of an identity Markov chain is the identity of same dimension.
+
+**** =testStatesClassification.R=
++ Test a state is absorbing iff it forms its own recurrent class.
++ Recurrent and transient states form a partition of states.
++ $f_{i,i} < 1$ for a transient state (by defintion this must hold).
++ All states are recurrent in a identity Markov chain.
++ If the Markov chain is ergodic $\implies$ all states are recurrent.
++ If there are transient states $\implies$ Markov chain is not be irreducible.
++ $f_{i,j} = 1$ for $i,j$ in same recurrent class.
++ $f_{i,k} = 0$ if $i$ is a recurrent state but $k$ does not belong to the same class.
++ Union of recurrent classes gives the recurrent states.
++ Union of transient classes gives the transient states.
++ Recurrent classes are disjoint.
++ Transient classes are disjoint.
+
+**** =testSteadyStates.R=
++ Number of steady states should coincide with the number of recurrent classes.
++ A steady state is a probability vector.
++ Steady states for a matrix are linearly independent (since they should be a base of the convex hull).
++ Steady states are eigen vectors for the transition matrix.
+
+**** =testCommClasses.R=
++ Communicating classes matrix is symmetric.
++ Rows of the same class can be permuted in a communicating classes matrix and the matrix does not change (i.e. if $i,j$ are in the same class, they should communicate with same states).
++ All classes are closed for identity matrices.
++ Communicating class matrix from \texttt{commClassesKernel} should coincide with the matrix arising from $(sign(P) + I)^{m - 1}$ where $sign(P)_{ij} = \twopartdefow{1}{p_{ij} > 0}{0}$ where $m$ is the number of states.
++ Communicating classes are a partition of the states of the Markov chain.
+
+**** =testMarkovChainsClassification.R=
++ A transition matrix which is strictly positive is regular.
++ If a Markov chain is regular then it should be ergodic.
++ Check Perron-Frobenius theorem: a transition matrix is regular iff $1$ is the unique maximal eigen value
+in modulo.
++ Markov chain is irreducible iff there is a single communicating class.
++ If the matrix is irreducible, its canonic form equals the Markov chain.
+**** =testMeanMeasures.R=
++ Mean first passage times and mean recurrence times should hold the characteristic system \eqref{prop:mfpt-rec-mat}.
++ If we invert the mean recurrence times $(e_{11}^{-1}, \ldots, e_{mm}^{-1})$ is an eigen vector.
++ Mean number of visits should hold the characteristic system \eqref{eq:char-mean-number-visits}.
++ All mean number of visits are $\infty$ if the Markov chain is irreducible.
++ Absorption times hold the characteristic system \eqref{eq:char-absorption-probs}
+
+*** Documentation
+Further work on the package has been port its [[https://github.com/spedygiorgio/markovchain/tree/master/vignettes][vignettes]] (main form of documentation of an R package)
+from =Sweave= to =knitr=, update and curate the documentation for the package or design a
+web page [fn::[[https://spedygiorgio.github.io/markovchain/][https://spedygiorgio.github.io/markovchain/]]].
+
 * Bibliography :ignore:
 \bibliography{references}
