@@ -88,7 +88,7 @@ ergódicas y regulares y su relación con las distribuciones estacionarias, tiem
 recurrencia, \ldots
 
 La sección [[=markovchain= package]] describe el trabajo hecho en el paquete de R =markovchain=. Esta librería
-es un proyecto de sofware libre que permite analizar cadenas de Markov discretas y continuas desde un punto
+es un proyecto de sofware libre que permite analizar cadenas de Markov discretas desde un punto
 de vista probabilístico y estadístico (inferencia). El autor de este trabajo ha analizado la parte del análisis
 probabilístico que este paquete proporciona y se han identificado los puntos clave donde los algoritmos podrían
 ser mejorados, desde el punto de vista de la corrección matemática y la eficiencia algorítmica. También se han
@@ -134,7 +134,7 @@ transience, recurrence and absorption, ergodic and regular Markov chains and the
 steady states, mean first passage and recurrence times, \ldots
 
 Section [[=markovchain= package]] describes the work done in =markovchain= R package. This software library
-comprises open source utilities which allow to analyze discrete and continuous time Markov chains from a probabilistic
+comprises open source utilities which allow to analyze discrete Markov chains from a probabilistic
 and statistical (inference) perspective. The author of the present work analyzed the discrete time probabilistic
 analysis provided by this package and identified key points where the algorithms could be improved, both from
 the mathematical correctness perspective and from the computational algorithmic efficiency. Also a collection
@@ -162,18 +162,87 @@ sofware and improve access to its documentation.
 
 \vspace*{1cm}
 \textsc{Keywords}: Markov chains, algorithms, probability, linear algebra, graphs
-* Introduction
-
-Markov chains are still nowadays a highly researched area of mathematics and computer science which is used
-in a wide variety of fields: weather prediction, actuarial science, algorithms (for example used in Markov
-chain Monte Carlo methods). We focus in this work on discrete Markov chains with a finite state space, which
-are becase of finiude the most natural Markov chain we can represent in a computer.
-
 * Table of contents :ignore:
 :PROPERTIES:
 :UNNUMBERED: t
 :END:
 #+TOC: headlines 3
+* Introduction
+
+To fully understand this work we assume previous notions of probability, programming and familiarity with big
+$\mathcal{O}$ algoritmic notation [fn::[[https://en.wikipedia.org/wiki/Big_O_notation][https://en.wikipedia.org/wiki/Big_O_notation]]].
+
+Markov chains are still nowadays a highly researched area of mathematics and computer science which is used
+in a wide variety of fields: weather prediction, actuarial science, algorithms (for example used in Markov
+chain Monte Carlo methods), physics, speech recognition, genetics, \ldots. We focus in this work on discrete
+Markov chains with a finite state space, which becase of finiude are the most natural Markov chain we can
+represent in a computer.
+
+Among programming languages nowadays, R is probably the most used ones among statisticians and the main
+competitor of =python= in machine learning programming. The =markovchain= package
+[fn::[[https://github.com/spedygiorgio/markovchain][https://github.com/spedygiorgio/markovchain]]] is an open source library available
+at the official R packages repository, CRAN [fn::[[https://cran.r-project.org/web/packages/index.html][https://cran.r-project.org/web/packages/index.html]]], which
+aims to provide easy representations, plotting and analysis of discrete time Markov chains. It is placed in
+91st percentile in terms of total downloads (compared to rest of packages of CRAN), and its trend of
+downloads continues to be in the 90th monthly percentile as it can be observed in the figure [[fig:mc-downloads]] (approximately 4000 downloads a month [fn::[[https://cranlogs.r-pkg.org/badges/markovchain][https://cranlogs.r-pkg.org/badges/markovchain]]]). We should point
+out that package is not only written in R. The core parts are coded in C++, since it is faster than R.
+
+Being that =markovchain= is widely used, a lot of methods could be improved from the mathematical correctness
+perspective (for example the computation of steady states could return a linearly dependent base of the
+convex space of steady states, which is not correct) and the computational efficiency one (use less
+iterative methods and more algebraic ones, improve efficiency for methods in general). Effiency is extremely
+important because it can be the difference between being able to analyze a Markov chain with a $10\times 10$
+transition matrix or a $100\times 100$ one. Also the package was lacking methods to perform a more complete
+analysis of Markov chains and answer possible questions like: what is the probability of ever hitting that
+state? (whatever the state represents: bankruptcy in case of actuarial analysis, a tornado in case of
+wheather prediction, etc), or how many times are we going to pass through a certain state if initial
+conditions for the system are these ones? Even small contributions to the software could impact a lot of
+users and researchers.
+
+#+header: :width 5 :height 5 :R-dev-args
+#+begin_src R :session examples :results output graphics :file imgs/percentiles.svg :exports results :cache yes :eval no-export
+library("packageRank")
+library("ggplot2")
+
+start <- as.Date("01-08-19",format="%d-%m-%y")
+end <- as.Date("25-08-19",format="%d-%m-%y")
+current <- start
+downloads <- c()
+percentile <- c()
+
+while (current <= end) {
+  data <- packageRank(packages = "markovchain", date = current)$package.data
+  downloads <- c(downloads, unname(unlist(data["downloads"])))
+  percentile <- c(percentile, unname(unlist(data["percentile"])))
+  current <- current + 1
+}
+
+
+ndays <- as.numeric(end - start)
+downloads <- data.frame(percentile = percentile, date = as.Date(0:(ndays - 1), origin = start))
+ggplot(downloads, aes(x = date, y = percentile)) +
+  geom_line(color = "darkblue", size = 2) +
+  expand_limits(y=30)
+#+end_src
+
+#+caption: Percentage of daily downloads of markovchain (packages in CRAN) in August 2019
+#+name: fig:mc-downloads
+#+attr_latex: :width 9cm
+#+RESULTS:
+[[file:imgs/percentile.svg]]
+
+The goals set for this work were:
+
++ Get familiarized with the package and the codebase of it. Identify points where it could be improved.
++ Study opportunities of improvement from the mathematical perspective to ensure correctness.
++ Come up with algorithms related to mathematical contents.
++ Code them and integrate them in the package.
++ Send updates for the package in the official CRAN R repository.
+
+All objectives allow for an incremental work and are presented in inverted order in two chapters: as opposed
+to practical driving theory study, the work is presented backwards, with theoretical reviews presented
+first. To summarize, what we intend to do is mathematical driven scientific programming.
+
 * Markov chains
 This section is based in \cite{velez}, although other theoretical references such as \cite{takis}
 or \cite{zitkovic} have been used. Ergodic Markov chains section is based on \cite{horn} and
@@ -2609,12 +2678,12 @@ set.seed(450)
 
 #+attr_latex: :options style=vs, bgcolor=light-gray
 #+header: :width 5 :height 5 :R-dev-args
-#+begin_src R :session examples :results output graphics :file imgs/drunkards-mc.svg :exports both
+#+begin_src R :session examples :results output graphics :file imgs/drunkards-mc.svg :exports both :cache yes
 plot(mc, package = "diagram", box.size = 0.1)
 #+end_src
 
 #+RESULTS:
-[[file:imgs/drunkards-mc.png]]
+[[file:imgs/drunkards-mc.svg]]
 
 
 Recurrent states are:
