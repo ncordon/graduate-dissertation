@@ -1,6 +1,6 @@
 #+TITLE: Cadenas de Markov
 #+AUTHOR: Ignacio Cordón Castillo
-#+OPTIONS: toc:t num:3
+#+OPTIONS: toc:nil
 #+STARTUP: indent
 #+STARTUP: latexpreview
 
@@ -15,33 +15,6 @@
 #+latex_header_extra: \input{config/setup}
 #+latex_header_extra: \input{config/classicthesis}
 #+latex_header: \input{config/macros}
-
-* Acknowledgments
-:PROPERTIES:
-:UNNUMBERED: t
-:END:
-
-I would like to thank my family and my friends, because they are always and important part of what I do,
-providing me great support.
-
-Also, many thanks to Giorgio, my tutor, since he always kept an open mind when it
-came to me proposing work to do on his package. He encouraged me to try different approaches and I had
-plenty of proposals from his side to work on. That always poses good challenges to dive in, learn and
-apply new knowledge.
-
-* Abstract
-:PROPERTIES:
-:UNNUMBERED: t
-:END:
-
-Markov chains are a mathematical area which encompasses probability, inference, algebra (more accurately graph theory),
-algorithms theory (since discrete markov chains can be simulated in a computer, and therefore, we intend to simulate
-them as efficiently as we can or use as big input sizes as we can, for example in markov chains with more states). All
-of the above conditions make markov chains an interesting study from both the mathematical and the computer science viewpoint.
-
-
-\vspace*{\fill}
-\textsc{Keywords}: Markov chains, algorithms, graphs, probability, linear algebra
 
 \newpage
 * Authenticity declaration :ignore:
@@ -83,7 +56,123 @@ Granada, a \septdate\today
  \end{tabular}
 \end{flushright}
 
+* Acknowledgments
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
+
+I would like to thank my family and my friends, because they are always and important part of what I do,
+providing me with great support.
+
+Also, many thanks to Giorgio, my tutor, since he always kept an open mind when it
+came to me proposing work to do on his package. He encouraged me to try different approaches and I had
+plenty of proposals from his side to work on. I have had plenty of good challenges to dive in, learn and
+apply new knowledge thanks to him.
+
+* Abstract
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
+
+Las cadenas de Markov son un área de estudio que comprende conocimientos de, por nombrar algunas,
+probabilidad, inferencia, álgebra lineal, grafos o teoría de algoritmos (puesto que las cadenas discretas
+pueden ser simuladas en un ordenador). Por todo lo expuesto representan un campo de
+estudio interesante desde el punto de vista matemático e informático, y las hacen una temática ideal desde
+el punto de vista de la interdisciplinariedad del máster Fisymat.
+
+En el capítulo [[Markov chains]] se presenta una revisión teórica a las cadenas de Markov en tiempo discreto,
+centrándonos especialmente en teoremas y propiedades relacionados con un número finito de estados: definición,
+ecuación de Chapman-Kolmogorov, tiempos y probabilidades de llegada, clasificación de estados,
+incluyendo clases comunicantes, transitoriedad, recurrencia y estados absorbentes, cadenas de Markov
+ergódicas y regulares y su relación con las distribuciones estacionarias, tiempos medio de llegada y de
+recurrencia, \ldots
+
+La sección [[=markovchain= package]] describe el trabajo hecho en el paquete de R =markovchain=. Esta librería
+es un proyecto de sofware libre que permite analizar cadenas de Markov discretas y continuas desde un punto
+de vista probabilístico y estadístico (inferencia). El autor de este trabajo ha analizado la parte del análisis
+probabilístico que este paquete proporciona y se han identificado los puntos clave donde los algoritmos podrían
+ser mejorados, desde el punto de vista de la corrección matemática y la eficiencia algorítmica. También se han
+añadido nuevas colecciones de algoritmos. Tanto los procedimientos refactorizados como los añadidos están relacionados
+con los contenidos teóricos descritos en el capítulo anterior, y han sido abordados gracias a los conocimientos
+matemáticos adquiridos a través de la bibliografía.
+
+Los algoritmos mejorados / reprogramados oscilan desde la identificación de clases comunicantes, pasando por
+el cálculo de los tiempos medios de llegada o la descripción de clases recurrentes y transitorias. Como
+consecuencia de ellos, ha sido redise\-ñada la clasificación de estados de una manera más eficiente.
+Además, el algoritmo del cálculo de distribuciones estacionarias ha sido altamente mejorado, puesto que
+el antiguo podía devolver resultados incorrectos. Las nuevas incorporaciones versan principalmente sobre
+cantidades relacionadas con la absorción (tiempo medio de absorción, probabilidad de absorción), el tiempo
+medio de recurrencia, las probabilidades de llegada, el cálculo eficiente de la accesibilidad a estados,
+de potencias y la clasificación de cadenas (regulares, ergódicas, no ergódicas).
+
+En el capítulo [[Conclusions and future work]] se esbozan ideas para trabajo futuro en el sofware, a tenor del
+conocimiento ganado durante el estudio teórico y práctico de la librería, que en conjunción deberían llevar
+a la publicación de dicho software en una revista académica de alto impacto.
+
+El anexo [[Appendix]] cubre una breve introducción a la complejidad algorítmica. También incluye instrucciones sobre cómo
+instalar y usar el sofware. Por último, se explican otras labores realizadas en el marco de este proyecto:
+incorporación de /tests/ a la librería basados en la comprobación de propiedades matemáticas, revisión de
+documentación así como el diseño de una página web para incrementar la visibilidad del paquete y mejorar el
+acceso a la documentación del mismo.
+
+\vspace*{1cm}
+\textsc{Palabras clave}: Cadenas de Markov, algoritmos, probabilidad, álgebra lineal, grafos
+
+\vspace*{1cm}
+\begin{center}\rule{10cm}{1pt}\end{center}
+\vspace{1cm}
+
+Markov chains are a mathematical area which encompasses, to name a few, probability, inference, linear
+algebra, gaphs or algorithms theory (since discrete markov chains can be simulated in a computer). All of
+the aforementioned conditions make them an interesting study from both the mathematical and computer science
+viewpoint, and therefore a perfect topic from the interdisciplinary nature of Fisymat master's degree.
+
+In chapter [[Markov chains]] we present a theoretical review of discrete time Markov chains, focusing mostly
+on theorems and properties which imply a finite number of states: definition, Chapman-Kolmogorov equation,
+hitting times and probabilities, classification of states, including communicating classes,
+transience, recurrence and absorption, ergodic and regular Markov chains and their relationship with
+steady states, mean first passage and recurrence times, \ldots
+
+Section [[=markovchain= package]] describes the work done in =markovchain= R package. This software library
+comprises open source utilities which allow to analyze discrete and continuous time Markov chains from a probabilistic
+and statistical (inference) perspective. The author of the present work analyzed the discrete time probabilistic
+analysis provided by this package and identified key points where the algorithms could be improved, both from
+the mathematical correctness perspective and from the computational algorithmic efficiency. Also a collection
+of new algorithms were added. All those procedures (both the newly added and the refactored ones) are
+related to the theoretical contents described in the previous chapter, and have been tackled thanks to the
+mathematics knowledge acquired from the bibliography.
+
+The improved / recoded algorithms range from communicating classes identification, to mean first passage
+times computation or recurrent (resp. transient) classes description. Also as a consequence of those, state
+classification has been redesigned in a more efficient manner. Moreover, steady states algorithm has been highly improved, due to the fact that
+incorrect results could arise from the former one. The added algorithms are mainly related to absorption
+related quantities (mean aborption time, absorption probability), mean recurrence times, hitting
+probabilities, efficient reachability, power computation and Markov chain classification (regular, ergodic
+or non ergodic).
+
+In chapter [[Conclusions and future work]] we outline future work that could be done in the package, in light
+of the knowledge we have gathered during the theoretical and practical study of the library, and that should
+cumminate with its publication in a high impact journal.
+
+Appendix [[Appendix]] covers a brief introduction to computational complexity. It also includes instructions on how to
+install and use the software. Lastly, it explains more work developed within this project: addition
+of tests for the libary based in check of mathematical properties, review of documentation and design of
+a web page to increase the visibility of the sofware and improve access to its documentation.
+
+\vspace*{1cm}
+\textsc{Keywords}: Markov chains, algorithms, probability, linear algebra, graphs
 * Introduction
+
+Markov chains are still nowadays a highly researched area of mathematics and computer science which is used
+in a wide variety of fields: weather prediction, actuarial science, algorithms (for example used in Markov
+chain Monte Carlo methods). We focus in this work on discrete Markov chains with a finite state space, which
+are becase of finiude the most natural Markov chain we can represent in a computer.
+
+* Table of contents :ignore:
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
+#+TOC: headlines 3
 * Markov chains
 This section is based in \cite{velez}, although other theoretical references such as \cite{takis}
 or \cite{zitkovic} have been used. Ergodic Markov chains section is based on \cite{horn} and
