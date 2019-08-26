@@ -180,7 +180,7 @@ represent in a computer.
 
 Among programming languages nowadays, R is probably the most used ones among statisticians and the main
 competitor of =python= in machine learning programming. The =markovchain= package
-[fn::[[https://github.com/spedygiorgio/markovchain][https://github.com/spedygiorgio/markovchain]]] is an open source library available
+[fn::[[https://github.com/spedygiorgio/markovchain][https://github.com/spedygiorgio/markovchain]]] [[citep:dtmc]] is an open source library available
 at the official R packages repository, CRAN [fn::[[https://cran.r-project.org/web/packages/index.html][https://cran.r-project.org/web/packages/index.html]]], which
 aims to provide easy representations, plotting and analysis of discrete time Markov chains. It is placed in
 91st percentile in terms of total downloads (compared to rest of packages of CRAN), and its trend of
@@ -2604,9 +2604,10 @@ In \textit{Arch Linux} based distributions as:
   sudo pacman -S r
 #+end_src
 
-It could be useful to have RStudio [fn::[[https://www.rstudio.com][https://www.rstudio.com]]] installed too (although it is not mandatory to execute the software).
-
-To install the =markovchain= [fn::[[https://github.com/spedygiorgio/markovchain][https://github.com/spedygiorgio/markovchain]]] package, one could do (from an R terminal or inside RStudio):
+It could be useful to have RStudio [fn::[[https://www.rstudio.com][https://www.rstudio.com]]] installed too (although it is not
+mandatory to execute the software). To install the
+=markovchain= [fn::[[https://github.com/spedygiorgio/markovchain][https://github.com/spedygiorgio/markovchain]]] package, one could do (from an R terminal
+or inside RStudio):
 
 #+attr_latex: :options style=vs, bgcolor=light-gray
 #+begin_src R :eval no
@@ -2614,14 +2615,14 @@ To install the =markovchain= [fn::[[https://github.com/spedygiorgio/markovchain]
 #+end_src
 
 ** Examples
-First we need to load =markovchain=
+First we need to load =markovchain=:
 
 #+attr_latex: :options style=vs, bgcolor=light-gray
 #+begin_src R :session examples :results output silent
 library("markovchain")
 #+end_src
 
-We define the data. We will be using Drunkard's Walk from \cite{grinstead}.
+We define the data. We will be using Drunkard's Walk example from \cite{grinstead}.
 
 #+attr_latex: :options style=vs, bgcolor=light-gray
 #+begin_src R :session examples :results output :exports both
@@ -2654,7 +2655,7 @@ home  1.0 0.0 0.0 0.0 0.0
 bar   0.0 0.0 0.0 0.0 1.0
 #+end_example
 
-Communicating classes are $\{\textrm{home}\}, \{2, 3, 4\}, \{\textrm{bar}\}$:
+Communicating classes are:
 
 #+attr_latex: :options style=vs, bgcolor=light-gray
 #+begin_src R :session examples :results output :exports both
@@ -2751,38 +2752,6 @@ And the mean absorption time (that is, how much is the drunk person going to tak
 
 #+attr_latex: :options style=vs, bgcolor=light-gray
 #+begin_src R :session examples :results output :exports both
-hittingProbabilities(mc)
-#+end_src
-
-#+RESULTS:
-:      home         2   3         4  bar
-: home 1.00 0.0000000 0.0 0.0000000 0.00
-: 2    0.75 0.3333333 0.5 0.3333333 0.25
-: 3    0.50 0.6666667 0.5 0.6666667 0.50
-: 4    0.25 0.3333333 0.5 0.3333333 0.75
-: bar  0.00 0.0000000 0.0 0.0000000 1.00
-
-which means that if the drunk person starts in corner $2$ (state $2$) the probability of ever returning
-there is $0.333333$, of ever reaching home, $0.75$ and of ever reaching the bar, $0.25$. Of course this
-last two former probabilities should coincide with the =absorptionProbabilities=, since they are absorbing
-states:
-
-#+attr_latex: :options style=vs, bgcolor=light-gray
-#+begin_src R :session examples :results output :exports both
-absorptionProbabilities(mc)
-#+end_src
-
-#+RESULTS:
-:   home  bar
-: 2 0.75 0.25
-: 3 0.50 0.50
-: 4 0.25 0.75
-
-And the mean absorption time (that is, how many setps going to take for the drunk person to reach home /
-the bar in average) from each corner is:
-
-#+attr_latex: :options style=vs, bgcolor=light-gray
-#+begin_src R :session examples :results output :exports both
 meanAbsorptionTime(mc)
 #+end_src
 
@@ -2792,7 +2761,7 @@ meanAbsorptionTime(mc)
 
 that is, $3$ steps if that person start in corner $2, 4$, otherwise $4$ steps.
 
-To compute the steady states of the matrix:
+To compute the steady states of the Markov chain:
 
 #+attr_latex: :options style=vs, bgcolor=light-gray
 #+begin_src R :session examples :results output :exports both
@@ -2814,7 +2783,7 @@ meanNumVisits(mc)
 : 4     Inf 0.5 1 0.5 Inf
 : bar     0 0.0 0 0.0 Inf
 
-Is the matrix regular? And ergodic? Give me its canonic form:
+Is the matrix regular? And ergodic? Which is its canonic form?
 
 #+attr_latex: :options style=vs, bgcolor=light-gray
 #+begin_src R :session examples :results output :exports both
@@ -2852,23 +2821,14 @@ property $\forall x P(x)$, because the $\forall$ becomes just a couple of exampl
 
 We have designed a better approach for testing the package:
 
-1. Still test against known examples taken from books (giving them credit for that). More examples in
-this regard have been added.
-1. Generate random Markov chains of random dimnension, given both by by-rows stochastic matrices and
-by-column ones. We cannot generate non numerable infinite instances of course, to cover the $\forall$
-that quantifies the property, but at least gets a little more closer than just a couple of examples.
-1. Of course we cannot compute the solution for random instances by hand, so we have decided to check
-against different implications, equivalences and characteristic equation systems inspired from the
-chapter [[Markov chains]].
-1. All algorithms coded in chapter [[=markovchain= package]] have been tested using this approach, and work
-done in this sense can be consulted in the [[https://github.com/spedygiorgio/markovchain/tree/master/tests/testthat][testhat]] folder from the project.
+1. Still test against known examples taken from books (giving them credit for that). More examples in this regard have been added.
+1. Generate random Markov chains of random dimnension, given both by by-rows stochastic matrices and by-column ones. We cannot generate non numerable infinite instances of course, to cover the $\forall$ that quantifies the property, but at least we should get a little more closer than just a couple of examples.
+1. Of course we cannot compute the solution for random instances by hand. However, we can check that different implications, equivalences and characteristic equation systems inspired from the chapter [[Markov chains]] are verified by the result of the coded methods.
+1. All algorithms coded in chapter [[=markovchain= package]] have been tested using this approach, and work done in this sense can be consulted in the =testthat= [fn::[[https://github.com/spedygiorgio/markovchain/tree/master/tests/testthat][https://github.com/spedygiorgio/markovchain/tree/master/tests/testthat]]] folder from the project.
 
-Below we describe the structure of that folder and some of the most important tests carried out (those
-tests have been made for a dataset of randomly generated Markov chains):
-
-**** =setupData.R=
-Generates random instances for general Markov chains, Markov chains with identity transition matrix
-or Markov chains with strictly positive matrices.
+Below we describe the structure of that folder and some of the most important tests carried out
+(where =setupData.R= generates random instances for general Markov chains, Markov chains with identity
+transition matrix or Markov chains with strictly positive matrices):
 
 **** =testHittingProbabilities.R=
 + All hitting probabilities are non negative
@@ -2876,7 +2836,7 @@ or Markov chains with strictly positive matrices.
 + Hitting probabilities of an identity Markov chain is the identity of same dimension.
 
 **** =testStatesClassification.R=
-+ Test a state is absorbing iff it forms its own recurrent class.
++ A state is absorbing iff it constitutes its own recurrent class.
 + Recurrent and transient states form a partition of states.
 + $f_{i,i} < 1$ for a transient state (by defintion this must hold).
 + All states are recurrent in a identity Markov chain.
@@ -2897,7 +2857,7 @@ or Markov chains with strictly positive matrices.
 
 **** =testCommClasses.R=
 + Communicating classes matrix is symmetric.
-+ Rows of the same class can be permuted in a communicating classes matrix and the matrix does not change (i.e. if $i,j$ are in the same class, they should communicate with same states).
++ Rows of the same class can be permuted in a communicating classes matrix and the matrix does not change, i.e. if $i,j$ are in the same class, they should communicate with same states.
 + All classes are closed for identity matrices.
 + Communicating class matrix from \texttt{commClassesKernel} should coincide with the matrix arising from $(sign(P) + I)^{m - 1}$ where $sign(P)_{ij} = \twopartdefow{1}{p_{ij} > 0}{0}$ where $m$ is the number of states.
 + Communicating classes are a partition of the states of the Markov chain.
@@ -2905,8 +2865,7 @@ or Markov chains with strictly positive matrices.
 **** =testMarkovChainsClassification.R=
 + A transition matrix which is strictly positive is regular.
 + If a Markov chain is regular then it should be ergodic.
-+ Check Perron-Frobenius theorem: a transition matrix is regular iff $1$ is the unique maximal eigen value
-in modulo.
++ Check Perron-Frobenius theorem: a transition matrix is regular iff $1$ is the unique maximal (in modulo) eigen value.
 + Markov chain is irreducible iff there is a single communicating class.
 + If the matrix is irreducible, its canonic form equals the Markov chain.
 **** =testMeanMeasures.R=
