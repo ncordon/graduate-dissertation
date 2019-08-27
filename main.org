@@ -2587,7 +2587,55 @@ from the states not in \texttt{destination} to any of the states there.
 \end{algorithm}
 
 * Conclusions and future work
+Firstly a few considerations should be made:
+
++ Reading software someone else's software is extremely time-consuming and implies an effort comparable to understanding mathematical proofs that have not been written by oneself: you always have to figure out how all the different pieces fit together, why does certain trick work or it does not, writting style is hardly ever going to be close to yours and it constitutes an incremental process where most probably you are going to have to dive several times into the same fragment to understand the whole.
++ Lack of appropriate academic material has been a constant throughout this project: we could either find good mathematical proofs, but lacking sense of how algorithms could be implemented in a computer, or the other way around.
++ The algorithms presented in chaper [[=markovchain= package]] are in their majority an original work based on my own mathematical and computer science knowledge. They are the result of a long process of trial and error, and although only final versions made it to this report, lots of intermediate versions for them were lost along the way. The rationale behind this is that the development workflow looked something alike: identify where the former algorithms of the package could fail or give incomplete results, code a proposal, test it, improve it, find its weak points, write it in paper, analyze it mathematically and algorithmically, think of new improvements and repeat from second step onwards until a satisfactory version was found.
+
+** Conclussions
+Therefore, and having that into account, the main values of this work can be summarized in the following points:
+
++ Open knowledge: the report is hosted at a public repository [fn::[[https://github.com/ncordon/graduate-dissertation][https://github.com/ncordon/graduate-dissertation]]] so that everyone can consult it, improve it or use its information citing the author. The coding efforts have been integrated into the =markovchain= package, available at CRAN R official repository [fn::[[https://cranlogs.r-pkg.org/badges/markovchain][https://cranlogs.r-pkg.org/badges/markovchain]]], as open software, which means everyone can contribute to it, propose ideas, use it or modify it (as long as they give credit to their authors). Autorship of the relevant parts of the sofware described in this project can be corroborated with the history of the Github public respository. [fn::[[https://github.com/spedygiorgio/markovchain/commits?author=ncordon][https://github.com/spedygiorgio/markovchain/commits?author=ncordon]]].
++ Cooperation: having our efforts integrated in an open software package means that we are adding more value to what other people did before us, being able to impact more people that if we had presented a separate software.
++ Research and development: the main intent of this work was to do scientific programming driven by mathematical viewpoints and that is what we have tried to capture along this work. I believe the level of correctness that has been reached is really satisfaying. And in spite of all the struggles to grasp actionable mathematical knowledge from different sources, in the end we have been able to manipulate theoretical constructs in an useful way from the software perspective.
++ Versatility: Markov chains may not include extremely complicated mathematics (although the learning curve is hard due to the abundance of slightly similar but different concepts), but they certainly require skills in different areas, as it was stated alongside this work: graphs, linear algebra, probability, programming. In adition to this, coding project is multilanguage, with a mixture of R and C++ languages, which certainly has added more challenges to the endeavour of improving the library.
++ A lot of not so visible work: sending the software to a repository as CRAN implies that the package has to be thorougly documented, all the tests for the algorithms included in it have to correctly be checked and ultimately we had to verify CRAN standards to publish. This implies a huge maintenance work that may not be fairly reflected in this report.
+
+
  #+LaTeX: \appendix
+** Future work
+We propose the following lines of further development for the package:
+
++ Keep improving =markovchain= R library, porting the relevant parts to C++ when possible. Objective for following months is inference part of the package.
++ Right now the C++ part is tied (less with the work carried in this project) to the R part. A suitable goal is to completely split it from the R part, and use it as a backend for both the R package and a forseeable Python package. In particular the former one could be coded extremely fast due to the core of the functionality been already curated and in good developing state; only missing part is the glue code to make Python communicate with C++, but that can be achieved with C-Python API [fn::[[https://docs.python.org/3/c-api/intro.html]]] easily.
++ Among the algorithms that could be improved, reachability matrix one could be improved with Strassen method [[citep:strassen]]. This algorithm is $\algcomp{m^{2.81}}$ in algorithmic complexity, where $m$ is the number of states of the Markov chain. That would make reachability matrix computation $\algcomp{m^{2.81} \log(m)}$, which is better than the current $\algcomp{m^{3} \log(m)}$. It could be combined with "bits packing" and the use of the =AND= operator instead of product for elements: groupping rows and columnsin packs of 64 bits, with $1$ being reachable state and $0$ not reachable. Let $(A \otimes B)_{i,j} = \sum_{k = 1}^{m/64} \bigg(a_{ik} \textrm{ AND } b_{kj}\bigg)$. Then although the resulting algorithm would still be $\algcomp{m^{2.81} \log(m)}$, hidden constants would be very small: $\algcomp{\frac{1}{64^{2.81}} \cdot m^{2.81} log(m)}$. With that custom product:
+
+\begin{eqnarray*}
+P^{m - 1} &=& \left(\begin{array}{ccccccccccc}
+  1 & 0 & 1 & 0 & 1 & 0 & 1 & 0 & 1 & 0 &\ldots \\
+  0 & 1 & 0 & 0 & 0 & 1 & 1 & 1 & 0 & 0 &\ldots \\
+  \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \ddots
+  \end{array}\right)^{m - 1} = \\
+&=& \left(\begin{array}{cc}
+  1010101010\ldots &\ldots \\
+  0100011100\ldots &\ldots \\
+  \vdots & \ddots \\
+  \end{array}
+\right)
+\otimes \underbrace{
+\left(\begin{array}{ccc}
+  \overset{1}{\overset{0}{\overset{0}{\vdots}}} & \overset{0}{\overset{1}{\overset{0}{\vdots}}} \ddots \\
+  \end{array}
+\right)
+\otimes \cdots \otimes
+\left(\begin{array}{ccc}
+  \overset{1}{\overset{0}{\overset{0}{\vdots}}} & \overset{0}{\overset{1}{\overset{0}{\vdots}}} \ddots \\
+  \end{array}
+\right)
+}_{m - 2}
+\end{eqnarray*}
+
 * Appendix
 ** Installation of markovchain
 As prerequisite, R [fn::[[https://cloud.r-project.org][https://cloud.r-project.org]]] should be installed. In \textit{Debian} based distributions can be installed as:
