@@ -80,12 +80,13 @@ pueden ser simuladas en un ordenador). Por todo lo expuesto representan un campo
 estudio interesante desde el punto de vista matemático e informático, y las hacen una temática ideal desde
 el punto de vista de la interdisciplinariedad del máster Fisymat.
 
-En el capítulo [[Markov chains]] se presenta una revisión teórica a las cadenas de Markov en tiempo discreto,
-centrándonos especialmente en teoremas y propiedades relacionados con un número finito de estados: definición,
-ecuación de Chapman-Kolmogorov, tiempos y probabilidades de llegada, clasificación de estados,
-incluyendo clases comunicantes, transitoriedad, recurrencia y estados absorbentes, cadenas de Markov
-ergódicas y regulares y su relación con las distribuciones estacionarias, tiempos medio de llegada y de
-recurrencia, \ldots
+En el capítulo [[Markov chains]] introducimos las cadenas de Markov en tiempo discreto, con su definición y la
+ecuación de Chapman-Kolmogorov. En el capítulo [[Time-homogeneous Markov chains]] se presenta una revisión
+teórica a las cadenas de Markov en tiempo discreto y homogéneo, centrándonos especialmente en teoremas
+y propiedades relacionados con un número finito de estados: tiempos y probabilidades de llegada,
+clasificación de estados, incluyendo clases comunicantes, transitoriedad, recurrencia y estados absorbentes,
+cadenas de Markov ergódicas y regulares y su relación con las distribuciones estacionarias, tiempos medio
+de llegada y de recurrencia, \ldots
 
 La sección [[=markovchain= package]] describe el trabajo hecho en el paquete de R =markovchain=. Esta librería
 es un proyecto de sofware libre que permite analizar cadenas de Markov discretas desde un punto
@@ -127,9 +128,10 @@ algebra, gaphs or algorithms theory (since discrete markov chains can be simulat
 the aforementioned conditions make them an interesting study from both the mathematical and computer science
 viewpoint, and therefore a perfect topic from the interdisciplinary nature of Fisymat master's degree.
 
-In chapter [[Markov chains]] we present a theoretical review of discrete time Markov chains, focusing mostly
-on theorems and properties which imply a finite number of states: definition, Chapman-Kolmogorov equation,
-hitting times and probabilities, classification of states, including communicating classes,
+In chapter [[Markov chains]] we introduce discrete time Markov chains with their definition and
+Chapman-Kolmogorov equation. In chapter [[Time-homogeneous Markov chains]] we present a theoretical review of
+time-homogeneous discrete time Markov chains, focusing mostly on theorems and properties which imply a finite
+number of states: hitting times and probabilities, classification of states, including communicating classes,
 transience, recurrence and absorption, ergodic and regular Markov chains and their relationship with
 steady states, mean first passage and recurrence times, \ldots
 
@@ -244,25 +246,26 @@ to practical driving theory study, the work is presented backwards, with theoret
 first. To summarize, what we intend to do is mathematical driven scientific programming.
 
 * Markov chains
-This section is based in \cite{velez}, although other theoretical references such as \cite{takis}
-or \cite{zitkovic} have been used. Ergodic Markov chains section is based on \cite{horn} and
-\cite{grinstead}. Mean first passage time section is mainly based in \cite{grinstead}.
+This section is based in [[citep:velez]], although other theoretical references such as [[citep:takis]]
+or [[citep:zitkovic]] have been used. Ergodic Markov chains section is based on [[citep:horn]] and
+[[citep:grinstead]]. Mean first passage time section is mainly based on [[citep:grinstead]].
 
 ** Definition
 For convenience, unless otherwise indicated, we will consider $0\in \mathbb{N}$.
 
 #+begin_definition
-A stochastic random process $\{X_n\}_{n\in I}$, where $I\subseteq \mathbb{N}$, is a Markov chain iff the future process $\{X_k\}_{k > n, k \in I}$ is independent of the past process $\{X_k\}_{k < n, k \in I}$ conditionally on $X_n$.
+A stochastic random process $\{X_n\}_{n\in \naturals}$, is a Markov chain iff the future process
+$\{X_k\}_{k > n}$ is independent of the past process $\{X_k\}_{k < n}$ conditionally on $X_n$.
 #+end_definition
 
 #+begin_definition
-Given $\{X_n\}_{n\in I}$ a Markov chain, let us call the state space the set $S = \bigcup_{n \in I} Img \left(X_n\right)$, i.e. the set where the Markov chain takes its values.
+Given $\{X_n\}_{n \ge 0}$ a Markov chain, let us call the state space the set
+$S = \bigcup_{n \in \naturals} Img \left(X_n\right) \subseteq \naturals$, i.e. the set
+where the Markov chain takes its values.
 #+end_definition
 
-We will omit the subscript $n\in I$ and assume $I = \mathbb{N}$ henceforth. We will also assume $S$ is finite.
-
 #+begin_lemma
-$\{X_n\}_n$ is a Markov chain iff for all $n\in\mathbb{N}$ and given arbitrary $s_0, \ldots, s_{n + 1} \in S$, then it holds:
+$\{X_n\}_{n \ge 0}$ is a Markov chain iff for all $n\in\mathbb{N}$ and given arbitrary $s_0, \ldots, s_{n + 1} \in S$, then it holds:
 
 \[
 P(X_{n + 1} = s_{n + 1} | X_n = s_n, \ldots, X_0 = s_0) = P(X_{n + 1} = s_{n + 1} | X_n = s_n)
@@ -270,21 +273,15 @@ P(X_{n + 1} = s_{n + 1} | X_n = s_n, \ldots, X_0 = s_0) = P(X_{n + 1} = s_{n + 1
 #+end_lemma
 
 #+begin_proof
-
-From left to right. By Markov chain definition, if $\{X_k\}_{k \in I}$ is independent of the past process $\{X_k\}_{m \in I}$ conditionally on $X_n$, then:
+From left to right. By Markov chain definition, if $\{X_k\}_{k > n}$ is independent of the past
+process $\{X_k\}_{k < n}$ conditionally on $X_n$, then:
 
 \begin{align*}
 &P(X_{n + 1} = s_{n + 1}, X_{n - 1} = s_{n - 1}, \ldots, X_0 = s_0 | X_n = s_n) = \\
 &P(X_{n + 1} = s_{n + 1} | X_n = s_n) \cdot P(X_{n - 1} = s_{n - 1}, \ldots, X_0 = s_0 | X_n = s_n)
 \end{align*}
 
-If we prove that
-
-\[
-\frac{P(X_{n + 1} = s_{n + 1}, X_{n - 1} = s_{n - 1}, \ldots, X_0 = s_0 | X_n = s_n)}{P(X_{n - 1} = s_{n - 1}, \ldots, X_0 = s_0 | X_n = s_n)} = P(X_{n + 1} = s_{n + 1} | X_n = s_n, \ldots, X_0 = s_0)
-\]
-
-then we would have arrived at our proof. That derives from:
+The following argument ends (formally) the proof:
 
 \begin{align*}
 \frac{P(X_{n + 1} = s_{n + 1}, X_{n - 1} = s_{n - 1}, \ldots, X_0 = s_0 | X_n = s_n)}{P(X_{n - 1} = s_{n - 1}, \ldots, X_0 = s_0 | X_n = s_n)} &=
@@ -295,57 +292,53 @@ then we would have arrived at our proof. That derives from:
 From right to left. We want to prove that:
 
 \begin{align*}
-&P(X_{n + m} = s_{n + m}, \ldots X_{n + 1} = s_{n + 1} | X_n = s_n, \ldots, X_0 = s_0) =\\
-&P(X_{n + m} = s_{n + m}, \ldots, X_{n + 1} = s_{n + 1} | X_n = s_n)
+&P(X_{n + q} = s_{n + q}, \ldots X_{n + 1} = s_{n + 1} | X_n = s_n, \ldots, X_0 = s_0) =\\
+&P(X_{n + q} = s_{n + q}, \ldots, X_{n + 1} = s_{n + 1} | X_n = s_n)
 \end{align*}
 
 On the one hand, if the right part holds, it easy to prove that:
 
 \begin{align*}
-& P(X_0 = s_0, \ldots X_n = s_n ) =\\
+& P(X_0 = s_0, \ldots, X_n = s_n ) =\\
 & P(X_0 = s_0) \cdot P(X_1 = s_1 | X_0 = s_0) \cdot P(X_2 = s_2 | X_1 = s_1) \cdots P(X_n = s_n | X_{n - 1} = s_{n - 1})
 \end{align*}
 
-substituting each:
-
-\[
-P(X_i = s_i | X_{i - 1} = s_{i - 1}) = P(X_i = s_i | X_{i - 1} = s_{i - 1}, \ldots, X_0 = s_0) = \frac{P(X_i = s_i, \ldots, X_0 = s_0)}{P(X_{i - 1} = s_{i - 1}, \ldots, X_0 = s_0)}
-\]
-
-
-Summing over all $s_0, \ldots s_{k - 1}$, we get:
+and summing over all possible values for $s_0, \ldots s_{k - 1}$, we get:
 
 \[
 P(X_{k} = s_{k}, \ldots, X_n = s_n) = P(X_k = s_k) \cdot P(X_{k + 1} = s_{k + 1} | X_k = s_k) \cdots P(X_n = s_n | X_{n - 1} = s_{n - 1})
 \]
 
-Therefore,
+Therefore (adjusting the values of $n$ and $k$ above appropriately):
 
 \begin{align*}
-& P(X_{n + m} = s_{n + m}, \ldots, X_{n + 1} = s_{n + 1} | X_n = s_n, \ldots, X_0 = s_0) =\\
-&= \frac{P(X_{n + m}, \ldots, X_0)}{P(X_{n + m - 1}, \ldots, X_0)} \cdot \frac{P(X_{n + m - 1}, \ldots, X_0)}{P(X_{n + m - 2}, \ldots, X_0)} \cdots \frac{P(X_{n + 1}, \ldots, X_0)}{P(X_{n}, \ldots, X_0)} = \\
-&= P(X_{n + m} | X_{n + m - 1}) \cdots P(X_{n + 1} | X_{n}) = \frac{P(X_{n + m} = s_{n + m}, \ldots X_{n + 1} = s_{n + 1})}{P(X_n = s_n)} =\\
-&= P(X_{n + m} = s_{n + m}, \ldots, X_{n + 1} = s_{n + 1} | X_n = s_n)
+& P(X_{n + q} = s_{n + q}, \ldots, X_{n + 1} = s_{n + 1} | X_n = s_n, \ldots, X_0 = s_0) =\\
+&= \frac{P(X_{n + q}, \ldots, X_0)}{P(X_{n + q - 1}, \ldots, X_0)} \cdot \frac{P(X_{n + q - 1}, \ldots, X_0)}{P(X_{n + p - 2}, \ldots, X_0)} \cdots \frac{P(X_{n + 1}, \ldots, X_0)}{P(X_{n}, \ldots, X_0)} = \\
+&= P(X_{n + q} | X_{n + q - 1}) \cdots P(X_{n + 1} | X_{n}) = \frac{P(X_{n + q} = s_{n + q}, \ldots X_{n + 1} = s_{n + 1}, X_{n} = s_n)}{P(X_n = s_n)} =\\
+&= P(X_{n + q} = s_{n + q}, \ldots, X_{n + 1} = s_{n + 1} | X_n = s_n)
 \end{align*}
 #+end_proof
 
 ** Chapman-Kolmogorov equation
-As stated before, in the right to left implication (that now we can assume as characterization of
-Markov chains), we have shown that transition probabilities can be expressed as:
 
-\begin{align}
-& P(X_0 = s_0, \ldots X_n = s_n) = \nonumber \\
-& P(X_0 = s_0) \cdot P(X_1 = s_1 | X_0 = s_0) \cdot P(X_2 = s_2 | X_1 = s_1) \cdots P(X_n = s_n | X_{n - 1} = s_{n - 1})
+Since we intend to represent Markov chains in a computer, we will also assume $S$ is finite henceforth,
+unless otherwise stated, and $S = \{0, \ldots, m\}$.
+
+As stated before, in the right to left implication, we have shown that transition probabilities
+can be expressed as:
+
+\begin{equation}
+P(X_0 = s_0, \ldots, X_n = s_n) = P(X_0 = s_0) \cdot P(X_1 = s_1 | X_0 = s_0) \cdots P(X_n = s_n | X_{n - 1} = s_{n - 1})
 \label{eq:trans-probs}
-\end{align}
+\end{equation}
 
-and also:
+and also, for $n > q$:
 
-\begin{align}
-& P(X_{m} = s_{m}, \ldots, X_n = s_n | X_{m - 1} = s_{m - 1})) = \nonumber \\
-& = P(X_{m} = s_{m} | X_m = s_m) \cdots P(X_n = s_n | X_{n - 1} = s_{n - 1})
+\begin{eqnarray}
+&& P(X_n = s_n, \ldots, X_{q + 1} = s_{q + 1} | X_{q} = s_{q}) = \nonumber \\
+&& P(X_{q + 1} = s_{q + 1} | X_{q} = s_{q}) \cdots P(X_n = s_n | X_{n - 1} = s_{n - 1})
 \label{eq:trans-cond-probs}
-\end{align}
+\end{eqnarray}
 
 #+begin_definition
 Given $\{X_n\}_{n\in I}$ a Markov chain with finite state space $S$, let us define the initial distribution as $\mu(s) = P(X_0 = s), s \in S$.
@@ -355,7 +348,7 @@ Given $\{X_n\}_{n\in I}$ a Markov chain with finite state space $S$, let us defi
 Given $\{X_n\}_{n\in I}$ a Markov chain with finite state space $S$, let us define the transition probabilities as
 
 \begin{align*}
-& p_{s, t}(m, n) = P(X_n = t | X_m = s),\quad s,t \in S, \quad n,m \in \mathbb{N}, n\neq m \\
+& p_{s, t}(q, n) = P(X_n = t | X_q = s),\quad s,t \in S, \quad n, q \in \mathbb{N}, n\neq q \\
 & p_{s, t}(n, n) = \mathbb{1}_{s = t}
 \end{align*}
 #+end_definition
@@ -366,10 +359,10 @@ Therefore, we can rewrite Equation \eqref{eq:trans-probs} as:
 P(X_k = s_k, k \le n) = \mu(s_0) \cdot p_{s_0, s_1}(0, 1) \cdot p_{s_1, s_2}(1, 2) \cdots p_{s_{n - 1}, s_n}(n - 1, n)
 \]
 
-Summing over $m - 1, \ldots, n -1$ in Equation \eqref{eq:trans-cond-probs}, we deduce:
+Summing over $q + 1, \ldots, n -1$ in Equation \eqref{eq:trans-cond-probs}, we deduce:
 
 \begin{equation}
-p_{s, t}(m, n) = \sum_{s^{(1)} \in S} \ldots \sum_{s^{(n - m - 1)} \in S} p_{s, s^{(1)}}(m, m + 1) \cdots p_{s^{(n - m - 1)}, t}(n - 1, n)
+p_{s, t}(q, n) = \sum_{s_{1} \in S} \ldots \sum_{s_{(n - q - 1)} \in S} \bigg\{ p_{s, s_{1}}(q, q + 1) \cdots p_{s_{(n - q - 1)}, t}(n - 1, n) \bigg\}
 \label{eq:sum-probs}
 \end{equation}
 
@@ -388,21 +381,23 @@ P(m, n) = P(m, l) \cdot P(l, n), \quad \forall m \le l \le n
 Straightforward from Equation \eqref{eq:sum-probs}
 #+end_proof
 
-** Time-homogeneous Markov chains
+* Time-homogeneous Markov chains
 #+begin_definition
-Given a Markov chain $\{X_n\}$ with finite space state $S=\{0, \ldots, k\}$, it is said to be a time-homogeneous Markov chain iff it holds:
+Given a Markov chain $\{X_n\}$ with finite space state $S$, it is said to be a time-homogeneous Markov chain
+iff the transition probabilities do not depend on time:
 
 \[
-\forall s, t\in S, \forall n \in \mathbb{N} \qquad p_{s, t} (n, n + 1) = p_{s, t} \in [0, 1]
+\forall s, t\in S, \,\forall n \in \mathbb{N} \qquad p_{s, t} (n, n + 1) = p_{s, t} \in [0, 1]
 \]
-
-(i.e. the transition probabilities do not depend on the time).
 
 $p_{s, t}$ is called one-step transition probability and $P = (p_{s, t})_{s, t \in S}$ the transition matrix.
 #+end_definition
 
+All the Markov chains we will consider henceforth will be discrete time-homogeneous ones and with
+finite space state, and we will abbreviate it DTMC.
+
 #+begin_proposition
-It holds $P(m, n) = P^{n - m}$
+Given $\{X_n\}$ a DTMC it holds $P(m, n) = P^{n - m}$
 #+end_proposition
 
 #+begin_proof
@@ -422,42 +417,11 @@ Naming $\mu_n = \left(\mu_n(0), \ldots, \mu_n(k)\right)$, it holds:
 Trivial from Equation \eqref{eq:trans-probs}
 #+end_proof
 
-#+begin_definition
-We define the law of a Markov chain $\{X_n\}$, where $X_n: \Omega \longrightarrow \mathbb{S}$, as the probability distribution of $X: \Omega \longrightarrow S^{\mathbb{N}}$, where $X(\omega) = \{X_n(w)\}_{n \in \mathbb{N}}$.
-#+end_definition
+Note there is bijection between a DTMC with $S = \{1, \ldots, m\}$,
+a stochastic matrix $P$ of dimension $m \times m$ (we will note it $P_{m\times m}$) and a directed
+graphs $G=(S, E, P)$ where there is an edge $e = s \goto t, e \in E$ iff $p_{s,t} > 0$.
+From now on we will use any of these three concepts interchangeably.
 
-#+begin_definition
-We will denote:
-
-\[
-P_s(A) = P(A | X_0 = s)
-\]
-
-for any given state $s\in S$. Let's note that $P_s$ is univocally defined by $P_s(X_k = t) \quad \forall k \ge 0, t \in S$.
-
-We will also denote
-
-\[
-\mathbb{E}_s Y = \mathbb{E}(Y | X_0 = s) = \sum_y y P(Y = y | X_0 = s) = \sum_y y P_i(Y = y)
-\]
-#+end_definition
-
-** Stationarity
-#+begin_definition
-We say that $\{X_n\}$ is stationary iff $\{X_n\}_{n \ge 0}$ has the same law as $\{X_n\}_{n \ge m}$.
-#+end_definition
-
-#+begin_proposition
-A Markov chain $\{X_n\}$ is stationary iff it is time homogeneous and all the $X_k$ have the same
-distribution.
-#+end_proposition
-
-#+begin_proof
-From right to left, if $\{X_n\}$ is stationary, $P(X_0 = s) = P(X_m = s)$ for all $s\in S, m\in \mathbb{N}$
-#+end_proof
-
-We will assume all the Markov chains as time-homogeneous ones henceforth, unless stated
-otherwise.
 ** Stopping times and strong Markov property
 #+begin_definition
 Given $\{X_n\}$ a Markov chain, defined over $(\Omega, \mathcal{F}, P)$, then a stopping time is a random variable
@@ -2635,7 +2599,7 @@ P^{m - 1} &=& \left(\begin{array}{ccccccccccc}
 \right)
 }_{m - 2}
 \end{eqnarray*}
-
++ Try to write an article for Journal of Statistical Software [fn::[[https://www.jstatsoft.org/index]]], a [[https://www.scimagojr.com/journalsearch.php?q=12137&tip=sid][Q1]] (in Software and in Statistics and Probability categories) open access journal which publishes papers for sofware with highly mathematical foundation. Given the importance of the package and the improvements it is receiving it would be suitable to publish it, as long as we keep adding valuable content to it and we fulfill our purpose of creating bindings for Python.
 * Appendix
 ** Installation of markovchain
 As prerequisite, R [fn::[[https://cloud.r-project.org][https://cloud.r-project.org]]] should be installed. In \textit{Debian} based distributions can be installed as:
