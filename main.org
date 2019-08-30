@@ -393,8 +393,7 @@ iff the transition probabilities do not depend on time:
 $p_{s, t}$ is called one-step transition probability and $P = (p_{s, t})_{s, t \in S}$ the transition matrix.
 #+end_definition
 
-All the Markov chains we will consider henceforth will be discrete time-homogeneous ones and with
-finite space state, and we will abbreviate it DTMC.
+We will use DTMC to refer to discrete time-homogeneous Markov chains with finite space state henceforth.
 
 #+begin_proposition
 Given $\{X_n\}$ a DTMC it holds $P(m, n) = P^{n - m}$
@@ -432,24 +431,24 @@ $\tau : \Omega \mapsto \mathbb{N} \bigcap \{\infty\}$ such that:
 \]
 
 Moreover, we call the $\sigma$ -algebra of events previous to $\tau$, namely $\mathcal{F}_{\tau}$, the one which contains all
-the events $A \in \mathcal{F}$ following:
+the events $A \in \mathcal{F}$ verifying:
 
 \[
 A\bigcap \{\tau = n \} \in \mathcal{F}_n
 \]
 #+end_definition
 
-For example, in the case of a coin, the first instant (or coin toss) $\tau$ where we get 4 heads
+For example, in the case of a coin, the first instant (or coin toss) $\tau$ where we get $4$ heads
 in a row, is a valid stopping time, because we only have to account for the previous random
-variables; whereas the first toss where we are just one toss away from having obtained 4 heads
+variables. However, the first toss where we are just one toss away from having obtained $4$ heads
 is not a valid stopping time, since it involves future events.
 
-Given $S = \{i_1, i_2, \ldots\}$ we would denote $S^m = \{(i^{(1)}, \ldots, i^{(m)}): i^{(j)} \in S\}$.
+We would denote $S^m = \{(s^{(1)}, \ldots, s^{(m)}): s^{(j)} \in S\}$.
 
 #+begin_proposition
-Let $\{X_n\}$ be a Markov chain with $S$ as state space and stationary transition probabilities.
-Let $\tau$ be a stopping time. Then for all $m\in \mathbb{N}, C \subseteq S^m, A \in \mathcal{F}_\tau,
-i \in S$, if $P(A \bigcap \{X_\tau = i\}) > 0$, then it holds:
+Let $\{X_n\}$ be an arbitrary Markov chain and $\tau$ a stopping time.
+Then for all $m\in \mathbb{N}, C \subseteq S^m, A \in \mathcal{F}_\tau,
+i \in S$, if $P(A \bigcap \{X_\tau = i\}) > 0$ it holds:
 
 \begin{equation}
 P\left((X_{\tau + 1}, \ldots, X_{\tau + m}) \in C | A, X_{\tau} = i\right) =
@@ -459,7 +458,7 @@ P\left((X_{\tau + 1}, \ldots, X_{\tau + m}) \in C | X_{\tau} = i\right)
 #+end_proposition
 
 #+begin_proof
-Let us start taking $m = 1, C = \{j\}$. Then, intersecting over $\{\tau = n\}$, we have:
+Let us start taking $m = 1, C = \{j\}$. Then, intersecting with $\{\tau = n\}$, we have:
 
 \begin{align*}
 P\left(X_{\tau + 1} = j, A, X_{\tau} = i\right) &=
@@ -482,7 +481,7 @@ Applying several times this argument, we have:
 \begin{align*}
 & P\left(X_{\tau + 1} = i_1, X_{\tau + 2} = i_2, \ldots, X_{\tau + m} = i_m | A, X_{\tau} = i\right) =\\
 &= P\left(X_{\tau + 1} = i_1 | A, X_{\tau} = i\right) \cdot P\left(X_{\tau + 2} = i_2 | A, X_{\tau} = i, X_{\tau + 1} = i_1\right) \cdots \\
-&\cdots P\left(X_{\tau + m} = i_m | A, X_{\tau} = i, X_{\tau + 1} = i_1, \ldots X_{\tau + m - 1} = i_{m - 1}\right) = p_{i, i_1} p_{i_1, i_2} \cdots p_{i_{m - 1}, i_m}
+&\cdots P\left(X_{\tau + m} = i_m | A, X_{\tau} = i, X_{\tau + 1} = i_1, \ldots, X_{\tau + m - 1} = i_{m - 1}\right) = p_{i, i_1} p_{i_1, i_2} \cdots p_{i_{m - 1}, i_m}
 \end{align*}
 
 In particular, when $A$ is the whole space $\Omega$, we arrive at:
@@ -491,7 +490,7 @@ In particular, when $A$ is the whole space $\Omega$, we arrive at:
 P\left(X_{\tau + 1} = i_1, X_{\tau + 2} = i_2, \ldots, X_{\tau + m} = i_m | X_{\tau} = i\right) = p_{i, i_1} p_{i_1, i_2} \cdots p_{i_{m - 1}, i_m}
 \]
 
-which shows the equality:
+That last step proves the equality:
 
 \[
 P\left(X_{\tau + 1} = i_1, \ldots, X_{\tau + m} = i_m | A, X_{\tau} = i\right) =
@@ -502,14 +501,15 @@ We have shown that Equation \eqref{ec:strong-mc} holds for $C = \{(i_1, \ldots, 
 $C \subseteq S^m$ it would suffice summing over $(i_1, \ldots, i_m) \in C$.
 #+end_proof
 
-The previous result says us that all the Markov chains (in discrete time) have the strong Markov
-property, and it can be interpreted as the Markov chain restarting each time it hits the state
-$i \in S$.
+The previous result means all Markov chains in discrete time have the strong Markov
+property, and it can be interpreted as the Markov chain restarting each time it hits the arbitrary state
+$i \in S$, without influence of what happened to that moment.
 
 ** Hitting times
-The probabilities $p_{i, j}^{(n)} = P_i\left(X_n = j\right)$ gives us of the probability of the
-chain reaching state $j$ in the $n$ -th period, if it starts from $i$. But the state $j$ could have
-been visited before. We are interested now in finding the first time that a given state is reached.
+We introduce the notation $P_A(X_n \in B) = P(X_n \in B | X_{n - 1} \in A)$.
+Then $p_{i, j}^{(n)} = P_i\left(X_n = j\right)$ gives us of the probability
+of the chain reaching state $j$ in the $n$ -th step, if it starts from $i$. Specifically, we are interested
+now in the first time that a given state is reached.
 
 #+begin_definition
 We define the hitting time for the state $j \in S$ as:
