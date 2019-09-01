@@ -825,8 +825,17 @@ matrix we get is:
 \end{equation}
 
 #+begin_definition
-A Markov chain where all its states are essential and there exists only a communicating class is called
-irreducible (or ergodic) Markov chain.
+If we consider an ordered finite set $S$ and it holds:
+
+1. States are ordered inside each class, $S - S^{\ast}$ included.
+1. $C_k = [s_k]$ where $s_k$ is the minimum of $C_k$ and $s_{i} < s_{i + 1}$ for all $i$.
+
+Then we can say \eqref{eq:canonic-form} is the canonic form for the Markov chain.
+#+end_definition
+
+#+begin_definition
+A Markov chain where there only exists a communicating class is called irreducible (or ergodic)
+Markov chain.
 #+end_definition
 
 *** Recurrence and transience
@@ -907,7 +916,7 @@ Let us fix some $i \in S$. We have
 \sum_{n = 1}^{\infty} \sum_{j \in S} p_{i,j}^{(n)} = \sum_{n = 1}^{\infty} 1 = \infty
 \]
 
-We conclude there exits at least one $\expecti{V_j} = \infty \leftrightarrow f_{j,j} = 1$, so the subchain which
+We conclude there exits at least one $\expecti{V_j} = \infty \Leftrightarrow f_{j,j} = 1$, so the subchain which
 contains $j$ is recurrent. The same argument can be applied to the other subchains.
 #+end_proof
 
@@ -1112,7 +1121,7 @@ Then $t = N\cdot \onecol$
 #+end_definition
 
 #+begin_proposition
-If $S - S^{\ast}$ is finite, the following relation holds:
+If $S - S^{\ast}$ is finite, then $(I - R)^{-1}$ exists and:
 
 \begin{eqnarray}
 F^{\ast} = (I - R)^{-1} Q \label{eq:char-absorption-probs}\\
@@ -1120,6 +1129,7 @@ f^{\ast} = 1 \nonumber
 \end{eqnarray}
 
 where the last equation tells us the absorption would take place almost surely.
+\label{prop:i-r-invertible}
 #+end_proposition
 
 #+begin_proof
@@ -1199,7 +1209,7 @@ Given $P$ a regular matrix, we will call $\gamma(P) = \min\{n \in \naturals: P^n
 
 #+begin_definition
 If $L = \{l_1, l_2, \ldots\}$ is a numerable set, we can define $gcd(L): = \lim_{n} g_n$, where
-$g_n = \twopartdefow{gcd(l_1, l_2)}{n = 1}{gcd(g_{n - 1}, l_{n + 1})}$
+$g_n = \twopartdefow{l_1}{n = 1}{gcd(g_{n - 1}, l_{n})}$
 
 It can be proven this quantity does not depend on the order of the set.
 #+end_definition
@@ -1390,7 +1400,7 @@ and we can take $k = 1 - 2d$. Note this minimum only depends on $P$.
 **Fundamental limit theorem for regular Markov chains**
 
 Let $P_{m\times m}$ be a regular transition matrix. Then $\{P^{n}\} \rightarrow W$ where
-$w \in \posreals^m$ is a probability vector and
+$w \in (\posreals)^m$ is a probability vector and
 $W = \left(\begin{array}{c} w \\ \vdots \\ w \end{array}\right)$. Moreover, it holds:
 
 1. $wP = w$ and every other fixed row vector $r$ verifies $r = \lambda w$ for some $\lambda \in \mathbb{R}$
@@ -1457,7 +1467,7 @@ limits in $n$, $\sum_{j=1}^m w_j = 1$. Finally, $w \ge 0$ implies that it must b
 
 /Second part/
 
-1. If $P^{n + 1} = P^{n} \cdot P \goto WP = W$, then we deduce $wP = w$ row-wise. For other fixed row vector $r$ it holds $r = rW = \big(\sum_{i = 1}^m r_i \big) W$
+1. If $P^{n + 1} = P^{n} \cdot P \goto WP = W$, then we deduce $wP = w$ row-wise. For other fixed row vector $r$ it holds $r = rW = \big(\sum_{i = 1}^m r_i \big) w$
 1. Since $c = Pc = P^2 c = \ldots P^n c$, taking limits $c = Wc$, and therefore
 \[
   c = \left(\begin{array}{c} w \cdot c \\ \vdots \\ w \cdot c \end{array}\right) = \onecol \cdot w \cdot c
@@ -1544,15 +1554,14 @@ $i$ -th state is transient, then $(vP)_i = 0$
 #+end_proposition
 
 #+begin_proof
-Looking at the canonic matrix from Equation \eqref{eq:canonic-form}, if $v$ is a steady state, then
-if $[l, \ldots, m]$ are transient states (we can suppose w.l.o.g. they are ordered as in the canonic form), we would
-have:
+Looking at the canonic matrix from Equation \eqref{eq:canonic-form}, if $[l, \ldots, m]$ are transient
+states (we can suppose w.l.o.g. they are ordered as in the canonic form), we would have:
 
 \[
-(v_l, \ldots, v_m) W = (v_l, \ldots, v_m) \equiv (v_l, \ldots, v_m) \cdot (W - I) = 0
+(v_l, \ldots, v_m) R = (v_l, \ldots, v_m) \Leftrightarrow (v_l, \ldots, v_m) \cdot (I - R) = 0
 \]
 
-$(W - I)$ is invertible by TODO. Hence, $(v_l, \ldots, v_m) = 0$
+$(I - R)$ is invertible by Proposition \eqref{prop:i-r-invertible}. Hence, $(v_l, \ldots, v_m) = 0$
 
 #+end_proof
 
@@ -1573,18 +1582,17 @@ Given an stochastic matrix $P$ written in its canonic form, then its space of st
 #+begin_proof
 Since $P \sum_{i = 1}^r \alpha_i \widetilde{v}^{(i)} = \sum_{i = 1}^r \alpha_i P \widetilde{v}^{(i)} = \sum_{i = 1}^r \alpha_i \widetilde{v}^{(i)}$,
 and $\sum_{j = 1}^m \bigg(\sum_{i = 1}^r \alpha_i \widetilde{v}^{(i)} \bigg)_j = \sum_{i = 1}^m \alpha_i \sum_{j = 1}^m \widetilde{v}^{(i)}_j = \sum_{i = 1}^m \alpha_i = 1$
-then it is clear that every convex combination of $\widetilde{v}^{(i)}, i = 1, \ldots, r$ is a steady state for the matrix.
+then it is clear that every convex combination of $\widetilde{v}^{(i)}$ with
+$i = 1, \ldots, r$, is a steady state for the matrix.
 
 They are also linearly independent, trivially, since they are not null by the Theorem \eqref{th:steady-ergodic} and the positive regions
 of each one do not overlap by construction.
 
-Given a steady state $\widetilde{w}$, by the Proposition \eqref{prop:ss-transient-zero} we know $(\widetilde{w} P)_{j} = 0$ for $j= u_{r + 1}, \ldots, m$. And
-by the shape of the matrix, $(P_i \widetilde{w})_j = v_j$ for each $j = l_j, \ldots, u_j$. By Theorem \eqref{th:steady-ergodic}, again, then
-$w^{(i)} = (\widetilde{w}_{l_i}, \ldots, \widetilde{u_i})$ is $w^{(i)} = \alpha_i v^{(i)}$. But it has to hold:
-
-\[
-1 = \sum_{j = 1}^m \widetilde{w}_j = \sum_{i = 1}^{r} \sum_{j} w^{(i)}_j = \sum_{i = 1}^{r} \alpha_i \sum_{j} v^{(j)} = \sum_{i = 1}^{r} \alpha_i
-\]
+Given a steady state $\widetilde{w}$, by the Proposition \eqref{prop:ss-transient-zero} we know $(\widetilde{w} P)_{j} = 0$ for
+$j= l, \ldots, m$ (the transient states). And by the shape of the matrix, $(\widetilde{w} P)_{j} =
+(w^{(i)} P_i)_j = \widetilde{w}_j$ for each $j = l_i, \ldots, u_i$, where
+$w^{(i)} = (\widetilde{w}_{l_i}, \ldots, \widetilde{w}_{u_i})$. Using Theorem \eqref{th:steady-ergodic},
+then $w^{(i)} = \alpha_i v^{(i)}$ must hold. We deduce $w = \sum_{i = 1}^r \alpha_i \widetilde{v}^{(i)}$
 #+end_proof
 
 ** Mean first passage time
@@ -1592,10 +1600,10 @@ $w^{(i)} = (\widetilde{w}_{l_i}, \ldots, \widetilde{u_i})$ is $w^{(i)} = \alpha_
 Given an ergodic Markov chain, we call the expected number of steps to reach a state $j$ from initial state $i$
 as mean first passage time from $i$ to $j$. We note it $m_{ij}$. Formally:
 
-\begin{eqnarray*}
-  & \tau_{j} &= \min \{t: X_t = j, X_{l} \neq j, t >= 0, l < t\} \\
-  & m_{ij}   &= \expecti{\tau_{j}}
-\end{eqnarray*}
+\[
+  \tau_{j} := \min \{n \ge 0: X_n = j, X_{k} \neq j,  0 \le< k < n\}
+  \qquad m_{ij} := \expecti{\tau_{j}}
+\]
 
 Obviously by the definition $m_{ii} = 0$
 #+end_definition
@@ -1603,10 +1611,10 @@ Obviously by the definition $m_{ii} = 0$
 #+begin_definition
 If the initial state of an ergodic Markov is $i$, then we define the mean recurrence time for $i$ as:
 
-\begin{eqnarray*}
-  & \tau_{i}^{*} &= \min \{t: X_t = i, X_{l} \neq i, t > 0, l < t\} \\
-  & r_{i}   &= \expecti{\tau_{i}^{*}}
-\end{eqnarray*}
+\[
+ \tau_{i}^{\ast} := \min \{t: X_t = i, X_{l} \neq i, t > 0, l < t\}
+ \qquad r_{i} := \expecti{\tau_{i}^{\ast}}
+\]
 #+end_definition
 
 #+begin_proposition
@@ -1614,7 +1622,7 @@ It holds
 
 \begin{eqnarray*}
   & m_{ij}  &= 1 + \sum_{k \neq j} p_{ik} m_{kj} \\
-  & m_{ij}   &= 1 + \sum_{k} p_{ik} m_{ki}
+  & r_i     &= 1 + \sum_{k} p_{ik} m_{ki}
 \end{eqnarray*}
 
 \label{prop:mfpt-rec}
@@ -1641,7 +1649,7 @@ $C = \left(\begin{array}{cccc} 1 & 1 &\ldots & 1 \\
                               \vdots & \vdots & \ddots & \vdots \\
                                1 & 1 &\ldots & 1 \end{array}\right)$
 
-And for the recurrence \eqref{prop:mfpt-rec} we have:
+And for the recurrence in Proposition \eqref{prop:mfpt-rec} we have:
 
 \begin{equation}
 M = PM + C - D
@@ -1660,25 +1668,27 @@ By Equation \eqref{prop:mfpt-rec-mat} we have $w(I - P)M = 0 = w(C -D)$.
 Therefore $w\cdot C = \onerow = (w_1\cdot r_1, \ldots w_n r_n)$, and $r_i = w_i^{-1}$
 #+end_proof
 
-#+begin_proposition
+#+begin_lemma
 Let $P_{m\times m}$ an ergodic matrix, $w$ its steady state and $W$ the matrix formed by $w$ as rows.
-Then $I - P + W$ is invertible and $Z = (I - P + W)^{-1}$ holds:
+Then $I - P + W$ is invertible and $Z = (I - P + W)^{-1}$ verifies:
 
 1. $Z \cdot \onecol = \onecol$, $w\cdot Z = w$
 2. $Z(I - P) = I - W$
-\label{prop:z-invertible}
-#+end_proposition
+\label{lemma:z-invertible}
+#+end_lemma
 
 #+begin_proof
+
 Let $x$ such that $(I - P + W)x = 0$. Since $w P = w$ then $\{w P^n \} \rightarrow wW = w$ and similarly
 $W \onecol = \onecol$. Therefore $w(I - P + W)x = wx = 0 \implies Wx = 0 \implies (I - P)x = 0$. Hence,
 this means $Px = x$. By Theorem \eqref{th:steady-ergodic} this implies
 $x = \lambda \onecol$, but $wx = 0$ and $w$ has only positive elements. Therefore $x = 0$, and we can use
 $A_{m \times m}$ is invertible iff $\forall x \in \reals^m, Ax = 0 \implies x = 0$.
 
-$\onecol = (I - P + W)c$ and multiplying by $Z$ in both sides: $Zc = C$. Similarly, we can show $wZ = w$.
+$\onecol = (I - P + W) \onecol$ and multiplying by $Z$ in both sides: $Z \onecol = \onecol$.
+Similarly, we can show $wZ = w$.
 
-Since $Zc$ and $ZW = Z \left(\begin{array}{c|c|c} w_1\onecol & \ldots & w_m\onecol \end{array}\right) =
+Since $ZW = Z \left(\begin{array}{c|c|c} w_1\onecol & \ldots & w_m\onecol \end{array}\right) =
 W$. Then $Z(I - P) = Z(I -P + W - W) = I - ZW = I - W$.
 #+end_proof
 
@@ -1692,17 +1702,17 @@ it holds:
 #+end_theorem
 
 #+begin_proof
-From \eqref{prop:mfpt-rec-mat} we have $(I - P) M = C - D$ and:
+From Equation \eqref{prop:mfpt-rec-mat} we have $(I - P) M = C - D$ and:
 
 \[
-Z(I - P)M = ZC - ZD \underset{\textrm{Lemma \eqref{prop:z-invertible}}}{\dimplies} M - WM = C -ZD
-\dimplies M = C -ZD + WM
+Z(I - P)M = ZC - ZD \underset{\textrm{Lemma \eqref{lemma:z-invertible}}}{\dimplies} M - WM = C -ZD
+\dimplies WM = ZD + M - C
 \]
 
 and from that equation an $m_{jj} = 0$, we deduce:
 
 \[
-  (w M)_{j} = \twopartdef{z_{ij}r_j - 1 - m_{ij}}{i \neq j}{z_{jj}r_j - 1}{i = j}
+  (w M)_{j} = \twopartdef{z_{ij}r_j - 1 + m_{ij}}{i \neq j}{z_{jj}r_j - 1}{i = j}
 \]
 
 and therefore, subtracting and using Proposition \eqref{prop:ss-and-recurrence-prob}:
