@@ -421,9 +421,10 @@ Trivial from Equation \eqref{eq:trans-probs}
 #+end_proof
 
 Note there is bijection between a DTMC with $S = \{1, \ldots, m\}$,
-a stochastic matrix $P$ of dimension $m \times m$ (we will note it $P_{m\times m}$) and a directed
-graphs $G=(S, E, P)$ where there is an edge $e = (i, j), e \in E$ iff $p_{i,j} > 0$.
-From now on we will use any of these three concepts interchangeably.
+a by-row stochastic matrix $P$ of dimension $m \times m$ (we will note it $P_{m\times m}$) and a directed
+graphs $G(P):=(S, E, P)$ where there is an edge $e = (i, j), e \in E$ iff $p_{i,j} > 0$.
+From now on we will use any of these three concepts interchangeably. Also, when we talk about
+stochastic matrices, we will refer to by-row stochastic ones.
 
 ** Stopping times and strong Markov property
 #+begin_definition
@@ -824,8 +825,8 @@ matrix we get is:
 \end{equation}
 
 #+begin_definition
-A Markov chain where all its states are essential and only a communicating class is called
-irreducible Markov chain.
+A Markov chain where all its states are essential and there exists only a communicating class is called
+irreducible (or ergodic) Markov chain.
 #+end_definition
 
 *** Recurrence and transience
@@ -932,12 +933,10 @@ and the class would not be recurrent.
 Reciprocally, Proposition \eqref{prop:one-recurrent-class} gives us the result we want.
 #+end_proof
 
-We are going to make the classification among the recurrent states even finer.
-
 #+begin_definition
-We say that recurrent state $i \in S$ is:
-1. positive recurrent iff $e_{i,i} < \infty$.
-2. null recurrent iff $e_{i,i} = \infty$.
+We say that a recurrent state $i \in S$ is:
+1. Positive recurrent iff $e_{i,i} < \infty$.
+1. Null recurrent iff $e_{i,i} = \infty$.
 #+end_definition
 
 #+begin_lemma
@@ -951,20 +950,20 @@ lim_{s\nearrow 1} \frac{1 - F_{i,i}(s)}{1 - s} < \infty \dimplies lim_{s\nearrow
 #+end_lemma
 
 #+begin_proof
-Let us observe that for the limit to exist it must be $\lim_{s\nearrow 1} F_{i,i}(s) = f_{i,i} = 1$ iff $i$ is recurrent.
+Let us observe that for the limit to exist it must be $\lim_{s\nearrow 1} F_{i,i}(s) = f_{i,i} = 1$.
 
 \[
-\lim_{s\nearrow 1} \frac{1 - F_{i,i}(s)}{1 - s} = \frac{1}{1 - s} \sum_{n = 1}^{\infty} (1 - s^n) f_{i,i}^{(n)} =
+\lim_{s\nearrow 1} \frac{1 - F_{i,i}(s)}{1 - s} =
+\frac{1}{1 - s} \sum_{n = 1}^{\infty} (1 - s^n) f_{i,i}^{(n)} =
 \sum_{n = 1}^{\infty} (1 + s + \ldots + s^{n-1}) f_{i,i}^{(n)}
+\underset{s\nearrow 1}{\rightarrow} \sum_{n = 1}^\infty n f_{i,i}^{(n)} = e_{i,i}
 \]
-
-which tends to $\sum_{n = 1}^\infty n f_{i,i}^{(n)} = e_{i,i}$.
 
 The second part is deduced from Equation \eqref{eq:Fs-Ps-relation}.
 #+end_proof
 
 #+begin_proposition
-If $i,j$ are communicating recurrent states, then they are both positive recurrent or null recurrent states.
+If $i,j$ are communicating recurrent states, then they are both positive recurrent or null recurrent.
 \label{prop:all-positive-all-null}
 #+end_proposition
 
@@ -972,17 +971,17 @@ If $i,j$ are communicating recurrent states, then they are both positive recurre
 By the procedure used in the proof of Proposition \eqref{prop:recurrent-classes}, we have:
 
 \[
-p_{j,j}^{(n)} \ge p_{j,i}^{(v)} \cdot p_{i,i}^{(n-u-v)} \cdot p_{i,j}^{(u)} > 0 \forall n > u + v
+p_{j,i}^{(v)} \cdot p_{i,j}^{(u)} > 0, \quad p_{j,j}^{(n)} \ge p_{j,i}^{(v)} \cdot p_{i,i}^{(n-u-v)} \cdot p_{i,j}^{(u)} \quad \forall n \ge u + v
 \]
 
 Therefore:
 
 \begin{align*}
 (1-s) \bigg\{1 + P_{j,j}(s)\bigg\} = (1-s) \bigg\{1 + \sum_{n = 1}^{\infty} p_{j,j}^{(n)} s^n\bigg\} = \\
-(1-s) \bigg\{1 + \sum_{n = 1}^{u + v} p_{j,j}^{(n)} s^n + \sum_{n = u + v + 1}^{\infty} p_{j,j}^{(n)} s^n \bigg\} \ge \\
-(1-s) \bigg\{1 + \sum_{n = 1}^{u + v} p_{j,j}^{(n)} s^n + s^{u + v} p_{i,j}^{(u)} p_{j,i}^{(v)} \sum_{n = 1}^{\infty} p_{i,i}^{(n)} s^n \ge \\
-(1-s) \bigg\{1 + s^{u + v} p_{i,j}^{(u)} p_{j,i}^{(v)} P_{i,i}(s) \bigg\} =\\
-(1-s) \bigg\{1 + P_{i,i}(s)\bigg\}s^{u + v} p_{i,j}^{(u)} + (1-s) \bigg\{1 - s^{u + v} p_{i,j}^{(u)} p_{j,i}^{(v)} \bigg\}
+(1-s) \bigg\{1 + \sum_{n = 1}^{u + v - 1} p_{j,j}^{(n)} s^n + \sum_{n = u + v}^{\infty} p_{j,j}^{(n)} s^n \bigg\} \ge \\
+(1-s) \bigg\{1 + \sum_{n = 1}^{u + v - 1} p_{j,j}^{(n)} s^n + s^{u + v - 1} p_{i,j}^{(u)} p_{j,i}^{(v)} \sum_{n = 1}^{\infty} p_{i,i}^{(n)} s^n \bigg\}\ge \\
+(1-s) \bigg\{1 + s^{u + v - 1} p_{i,j}^{(u)} p_{j,i}^{(v)} P_{i,i}(s) \bigg\} =\\
+(1-s) \bigg\{1 + P_{i,i}(s)\bigg\}s^{u + v - 1} p_{i,j}^{(u)} p_{j,i}^{(v)} + (1-s) \bigg\{1 - s^{u + v - 1} p_{i,j}^{(u)} p_{j,i}^{(v)} \bigg\}
 \end{align*}
 
 Hence:
@@ -995,20 +994,21 @@ And exchanging the roles of $i$ and $j$, we deduce $i$ is positive recurrent iff
 #+end_proof
 
 #+begin_proposition
-Every irreducible Markov chain with a finite number of states is positive recurrent
+Every DTMC is positive recurrent
 #+end_proposition
 
 #+begin_proof
-Let us fix a $s \in [0,1[$. We have, using that $\sum_{n = 1}^{\infty} = \frac{s}{1 - s}$:
+Let us fix a $s \in [0,1[$. We have, using that $\sum_{n = 1}^{\infty} s^n = \frac{s}{1 - s}$:
 
 \[
 \sum_{j \in S} (1-s) F_{i,j}(s) \bigg\{1 + P_{j,j}(s)\bigg\} \underset{\textrm{\eqref{eq:Fs-Ps-relation}}}{=}
 (1 - s) \sum_{j \in S} P_{i,j}(s) = (1-s) \sum_{n = 1}^{\infty} s^n \underbrace{\sum_{j\in S} p_{i,j}^{(n)}}_{1} = s
 \]
 
-Taking $\lim_{s \nearrow 1}$ we have $\sum_{j \in S} \lim_{s \nearrow  1} (1-s) F_{i,j}(s) = 1$
+Taking $\lim_{s \nearrow 1}$ we have $\sum_{j \in S} \lim_{s \nearrow  1} (1-s)
+\underbrace{f_{i,j}(s)}_{\underset{s \nearrow 1}{\rightarrow} 1} \bigg\{1 + P_{j,j}(s)\bigg\} = 1$
 
-Therefore, it must exist $j \in S$ with $\lim_{s \nearrow  1} (1-s) F_{i,j}(s) > 0$. By Lemma \eqref{lemma:positive-rec-characterization},
+Therefore, there must exist $j \in S$ with $\lim_{s \nearrow  1} (1-s) F_{i,j}(s) > 0$. By Lemma \eqref{lemma:positive-rec-characterization},
 we deduce $j$ is positive recurrent, therefore recurrent. By Proposition \eqref{prop:recurrent-classes} all states
 communicating with $j$ are also recurrent, and by Proposition \eqref{prop:all-positive-all-null}, all the states of
 the chain are positive recurrent.
@@ -1016,33 +1016,25 @@ the chain are positive recurrent.
 
 *** Absorption
 
-Although the concept of absorbing state has arisen before, we give a formal definition here:
+Although the concept of absorbing state has arisen before, we give a formal definition.
 
 #+begin_definition
 A state $i\in S$ is absorbing iff $p_{i,i} = 1$.
 #+end_definition
 
 Let us observe the matrix \eqref{eq:canonic-form}. This matrix poses some interesting questions for
-the non-essential states. Let us take a non-essential state, namely $i$. Then it is likely that it will go to a
-state in $S^{\ast}$ at some point, and never comes back.
+the non-essential states. Let us take a non-essential state, namely $i$. Then it is likely the chain
+will go to a state in $S^{\ast}$ at some point, and never come back.
 
 #+begin_definition
-We call the absorbing time to the following random variable:
-
-\[
-\tau^{\ast} = \min \{n > 0: X_n \in S^{\ast}\}
-\]
-
-If $\tau^{\ast} < \infty$, we can define the entry absorbing state as $X_{\tau^{\ast}}$.
+We define the absorbing time as $\tau^{\ast} = \min \{n > 0: X_n \in S^{\ast}\}$
+If $\tau^{\ast} < \infty$, we can define the entry absorbing state as the value $X_{\tau^{\ast}}$.
 
 We define:
 
 1. The absorbing probability as $f_{i}^{\ast} = \probi{\tau^{\ast} < \infty}$.
-2. Taking $j\in S^{\ast}$, we can define the probability of being absorbed by $j$ as
-$f_{i,j}^{\ast} = \probi{\tau^{\ast} < \infty, X_{\tau^{\ast}} = j}$.
-3. Since we can decompse $S^{\ast} = C_1 \cup C_2 \cup \ldots \cup C_r$ by the Proposition
-\eqref{prop:equiv-classes}. Given $C = C_i$, we can define the probability of the state $i$
-being absorbed by the subchain $C$ as:
+2. Taking $j\in S^{\ast}$, we can define the probability of being absorbed by $j$ as $f_{i,j}^{\ast} = \probi{\tau^{\ast} < \infty, X_{\tau^{\ast}} = j}$
+3. Since we can decompose $S^{\ast} = C_1 \cup C_2 \cup \ldots \cup C_r$ by the Proposition \eqref{prop:equiv-classes}. Given $C = C_i$, we can define the probability of the state $i$ being absorbed by the subchain $C$ as:
 
 \[
 f_{i,C}^{\ast} = \probi{\tau^{\ast} < \infty, X_{\tau^{\ast}} \in C}
@@ -1050,26 +1042,27 @@ f_{i,C}^{\ast} = \probi{\tau^{\ast} < \infty, X_{\tau^{\ast}} \in C}
 #+end_definition
 
 #+begin_proposition
-The following relations hold for each $i \not\in S^{\ast}$:
+The following holds for each $i \not\in S^{\ast}, j\in S^{\ast}$:
 
 1. $f_i^{\ast} = \sum_{j \in S^{\ast}} p_{i,j} + \sum_{j \not\in S^{\ast}} p_{i,j} f_{j}^{\ast}$
-2. $f_{i,j} = p_{i,j} + \sum_{k \not\in S^{\ast}} p_{i,j} f_{k,j}^{\ast}$
+2. $f_{i,j}^{\ast} = p_{i,j} + \sum_{k \not\in S^{\ast}} p_{i,j} f_{k,j}^{\ast}$
 2. $f_{i,C}^{\ast} = \sum_{j \in C} p_{i,j} + \sum_{j \not\in S^{\ast}} p_{i,j} f_{j}^{\ast}$
 #+end_proposition
 
 It is obvious that $f_{i,C}^{\ast} = \sum_{j \in C} f_{i,j}^{\ast}$. Once the chain enters the
-subchain, $C$, it does so with the initial probabilities
+subchain $C$, it does so with initial probabilities
 $(f_{i,j}^{\ast} / f_{i,C}^{\ast})_{j \in C}$.
 
-It we call $V = \bigg(\expecti{V_j}\bigg)_{i,j \not\in S^{\ast}}$, we have, taking a look at
-the matrix that \eqref{eq:canonic-form} that $V = \sum_{n = 1}^{\infty} R^n$.
+It we call $V = \bigg(\expecti{V_j}\bigg)_{i,j \not\in S^{\ast}}$, we have, taking a look at \eqref{eq:canonic-form}
+that $V = \sum_{n = 1}^{\infty} R^n$.
+
+We will note $\onecol$ to the column vector $\left(\begin{array}{c} 1 \\ \vdots \\ 1 \end{array}\right)$
+or the row vector $(1, 1, \ldots, 1)$.
 
 Also, we can define $Q = (Q_1, \ldots, Q_r)$ the matrix of transition probabilities from
-$S - S^{\ast}$ to $S^{\ast}$, and $q = Q \cdot \left(\begin{array}{c} 1 \\ 1 \\ \vdots \\ 1 \end{array}\right)$ (the row-wise sum of $Q$). And we will call
+$S - S^{\ast}$ to $S^{\ast}$, and $q = Q \cdot \onecol$ (the row-wise sum of $Q$). And we will call
 $F^{\ast} = (f_{i,j}^{\ast})_{i \in S - S^{\ast}, j \in S^{\ast}}$,
 $f^{\ast} = (f_{i}^{\ast})_{i \in S - S^{\ast}}$.
-
-With those notations, we can establish the following proposition:
 
 #+begin_proposition
 The following relations hold:
@@ -1079,7 +1072,7 @@ F^{\ast} &= (I + V)Q \label{prop:Fast-matrix}\\
 f^{\ast} &= (I + V)q \label{prop:fast-matrix}
 \end{align}
 
-The distribution for $\tau^{\ast}$ is $\probi{\tau^{\ast} = n} = B^{n - 1}q, \quad n \in \mathbb{N}$
+The distribution for $\tau^{\ast}$ is $\probi{\tau^{\ast} = n} = R^{n - 1}q, \quad n \in \mathbb{N}$
 \label{prop:fast-matrices}
 #+end_proposition
 
@@ -1091,7 +1084,7 @@ Let us fix $i\in S - S^{\ast}, j \in S^{\ast}$. We have:
 \label{eq:tau-ast-nat}
 \end{align}
 
-Using that for $i$ to get absorbed by $j$ in time $n + 1$, one cannot go through a state in $S^{\ast}$ (otherwise absorption would happen). Also, using $p_{i,j}^{(0)} = \delta_{i,j}$, we have:
+Also, using $p_{i,j}^{(0)} = \delta_{i,j}$, we have:
 
 \begin{align}
 \probi{\tau^{\ast} < \infty, X_{\tau^{\ast}} = j} = \sum_{n = 0}^{\infty} \sum_{k \in S - S^{\ast}} p_{i,k}^{(n)} p_{k,j} = \sum_{k \in S - S^{\ast}} \bigg(\delta_{i,k} + \expecti{V_k}\bigg) p_{k,j}
@@ -1099,24 +1092,22 @@ Using that for $i$ to get absorbed by $j$ in time $n + 1$, one cannot go through
 \end{align}
 
 Let us note that this last equality is \eqref{prop:Fast-matrix} expressed matrix-wise.
-
-To get \eqref{prop:fast-matrix}, it suffices to sum in $j \in S^{\ast}$ in Equation \eqref{eq:tau-ast-inf}.
-
-Summing in $j \in S^{\ast}$ in \eqref{eq:tau-ast-nat} we arrive at:
+To get \eqref{prop:fast-matrix}, it suffices to sum in $j \in S^{\ast}$ in
+Equation \eqref{eq:tau-ast-inf}. And summing in $j \in S^{\ast}$ in \eqref{eq:tau-ast-nat} we arrive at:
 
 \[
-\probi{\tau^{\ast} = n + 1} \sum_{k \in S - S^{\ast}} p_{i,k}^{(n)} q_k = (B^n q)_i
+\probi{\tau^{\ast} = n + 1} \sum_{k \in S - S^{\ast}} p_{i,k}^{(n)} q_k = (R^n q)_i
 \]
 #+end_proof
 
 #+begin_definition
-The matrix $N = (I - W)^{-1}$ is called fundamental matrix for $P$. The entry $n_{ij}$ represents the
-number of times the process is in trasient state $_{j}$ if it is started in also transient state $s_{i}$,
-(counting the initial state as $1$ step)
+The matrix $N = (I - R)^{-1}$ is called fundamental matrix for the Markov chain. The entry $n_{ij}$ represents the
+number of times the process is in transient state $j$ if it is started in also transient state $i$
+(counting the initial state as $1$ step).
 #+end_definition
 
 #+begin_definition
-Let $t_i$ be the number of steps before the chain is absorbed, given that the chain starts in state $s_i$.
+Let $t_i$ be the number of steps before the chain is absorbed, given that the chain starts in $i$.
 Then $t = N\cdot \onecol$
 #+end_definition
 
@@ -1124,7 +1115,7 @@ Then $t = N\cdot \onecol$
 If $S - S^{\ast}$ is finite, the following relation holds:
 
 \begin{eqnarray}
-F^{\ast} = (I - W)^{-1} Q \label{eq:char-absorption-probs}\\
+F^{\ast} = (I - R)^{-1} Q \label{eq:char-absorption-probs}\\
 f^{\ast} = 1 \nonumber
 \end{eqnarray}
 
@@ -1134,63 +1125,29 @@ where the last equation tells us the absorption would take place almost surely.
 #+begin_proof
 It holds:
 \[
-(I + V)(I - W) = (I + W + W^2 + \ldots )(I - W) = I
+(I + V)(I - R) = \sum_{k = 0}^{\infty} R^k \cdot (I - R) = I
 \]
-and therefore $(I + V) = (I - W)^{-1}$ (if we had not had finiteness we could not assure
-uniqueness for the inverse).
+and therefore $(I + V) = (I - R)^{-1}$ (finiteness is used in this affirmation).
 
 To check the other part, since the rows of the transition matrix from $S - S^{\ast}$ sum one,
 
 \[
-Q1_{S^{\ast}} + W 1_{S - S^{\ast}} = 1_{S - S^{\ast}} \dimplies Q1_{S^{\ast}} = (I - W) 1_{S - S^{\ast}}
+Q1_{S^{\ast}} + R 1_{S - S^{\ast}} = 1_{S - S^{\ast}} \dimplies Q1_{S^{\ast}} = (I - R) 1_{S - S^{\ast}}
 \]
 
 Therefore:
 
 \[
-f^{\ast} = F^{\ast} 1 = (I - W)^{-1} \cdot Q 1 = (I - B)^{-1}(I - B) 1_{S - S^{\ast}} = 1_{S - S^{\ast}}
+f^{\ast} = F^{\ast} 1 = (I - R)^{-1} \cdot Q 1 = (I - R)^{-1}(I - R) 1_{S - S^{\ast}} = 1_{S - S^{\ast}}
 \]
 
 #+end_proof
 
-#+begin_proposition
-$F^{\ast}$ is the unique solution, with all its elements in $[0,1]$, of the system $(I-B)X = a$ iff
-absorption in $E^{\ast}$ is sure from every state in $E - E^{\ast}$.
-#+end_proposition
+** Ergodicity
+Let us remember the definition of irreducibility, which has arisen before:
 
-#+begin_proof
-Let us fix some $i \in E - E^{\ast}$, and assume $A >= B$ as a matrix iff:
-
-\[
-\sum_{i, j}{a_{i,j}} < \sum_{i, j}{b_{i,j}}
-\]
-
-From $(I - W) X = Q$ with $X$ with all its entries in $[0,1]$, we deduce:
-
-\begin{align*}
-X = Q + XW \ge Q \underset{X = Q + XW}{\implies} X \ge Q + QW \underset{X = Q + XW}{\implies} \\
-X \ge Q + QW + AB^2 \implies \ldots \implies X \ge (I + V)Q = F^{\ast}
-\end{align*}
-
-Therefore $F^{\ast}$ is the minimum solution with entries in $[0,1]$ to the equation $(I - W)X = W$
-and analogously $f^{\ast}$ is the minimum solution to $(I-B)x = a$.
-
-On the one hand, if there exists solutions to $(I - W)X = Q$ with their elements on $[0,1]$ and not equal to $F^{\ast}$,
-then $x = X 1$ would be solution to $(I - W)x = q$ and $f^{\ast} < x$ cannot be $1$.
-
-On the other hand, if absorption is not sure, $x_i = 1 - f_i^{\ast}$ verify $x = Wx$. Therefore, $x = Bx$
-has some non null solution, with $0 \le x \le 1$ and $X = F^{\ast} + x1$ is a solution for
-$(I - W)X = Q$ whose elements are in $[0,1]$, since:
-
-\[
-f_{i,j}^{\ast} + x_{i} = \probi{\tau^{\ast} < \infty, X_{\tau^{\infty}} = j} + \probi{\tau^{\ast} = \infty} \le \probi{\tau^{\ast} < \infty} + \probi{\tau^{\ast} = \infty} = 1
-\]
-
-#+end_proof
-
-** Ergodic Markov chains
 #+begin_definition
-We say that a Markov chain is ergodic iff all states communicate with each other
+We say that a Markov chain is ergodic (or irreducible) iff all states communicate with each other
 #+end_definition
 
 #+begin_definition
@@ -1206,8 +1163,7 @@ Every regular Markov chain is also ergodic. The opposite does not hold.
 If the Markov chain is regular, then there exists $n\in \naturals$ such that for every $i, j\in S$, then
 $p_{i,j}^{(n)} > 0$ and therefore $i \dgoto j$, with $i,j$ arbitrary states.
 
-For the counterexample, it suffices to take the Markov chain given by the transition matrix
-$P = \left(\begin{array}{cc} 0 & 1 \\ 1 & 0 \end{array}\right)$.
+For the counterexample, it suffices to take the Markov chain given by $P = \left(\begin{array}{cc} 0 & 1 \\ 1 & 0 \end{array}\right)$.
 #+end_proof
 
 #+begin_lemma
@@ -1220,7 +1176,7 @@ it is possible to reach each state $j$ from $i$ in $m-1$ steps at most.
 #+begin_proof
 The proof is based on graphs. Given a path of positive transition probabilities from
 $i$ to $j$, $i, k_1, k_2, \ldots, k_n = j \in S$, since $S$ is finite, if there were two states repeated,
-$k_l, k_p$ with $p > l$, we could delete the subpath $k_l, k_{l + 1}, \ldots $k_{p-1}$ and we would still
+$k_l, k_p$ with $p > l$, we could delete the subpath $k_l, k_{l + 1}, \ldots, k_{p-1}$ and we would still
 have a path of states that would take us to $j$. Therefore we cannot have repeated elements in that path,
 and $n$ can be at most $m - 1$.
 #+end_proof
@@ -1235,29 +1191,35 @@ $P$ is regular, so all of its entries are positive. Therefore $P\cdot P$ gives a
 and we can do induction on the number of products.
 #+end_proof
 
-The last lemma makes possible to define:
+Lemma \eqref{lemma:power-regular} makes possible to define:
 
 #+begin_definition
 Given $P$ a regular matrix, we will call $\gamma(P) = \min\{n \in \naturals: P^n > 0\}$
 #+end_definition
 
+#+begin_definition
+If $L = \{l_1, l_2, \ldots\}$ is a numerable set, we can define $gcd(L): = \lim_{n} g_n$, where
+$g_n = \twopartdefow{gcd(l_1, l_2)}{n = 1}{gcd(g_{n - 1}, l_{n + 1})}$
+
+It can be proven this quantity does not depend on the order of the set.
+#+end_definition
+
 #+begin_theorem
 Let $P_{m \times m}$ be a regular matrix. Let $L_i = \{k_1^{(i)}, k_2^{(i)}, \ldots \}$ the set of lengths
 of all directed paths of $G(P)$ which start and end at the node $i$, with $i = 1, \ldots, n$. Let
-$g_i = gcd(L_i)$ (which we shown in previous sections that it was well defined for infinite sets). Then
-$P$ is regular iff $g_i = 1 \forall i = 1, \ldots, n$.
+$g_i = gcd(L_i)$. Then $P$ is regular iff $g_i = 1, \forall i = 1, \ldots, n$.
 
 \label{th:regular-characterization}
 #+end_theorem
 
 #+begin_proof
-We are going to prove only that if $P$ is regular, then $g_i = 1 \forall i = 1, \ldots, n$, since this part is
-will be used by another result later on. But the counterpart is also true, although it lies out of the
+We are going to prove only that if $P$ is regular, then $g_i = 1, \forall i = 1, \ldots, n$, since this part
+will be used by another result later on. The counterpart is also true, although it lies out of the
 scope of this work.
 
-Since $A$ is primitive, there exists $m \in \naturals$ such that $A^m > 0$. Because of Lemma
-\eqref{lemma:power-regular} we have $A^{m + p} > 0$ for all $p \ge 0$. Therefore there exists a path of
-(large enough) prime length in each $L_i$ and therefore $g_i = 1$.
+Since $A$ is regular, there exists $n \in \naturals$ such that $A^n > 0$. Because of Lemma
+\eqref{lemma:power-regular} we have $A^{n + p} > 0$ for all $p \ge 0$. Therefore there exists a path of
+(large enough) prime length in each $L_i$ and $g_i = 1$.
 #+end_proof
 
 #+begin_theorem
@@ -1268,12 +1230,10 @@ $\gamma(P) \le m + s(m - 2)$, and $A^{m + s(m - 2)} > 0$.
 #+end_theorem
 
 #+begin_proof
-We may assume, w.l.o.g. that we have a shortest cycle is formed by the sequence with no repeated elements
-given by $[1, \ldots, s]$ (since in a stochastic matrix we
-can reorder the states and the related properties of reachability such as states classification, powers, etc
-translate correctly from the original to the reordered matrix)
+We may assume, w.l.o.g. that we have a shortest cycle formed by the sequence with no repeated elements
+given by $[1, \ldots, s]$.
 
-Since $P$ is ergodic (regular $implies$ ergodic), there exists a path from every node $i$ to every other node
+$P$ is ergodic (regular $implies$ ergodic) and therefore there exists a path from every node $i$ to every other node
 $j$, and that path has at most length $m-1$ by Lemma \eqref{lemma:reachability}.
 
 Let us split $P^{m + s(m - 2)} = P^{m - s}(P^s)^{m -1}$ and we partition:
@@ -1281,25 +1241,25 @@ Let us split $P^{m + s(m - 2)} = P^{m - s}(P^s)^{m -1}$ and we partition:
 \[
 P^{m - s} =
 \left(\begin{array}{c|c}
-  \underbrace{X_{11}}_{s\times s} & \underbrace{X_{12}}_{s \times (n - s)} \\
+  \underbrace{X_{11}}_{s\times s} & \underbrace{X_{12}}_{s \times (m - s)} \\
   \hline
-  \underbrace{X_{21}}_{(n - s)\times s} & \underbrace{X_{22}}_{(n - s) \times (n - s)}
+  \underbrace{X_{21}}_{(m - s)\times s} & \underbrace{X_{22}}_{(m - s) \times (m - s)}
 \end{array}\right)
 \qquad
 (P^s)^{m-1} = \left(\begin{array}{c|c}
-  \underbrace{Y_{11}}_{s\times s} & \underbrace{Y_{12}}_{s \times (n - s)} \\
+  \underbrace{Y_{11}}_{s\times s} & \underbrace{Y_{12}}_{s \times (m - s)} \\
   \hline
-  \underbrace{Y_{21}}_{(n - s)\times s} & \underbrace{Y_{22}}_{(n - s) \times (n - s)}
+  \underbrace{Y_{21}}_{(m - s)\times s} & \underbrace{Y_{22}}_{(m - s) \times (m - s)}
 \end{array}\right)
 \]
 
-Since $[1, \ldots, s]$ form a cycle we can go from every $i$ to every other $j$ with $i,j \in \{1, \ldots, s\}$.
+Since $[1, \ldots, s]$ forms a cycle we can go from every $i$ to another $j$ with $i,j \in \{1, \ldots, s\}$.
 Therefore there must be at least one positive element in each row of $X_{11}$. From the fact that the matrix
 is irreducible, in $r \le m - s$ steps we must be able to go from one state in $i \in \{s + 1, \ldots, m\}$ to another
-state $j \in \{1, \ldots s\}$ and stay inside the path $j, \ldots s, 1, 2, \ldots s$ for the remaining
-$m - s - r$ steps. Therefore every row in $X_{21}$ must contain one strictly positive value.
+state $j \in \{1, \ldots s\}$ and stay inside the path $[1, \ldots, s]$ for the remaining
+$m - s - r$ steps. Therefore every row in $X_{21}$ must contain one positive value.
 
-Since $[1, \ldots, s]$ form a cycle in $G(P)$ we have a self cycles $[1], [2], \ldots, [s]$ in G(P^s)$.
+Since $[1, \ldots, s]$ forms a cycle in $G(P)$ we have a self cycles $[1], [2], \ldots, [s]$ in $G(P^s)$.
 $P$ is regular and by Lemma \eqref{lemma:power-regular} $P^s$ is also regular and thus ergodic. Therefore,
 there must exist a path $[i, \ldots, j]$ of length $m - 1$ at most, with $i,j \in \{1, \ldots, m\}$. And
 looping enough steps in the cycle $[i]$ before, we have that $Y_{11} > 0$ and $Y_{12} > 0$.
@@ -1327,8 +1287,8 @@ P^{m - s} \cdot (P^s)^{m-1} =
   \end{array}\right)
 \]
 
-and using the fact that if we have a matrix $A > 0, x \ge 0, x\neq 0$, then $Ax > 0$ (and analogously by
-row-wise products instead of column-wise), we have shown $P^{m + s(m - 2)} > 0$.
+and using the fact that if we have a matrix $A > 0, x \ge 0, x\neq 0$, then $Ax > 0$ (and analogously for
+row-wise products), we have shown $P^{m + s(m - 2)} > 0$.
 #+end_proof
 
 
@@ -1339,22 +1299,23 @@ $P_{m \times m}$ is regular iff $P^{m^2 - 2m + 2} > 0$
 #+begin_proof
 One implication is clear by the definition of regular.
 
-The counterpart: if $P$ is regular, then there are cycles. If the shortest one had length $n$
-(all have length lower or equal than $n$ because we need at most $n-1$ steps to go from a state to
-antoher), then by Theorem \eqref{th:regular-characterization} $g_i = n$ for all $i = 1, \ldots, m$
-and matrix could not be regular. Then the shortest cycle must have length $s \le n - 1$, and by
-\eqref{th:regular-gamma-bound} we would have:
+The counterpart: if $P$ is regular, then there are cycles. If the shortest one had length $m$
+(all have length lower or equal than $m$ because we need at most $m-1$ steps to go from one state to
+anoher), then by Theorem \eqref{th:regular-characterization} $g_i = m$ for all $i = 1, \ldots, m$
+and matrix could not be regular. Then the shortest cycle must have length $s \le m - 1$, and by
+Theorem \eqref{th:regular-gamma-bound} we would have:
 
-\[\gamma(P) \le n + s(n - 2) \le n + (n - 1)(n - 2) = n^2 - 2n + 2 \]
+\[\gamma(P) \le m + s(m - 2) \le m + (m - 1)(m - 2) = m^2 - 2m + 2 \]
 #+end_proof
 
 #+begin_lemma
-If $P_{m \times m}$ is ergodic and it has some $1 \le d \le m$ diagonal entries strictly positive, then
+If $P_{m \times m}$ is ergodic and has some $1 \le d \le m$ diagonal entries strictly positive, then
 $P$ is regular and $\gamma(P) \le 2m - d - 1$
+\label{lemma:ergodic-pos-diagonal}
 #+end_lemma
 
 #+begin_proof
-$A$ must be primitive, since there would exist at least one cycle $[i]$, and the matrix is ergodic, so we
+$A$ must be regular, since there would exist at least one cycle $[i]$, and the matrix is ergodic, so we
 can have as many loops as necessary and then a path $[i, \ldots j]$ (of length lower or equal than $m$) or
 $[j, \ldots i]$ and appropriate number of loops in $[i]$, or junction of paths $[j, \ldots, i]$ plus
 enough loops in $[i]$, plus the path $[i, \ldots, k]$. To sum up, we can prove $A^{2m} > 0$.
@@ -1377,45 +1338,28 @@ P^{m - d} =
 \end{array}\right)
 \]
 
-and by a similar argument to the one in the demonstration of \eqref{th:regular-gamma-bound} we can show
-that $X_{11}$ and $X_{21}$ contain at least one positive entry per row and that $Y_{11} > 0$ and
-$Y_{12} > 0$. For this last part it suffices to use the argument that we can loop in $[i] for $n - 1 - r_i$
-times and then in $r_i \le n - 1$ steps we can reach from $i \in \{1, \ldots, d\}$ to
+and by a similar argument to the one in the demonstration of Theorem \eqref{th:regular-gamma-bound} we
+can show that $X_{11}$ and $X_{21}$ contain at least one positive entry per row and that $Y_{11} > 0$ and
+$Y_{12} > 0$. For this last part it suffices to use the argument that we can loop in $[i]$ for $n - 1 - r_i$
+times and then in $r_i \le n - 1$ steps we can go from $i \in \{1, \ldots, d\}$ to
 $j \in \{1, \ldots, m\}$.
-#+end_proof
-
-#+begin_lemma
-If $P$ is an ergodic stochastic matrix with $p_ii > 0$ for all $i \in \{1, \ldots, m\}$ then is a regular
-stochastic matrix.
-\label{lemma:ergodic-pos-diagonal}
-#+end_lemma
-
-#+begin_proof
-Fixed $i,j$ and because of the previous lemma \eqref{lemma:reachability} we know that there exists a
-power $P^{m_{ij}}$ such that $p_{ij} > 0$. It suffices to prove that $\widetilde{P} = \prod_{i = 1}^m \prod{j = 1}^m P^{m_{ij}}$
-is a matrix with all possitive entries.
-
-If $P^{m_ij}$ has $\{p_{lk}\}$ positive entries, it is inmediate (since the diagonal of $P$ is non null), that
-$P\cdot P^{m_ij}$ has all those positive entries (at least). Using that argument recursively, we prove that
-$\widetilde{P}$ has all of its entries positive.
 #+end_proof
 
 #+begin_definition
 Given a matrix $P$, a row vector $r = \left(r_1, \ldots, r_n\right)$ is called a fixed row vector
 iff $rP = r$ (it is a left eigenvector for the matrix). Analogously, a column vector $c = \left(\begin{array}{c} r_1 \\ \vdots \\ r_n\end{array}\right)$
 is called a fixed column vector iff $Pc = c$ (it is a right eigenvector for the matrix).
-
-We will note $\onecol$ to the column vector $\left(\begin{array}{c} 1 \\ \vdots \\ 1 \end{array}\right)$
 #+end_definition
 
 #+begin_definition
-Given a stochastic matrix $P$, we call steady state to a probability vector $v$ such that $vP = v$
+We call steady state to a probability row vector $v$ such that $vP = v$
 #+end_definition
 
 #+begin_lemma
 Let $P_{m\times m}$ be a transition matrix with all its entries positve. Let us fix a probability column
-vector $y$ and name $M_0 = \max y$, $m_0 = \min y$, $M_1 = \max Py$ and $m_1 = \min Py$. Hence, there exists
-$k\in [0,1[$
+vector $y$ and name $M_0 = \max y_i$, $m_0 = \min y_i$,
+$M_1 = \max (Py)_i$ and $m_1 = \min (Py)_i$. Hence, there exists
+$k\in [0,1[$ such that:
 
 \[
 M_1 - m_1 \le k (M_0 - m_0)
@@ -1426,7 +1370,7 @@ M_1 - m_1 \le k (M_0 - m_0)
 
 #+begin_proof
 Let us call $d = \min\{p_{ij}: i,j\in \{1, \ldots, m\}\}$. If $m = 1$, it suffices to
-take $c = 0$. If $m > 1$, then $d \le \frac{1}{2}$ (no entry is null). Since $Py$ can be
+take $k = 0$. If $m > 1$, then $d \le \frac{1}{2}$ (no entry is null). Since $Py$ can be
 thought as a weighted average of the entries in $y$, the maximum value we can reach is bounded:
 
 \[ M_1 \le d m_0 + (1 - d)M_0 \]
@@ -1439,35 +1383,31 @@ Hence:
 
 \[ M_1 - m_1 \le d m_0 + (1 - d)M_0 - dM_0 - (1 - d)m_0 = (1 - 2d)(M_0 - m_0) \]
 
-and we can take $c = 1 - 2d$.
+and we can take $k = 1 - 2d$. Note this minimum only depends on $P$.
 #+end_proof
 
 #+begin_theorem
 **Fundamental limit theorem for regular Markov chains**
 
-Let $P_{m\times m}$ be the transition matrix of a regular Markov chain. Then $\{P^{n}\} \rightarrow W$ where
-$w \in \posreals$ and $W = \left(\begin{array}{c} w \\ \vdots \\ w \end{array}\right)$. Moreover, $w$ is a
-probability vector with all its components strictly positive.
+Let $P_{m\times m}$ be a regular transition matrix. Then $\{P^{n}\} \rightarrow W$ where
+$w \in \posreals^m$ is a probability vector and
+$W = \left(\begin{array}{c} w \\ \vdots \\ w \end{array}\right)$. Moreover, it holds:
 
-If $P_{m\times m}$ is a regular transition matrix and
-$W = \left(\begin{array}{c} w \\ \vdots \\ w \end{array}\right) = \ \lim_{n} W^n$, then it holds:
+1. $wP = w$ and every other fixed row vector $r$ verifies $r = \lambda w$ for some $\lambda \in \mathbb{R}$
+1. $P\onecol = \onecol$ and every fixed column vector $c$ holds $c = \lambda \onecol$ for some $\lambda \in \mathbb{R}$
 
-1. $wP = w$ and every other fixed row vector $r$ holds $r = \lambda w$ for some $\lambda \in \mathbb{R}$
-2. $P\onecol = \onecol$ and every fixed column vector $c$ holds
-$c = \lambda \onecol$ for some $\lambda \in \mathbb{R}$
-
-Therefore an stochastic regular matrix has a unique steady state.
+Therefore, an stochastic regular matrix has a unique steady state.
 \label{th:steady-regular}
 #+end_theorem
 
 #+begin_proof
 /First part/
 
-Let us first prove the theorem for a matrix $P$ with all its elements strictly positive. Given $y$ a probability column
-vector, let us call:
+Firstly, let us prove the theorem for a matrix $P$ with all its elements strictly positive. Given $y$ a
+probability column vector, let us call:
 
 \begin{equation}
-M_n = \max (P^n y) \ge (P^n y)_{ij} \ge m_n = \min (P^n y)
+M_n = \max (P^n y)_i \ge (P^n y)_{i} \ge m_n = \min (P^n y)_i
 \label{eq:mns-sandwich}
 \end{equation}
 
@@ -1475,17 +1415,17 @@ Since each time we multiply a vector by $P$ we do a weighted average, its maximu
 than the previous maximum, and the contrary will happen for its minimum. Hence:
 
 \begin{equation}
-  m_0 \le m_1 \le \ldots m_n \le M_n \le \ldots M_1 \ldots M_0
+  m_0 \le m_1 \le \ldots m_n \le M_n \le \ldots M_1 \le\ldots \le M_0
 \label{eq:ms-sandwich}
 \end{equation}
 
-In other words, $\{m_n\}$ and $\{M_n\}$ are monotonic sequences of numbers, and their limit exits:
+In other words, $\{m_n\}$ and $\{M_n\}$ are monotonic bounded sequences of numbers, and their limit exits:
 
 \[
   \{m_n\} \rightarrow m \qquad \{M_n\} \rightarrow M
 \]
 
-By the Lemma \eqref{lemma:bound-pos-matrix}
+By Lemma \eqref{lemma:bound-pos-matrix}
 
 \[
   M_n - m_n \le k (M_{n-1} - m_{n-1}) \le \ldots \le k^n M_0 - m_0
@@ -1493,37 +1433,32 @@ By the Lemma \eqref{lemma:bound-pos-matrix}
 
 with $k\in [0,1[$. Therefore $v := \lim M_n = \lim m_n$, and \eqref{eq:mns-sandwich} let us observe that for
 every probability vector $y$ it holds
-$\{P^n y \} \rightarrow \left(\begin{array}{c} m \\ m \\ \vdots \\ m \end{array}\right)$.
+$\{P^n y \} \rightarrow \left(\begin{array}{c} v \\ \vdots \\ v \end{array}\right)$.
 
 Let us observe that $v$ depends on $y$. If we take the column probability vector with $1$ only in the $j$ -th
 position, namely $e_j$, then calling $w_j$ the limit that depends on $e_j$, we have that:
+$\{P^n e_j \} \rightarrow w_j \onecol$
 
-\[
-  \{P^n e_j \} \rightarrow v_j
-\]
-
-That is, the $j$ -th column of $P^n$ tends to a constant value $v_j$. In other words,
-$(P^n)_i \rightarrow w = (v_1, \ldots v_m)$, and
+In other words, $(P^n)_i \rightarrow w = (w_1, \ldots w_m)$, and
 $P^n \rightarrow W = \left\{\begin{array}{c} w \\ \vdots \\ w \end{array}\right\}$.
 
-Since $m_0 \ge 0$ and the sequence is strictly increasing, $v > 0$ and therefore all the entries for $w$ are
+Since $m_0 > 0$ and the sequence is strictly increasing, $v > 0$ and therefore all the entries for $w$ are
 strictly positive.
 
 To extend the demonstration to regular matrices $P$, it suffices to remember that by their definition there
 must exist a $l > 0$ such that $P^l$ has only positive entries. Hence, $\{m_{ln}\}$ and $\{M_{ln}\}$
 converge to the same limit. Equations \eqref{eq:mns-sandwich} and \eqref{eq:ms-sandwich} were obtained
-for regular stochastic matrices, and therefore for $n$ sufficiently large we can find a value $k$ such that
-$m_{lk} \le m_p \le M_p \le M_{lk} \forall p \ge n$. And therefore we can assure there is convergence of
+for regular stochastic matrices, and therefore for sufficiently large $n$ we can find a value $k$ such that
+$m_{lk} \le m_p \le M_p \le M_{lk}, \forall p \ge n$. Then we can assure there is convergence of
 $\{m_n\}$ and $\{M_n\}$ and use the rest of the demonstration for the case of positive entries.
 
-Since $Py$ is a probability vector if $y$ is a probability vector, $\sum_{j=1}^m (P^n y)j = 1$ and taking
-limits in $n$, $\sum_{j=1}^m w_j = 1$ and $w \ge 0$ implies that it must be a probability vector.
+Since $yP$ is a probability vector if $y$ is a probability vector, $\sum_{j=1}^m (e_i \cdot P^n)_j = 1$ and taking
+limits in $n$, $\sum_{j=1}^m w_j = 1$. Finally, $w \ge 0$ implies that it must be a probability vector.
+
 /Second part/
 
-1. If $P^{n + 1} = P^{n} \cdot P \goto WP = W$, then we deduce $wP = w$ row-wise. For other fixed row vector $r$
-it holds $r = rW = \big(\sum_{i = 1}^m r_i \big) W$
-
-2. Since $c = Pc = P^2 c = \ldots P^n c$, taking limits $c = Wc$, and therefore
+1. If $P^{n + 1} = P^{n} \cdot P \goto WP = W$, then we deduce $wP = w$ row-wise. For other fixed row vector $r$ it holds $r = rW = \big(\sum_{i = 1}^m r_i \big) W$
+1. Since $c = Pc = P^2 c = \ldots P^n c$, taking limits $c = Wc$, and therefore
 \[
   c = \left(\begin{array}{c} w \cdot c \\ \vdots \\ w \cdot c \end{array}\right) = \onecol \cdot w \cdot c
 \]
@@ -1531,31 +1466,29 @@ it holds $r = rW = \big(\sum_{i = 1}^m r_i \big) W$
 
 As consequence of this theorem, since each element $(i,j)$ of $P^n$ is $p_{i,j}^{(n)}$ and each row tends
 to the same value $w$, the probability of starting at state $i$ and being in $j$ after $n$ steps is
-independent of the starting state $i$. \eqref{th:steady-regular} has an analogous theorem for ergodic
+independent of the starting state $i$. Theorem \eqref{th:steady-regular} has an analogous theorem for ergodic
 Markov chains. We will need some previous lemma to show that.
 
-
 #+begin_lemma
-Given $P$ an ergodic stochastic matrix, then $P$ and $\frac{1}{2}(I + P)$ is regular and they have the same
+Given $P$ an ergodic stochastic matrix, then $\frac{1}{2}(I + P)$ is regular and they have the same
 eigenvectors.
 \label{lemma:ergodic-regular-rel}
 #+end_lemma
 
 #+begin_proof
-$\frac{1}{2} (I + P)$ has all the diagonal elements postive and is stochastic: all the elements are positive and the
-sum for the $i$ -th row is:
+$\frac{1}{2} (I + P)$ is stochastic: all the elements are non negative and the sum for the $i$ -th row is:
 
 \[ \frac{1}{2} + \frac{1}{2} \sum_{j = 1}^m p_{ij} = \frac{1}{2} + \frac{1}{2} = 1 \]
 
-To show that it is ergodic, fixed $i,j$, we must show that there exists a power matrix $\underbrace{\left\{\frac{1}{2}(I + P)\right\}}_{A}^m$ such that
+To show that it is ergodic, fixed $i,j$, we must show that there exists a power matrix
+$\underbrace{\left\{\frac{1}{2}(I + P)\right\}^m}_{A}$ such that
 $(A^m)_{ij} > 0$. Since $P$ is ergodic, there exists $P^k$ such that $(P^k)_{ij} > 0$, and
 $\left\{\frac{1}{2}(I + P)\right\}^k = R + P^k$ where all of the elements of $R$ are non negative. Since its
-diagonal is positive Lemma \eqref{lemma:ergodic-pos-diagonal} ends our proof.
+diagonal is strictly positive Lemma \eqref{lemma:ergodic-pos-diagonal} ends our proof.
 
-Given $v: vP = v$, then $\frac{1}{2}(I + P)v = \frac{1}{2} (v + v) = v$.
-
-To prove the other implication: let $v: \frac{1}{2}(I + P)v = v \implies \frac{1}{2}v + \frac{1}{2}P = v$,
-and therefore $\frac{1}{2} P = \frac{1}{2}v$.
+Given $v: vP = v$, then $\frac{1}{2}(I + P)v = \frac{1}{2} (v + v) = v$. To prove the other implication:
+let $v: \frac{1}{2}(I + P)v = v \implies \frac{1}{2}v + \frac{1}{2}Pv = v$, and therefore
+$\frac{1}{2} Pv = \frac{1}{2}v$. Analogously for right eigenvectors.
 #+end_proof
 
 #+begin_theorem
@@ -1573,8 +1506,8 @@ Lemma \eqref{lemma:ergodic-regular-rel} and Theorem \eqref{th:steady-regular} su
 #+end_proof
 
 #+begin_lemma
-An ergodic stochastic matrix $P_{m \times m}$ has a unique steady state $w$ that can be computed as a unique solution
-of the system:
+An ergodic stochastic matrix $P_{m \times m}$ has a unique steady state $w$ that can be computed as the
+only solution of the system:
 
 \[
 \twopartsys{(I - P^t)w}{0}{\onerow \cdot w}{1}
@@ -1601,7 +1534,7 @@ By means of Theorem \eqref{th:steady-ergodic} we have unicity and that the syste
 must have a unique solution.
 #+end_proof
 ** Steady states
-We are now in conditions of giving of depicting how steady states of a general stochastic matrix can be computed.
+We are now in appropriate conditions for depicting how steady states of a general stochastic matrix can be computed.
 
 #+begin_proposition
 Given $P_{m\times m}$ an stochastic matrix, then every steady state $v$ assigns $0$ to the transient states, i.e. if
