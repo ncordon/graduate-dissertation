@@ -145,7 +145,7 @@ related to the theoretical contents described in the previous chapter, and have 
 mathematics knowledge acquired from the bibliography.
 
 The improved / recoded algorithms range from communicating classes identification, to mean first passage
-times computation or recurrent (resp. transient) classes description. Also as a consequence of those, state
+times computation or recurrent (transient resp.) classes description. Also as a consequence of those, state
 classification has been redesigned in a more efficient manner, as well as conversion to canonic form. Moreover,
 steady states algorithm has been highly improved, due to the fact that incorrect results could arise
 from the former one. The added algorithms are mainly related to absorption related quantities (mean
@@ -322,7 +322,7 @@ Therefore (adjusting the values of $n$ and $k$ above appropriately):
 ** Chapman-Kolmogorov equation
 
 Since we intend to represent Markov chains in a computer, we will also assume $S$ is finite henceforth,
-unless otherwise stated, and $S = \{0, \ldots, m\}$.
+unless otherwise stated, and $S = \{1, \ldots, m\}$.
 
 As stated before, in the right to left implication, we have shown that transition probabilities
 can be expressed as:
@@ -332,11 +332,11 @@ P(X_0 = s_0, \ldots, X_n = s_n) = P(X_0 = s_0) \cdot P(X_1 = s_1 | X_0 = s_0) \c
 \label{eq:trans-probs}
 \end{equation}
 
-and also, for $n > q$:
+and also, for $n > k$:
 
 \begin{eqnarray}
-&& P(X_n = s_n, \ldots, X_{q + 1} = s_{q + 1} | X_{q} = s_{q}) = \nonumber \\
-&& P(X_{q + 1} = s_{q + 1} | X_{q} = s_{q}) \cdots P(X_n = s_n | X_{n - 1} = s_{n - 1})
+&& P(X_n = s_n, \ldots, X_{k + 1} = s_{k + 1} | X_{k} = s_{k}) = \nonumber \\
+&& P(X_{k + 1} = s_{k + 1} | X_{k} = s_{k}) \cdots P(X_n = s_n | X_{n - 1} = s_{n - 1})
 \label{eq:trans-cond-probs}
 \end{eqnarray}
 
@@ -348,8 +348,8 @@ Given $\{X_n\}_{n\in I}$ a Markov chain with finite state space $S$, let us defi
 Given $\{X_n\}_{n\in I}$ a Markov chain with finite state space $S$, let us define the transition probabilities as
 
 \begin{align*}
-& p_{s, t}(q, n) = P(X_n = t | X_q = s),\quad s,t \in S, \quad n, q \in \mathbb{N}, n\neq q \\
-& p_{s, t}(n, n) = \mathbb{1}_{s = t}
+& p_{i, j}(k, n) = P(X_n = j | X_k = i),\quad i,j \in S, \quad n,k \in \mathbb{N}, n\neq k \\
+& p_{i, j}(n, n) = \mathbb{1}_{i = j}
 \end{align*}
 #+end_definition
 
@@ -359,23 +359,27 @@ Therefore, we can rewrite Equation \eqref{eq:trans-probs} as:
 P(X_k = s_k, k \le n) = \mu(s_0) \cdot p_{s_0, s_1}(0, 1) \cdot p_{s_1, s_2}(1, 2) \cdots p_{s_{n - 1}, s_n}(n - 1, n)
 \]
 
-Summing over $q + 1, \ldots, n -1$ in Equation \eqref{eq:trans-cond-probs}, we deduce:
+Summing over all possible values for $s_{k + 1}, \ldots, s_{n - 1}$ in Equation
+\eqref{eq:trans-cond-probs} and considering $s_k = s, s_{n} = t$, we deduce:
 
 \begin{equation}
-p_{s, t}(q, n) = \sum_{s_{1} \in S} \ldots \sum_{s_{(n - q - 1)} \in S} \bigg\{ p_{s, s_{1}}(q, q + 1) \cdots p_{s_{(n - q - 1)}, t}(n - 1, n) \bigg\}
+p_{s, t}(k, n) = \sum_{s_{k + 1} \in S} \ldots \sum_{s_{n - 1} \in S}
+\bigg\{ p_{s, s_{k + 1}}(k, k + 1) \cdots p_{s_{n - 1}, t}(n - 1, n) \bigg\}
 \label{eq:sum-probs}
 \end{equation}
 
 #+begin_definition
-We will define the matrix $P(m, n) = (p_{s, t}(m, n))_{s, t \in S}$ henceforth.
+We define the matrix $P(k, n) = (p_{i, j}(k, n))_{i,j \in S}$.
 #+end_definition
 
 #+begin_proposition
 $P$ verifies the semigroup property, best known as Chapman-Kolmogorov equation:
 
 \[
-P(m, n) = P(m, l) \cdot P(l, n), \quad \forall m \le l \le n
+P(k, n) = P(k, l) \cdot P(l, n), \quad \forall k \le l \le n
 \]
+
+\label{prop:chapman-kolmogorov}
 #+end_proposition
 #+begin_proof
 Straightforward from Equation \eqref{eq:sum-probs}
@@ -387,10 +391,10 @@ Given a Markov chain $\{X_n\}$ with finite space state $S$, it is said to be a t
 iff the transition probabilities do not depend on time:
 
 \[
-\forall s, t\in S, \,\forall n \in \mathbb{N} \qquad p_{s, t} (n, n + 1) = p_{s, t} \in [0, 1]
+\forall i, j\in S, \,\forall n \in \mathbb{N} \qquad p_{i, j} (n, n + 1) = p_{i, j} \in [0, 1]
 \]
 
-$p_{s, t}$ is called one-step transition probability and $P = (p_{s, t})_{s, t \in S}$ the transition matrix.
+$p_{i, j}$ is called one-step transition probability and $P = (p_{i, j})_{i, j \in S}$ the transition matrix.
 #+end_definition
 
 We will use DTMC to refer to discrete time-homogeneous Markov chains with finite space state henceforth.
@@ -418,7 +422,7 @@ Trivial from Equation \eqref{eq:trans-probs}
 
 Note there is bijection between a DTMC with $S = \{1, \ldots, m\}$,
 a stochastic matrix $P$ of dimension $m \times m$ (we will note it $P_{m\times m}$) and a directed
-graphs $G=(S, E, P)$ where there is an edge $e = s \goto t, e \in E$ iff $p_{s,t} > 0$.
+graphs $G=(S, E, P)$ where there is an edge $e = (i, j), e \in E$ iff $p_{i,j} > 0$.
 From now on we will use any of these three concepts interchangeably.
 
 ** Stopping times and strong Markov property
@@ -505,7 +509,7 @@ The previous result means all Markov chains in discrete time have the strong Mar
 property, and it can be interpreted as the Markov chain restarting each time it hits the arbitrary state
 $i \in S$, without influence of what happened to that moment.
 
-** Hitting times
+** Hitting times distribution
 We introduce the notation $P_A(X_n \in B) = P(X_n \in B | X_{n - 1} \in A)$.
 Then $p_{i, j}^{(n)} = P_i\left(X_n = j\right)$ gives us of the probability
 of the chain reaching state $j$ in the $n$ -th step, if it starts from $i$. Specifically, we are interested
@@ -525,30 +529,31 @@ We call first hitting time probability of the state $j$, provided that the chain
 state $i$, to:
 
 \[
-f_{i,j}^{(n)} = P_i\left(\tau_j = n\right) = P_i\left(X_n = j, X_m \neq j \quad \forall m = 1, \ldots, n - 1 \right)
+f_{i,j}^{(n)} = P_i\left(\tau_j = n\right) = P_i\left(X_n = j, X_k \neq j \quad \forall k = 1, \ldots, n - 1 \right)
 \]
 
-and we will define the hitting probability for $j$ starting at $i$ as $f_{i, j} := \sum_{n = 0}^{\infty} f_{i,j}^{(n)} = P_i\left(\tau_j < \infty\right)$
+and we will define the (first) hitting probability for $j$ starting at $i$ as:
 
-Note that $f_{i,j} = \probi{X_n = j \textrm{ for some } n\ge 1}$
+\[
+f_{i, j} := \sum_{n = 1}^{\infty} f_{i,j}^{(n)} = P_i\left(\tau_j < \infty\right) =
+\probi{X_n = j \textrm{ for some } n > 0}
+\]
 #+end_definition
 
-Note that we coul have $f_{i, j} < 1$ iff $P_i\left(X_n \neq j, \forall n \ge 1\right) > 0$.
+Note that we coul have $f_{i, j} < 1$ iff $P_i\left(X_n \neq j, \forall n > 0\right) > 0$.
 
 #+begin_definition
 We will call return time distribution for the state $i$ to $f_{i,i}^{(n)} = P_i \left(\tau_i = n\right)$,
 and we will denote $f_{i,i} = P_i\left(\tau_i < \infty\right)$ (i.e. the probability of ever returning
-to the start state $i$.
+to the start state $i$).
 #+end_definition
 
-$f_{i, j}$ can be computed using the recurrence:
+The values $f_{i, j}$ verify the recurrence:
 
 \begin{equation}
-f_{i,j} = \probi{X_1 = j} + \sum_{k \neq j} \probi {X_1 = k} \probi {\tau_j < \infty | X_1 = k } = p_{i,j} + \sum_{k\neq j} p_{i,k} f_{k,j}
+f_{i,j} = \probi{X_1 = j} + \sum_{k \neq j} \probi {X_1 = k} \prob {\tau_j < \infty, j > 1 | X_1 = k } = p_{i,j} + \sum_{k\neq j} p_{i,k} f_{k,j}
 \label{eq:fij-recurrence}
 \end{equation}
-
-solving first the system formed by the equations given by $i\neq j$ (if we have $n$ states, that would be $n \cdot (n - 1)$ equations), and then substituting the computed $f_{k,j}$ values to get $f_{j,j}$.
 
 #+begin_lemma
 If $f_{i,j} = 1$ and $p_{i,k} > 0$, then $f_{k,j} = 1$
@@ -568,7 +573,7 @@ We could freeze the chain $\{X_n\}$ once it hits $j$ in that state, that is, tak
              {j} {X_r = j \textrm{ for some } r  < n}
 \]
 
-That is, $j$ has been transformed into an absorbing state, such that $\tildemc$ cannot leave.
+Hence, $j$ has been transformed into an absorbing state, such that $\tildemc$ cannot leave it.
 
 The transition matrix for $\tildemc$ is given by:
 
@@ -580,9 +585,8 @@ The transition matrix for $\tildemc$ is given by:
     { 1 }       { i = j, k = j }
 \]
 
-That is, the transition matrix $\tildeP$ has the same rows as $P$, except for the $j$ -th row,
-which has been substituted by $(0, \ldots, 0, \underset{j}{1}, 0, \ldots, 0)$. Therefore
-we have that the $i, j$ entry for the matrix $\tildeP^n$ is:
+Therefore, the transition matrix $\tildeP$ has the same rows as $P$, except for the $j$ -th row,
+which has been substituted by $(0, \ldots, 0, \underset{j}{1}, 0, \ldots, 0)$. We deduce that the $(i, j)$ entry for the matrix $\tildeP^n$ is:
 
 \[
 \tildep_{i,j}^{(n)} = \probi{\tildemc = j} = \probi{\tau_j \le n}
@@ -603,98 +607,41 @@ f_{jj}^{(n)} = \twopartdef
   { \sum_{k \in S, k \neq j} p_{j,k} f_{k,j}^{(n - 1)} } { n \ge 2 }
 \]
 
-\begin{example}
-We consider a Markov chain with states $S = \{1,2,3\}$ and the following transition matrix:
-
-\[
-  P = \left(
-  \begin{array}{ccc}
-  \frac{1}{3} & \frac{2}{3} &      0      \\
-  \frac{1}{4} & \frac{1}{2} & \frac{1}{4} \\
-      0       & \frac{3}{4} & \frac{1}{4}
-  \end{array}
-  \right)
-\]
-
-To compute the time it takes us to reach the state $3$, we should consider:
-
-\[
-\tildeP = \left(
-  \begin{array}{ccc}
-  \frac{1}{3} & \frac{2}{3} & 0 \\
-  \frac{1}{4} & \frac{1}{2} & \frac{1}{4} \\
-       0      &      0      &   1
-  \end{array}
-\right) = \frac{1}{10}
-\threemat {1 & 2 & 4} {1 & -1 & 3} {1 & 0 & 0} \cdot
-\threemat {1 &   &  } {  &  0 &  } {  &   & \frac{5}{6}} \cdot
-\threemat {0 & 0 & 10}{3 & -4 & 1} {1 & 2 &-3}
-\]
-
-It is easy to show, calling $\alpha = \frac{5}{6}$:
-
-\[
-\tilde{P}^n = \threemat
-            { \frac{2}{5} \alpha^n & \frac{4}{5} \alpha^n & 1 - \alpha^{n - 1}}
-            { \frac{3}{10}\alpha^n & \frac{3}{5} \alpha^n & 1 - \frac{3}{4}\alpha^{n - 1} }
-            { 0 & 0 & 1 }
-\]
-
-Therefore:
-
-\[
-P_1 \left(\tau_3 = n\right) = \tildep_{1,3}^{(n)} - \tildep_{1,3}^{(n-1)} =
-1 - \alpha^{n - 1} -  (1 - \alpha^{n - 2}) = (1 - \alpha) \alpha^{n - 2} = \frac{1}{6}\alpha^{n - 2} n \ge 2
-\]
-
-\[
-P_2 \left( \tau_3 = n \right) = \twopartdef { \frac{1}{4} } { n = 1 }
-                                            { \tildep_{2,3}^{(n)} - \tildep_{2,3}^{(n-1)} = \frac{1}{8} \alpha^{n - 2} } { n\ge 2 }
-\]
-
-To go from $3$ to itself, we could go directly or passing by $2$ (we could not go through
-$1$ since $p_{3,1} = 0$:
-
-\[
-P_3\left(\tau_3 = n\right) = \threepartdef
-  { \frac{1}{4} } { n = 1 }
-  { \frac{3}{16} } { n = 2 }
-  { \frac{3}{32} \alpha^{n - 3} } { n \ge 3 }
-\]
-\end{example}
-
 *** Computation through transition probabilities
 
 We could ask ourselves whether it is possible to relate $f_{i,j}^{(n)}$ to $p_{i,j}^{(n)}$
 directly. It holds:
 
 \begin{align}
-p_{i,j}^{(n)} &= \probi{X_n = j} = \sum_{m = 1}^{n} \probi{\tau_j = m}
-\probi{X_n = j | \tau_j = = m} = \nonumber \\
-&= \sum_{m = 1}^{n} \probi{\tau_j = m} \probj{X_{n-m} = j} =
-\sum_{m = 1}^n f_{i, j}^{(m)} p_{j,j}^{(n - m)}
+p_{i,j}^{(n)} &= \probi{X_n = j} = \sum_{k = 1}^{n} \probi{\tau_j = k}
+\probi{X_n = j | \tau_j = k} = \nonumber \\
+&= \sum_{k = 1}^{n} \probi{\tau_j = k} \probj{X_{n - k} = j} =
+\sum_{k = 1}^n f_{i, j}^{(k)} p_{j,j}^{(n - k)}
 \label{eq:ps-fs-relation}
 \end{align}
 
-It is not possible to express $f_{i,j}^{(n)}$ in terms of $p_{i,j}^{(n)}$, but taking the following generating functions, we can determine a theoretical relationship between both:
+It is not possible to directly express $f_{i,j}^{(n)}$ in terms of $p_{i,j}^{(n)}$, but taking the following generating
+functions, we can determine a theoretical relationship between both:
 
 \[
 P_{i,j}(s) = \sum_{n = 1}^{\infty} p_{i,j}^{(n)} s^n \qquad
-F_{i,j}(s) = \sum_{n = 1}^{\infty} f_{i,j}^{(n)} s^n
+F_{i,j}(s) = \sum_{n = 1}^{\infty} f_{i,j}^{(n)} s^n \qquad s\in [0, 1[
 \]
 
 According to $\eqref{eq:ps-fs-relation}$:
 
 \[
-P_{i,j}(s) = \sum_{n = 1}^{\infty} \sum_{m = 1}^n f_{i, j}^{(m)} p_{j,j}^{(n - m)} s^n =
-\sum_{n = 1}^{\infty} \sum_{m = 1}^{n - 1} f_{i, j}^{(m)} p_{j,j}^{(n - m)} s^n +
-\sum_{n = 1}^{\infty} f_{i, j}^{(n)} \underbrace{p_{j,j}^{(0)}}_{1} s^n \underset{(\ast)} = F_{i,j}(s) P_{j,j}(s) + F_{i,j}(s)
+P_{i,j}(s) = \sum_{n = 1}^{\infty} \sum_{k = 1}^n f_{i, j}^{(k)} p_{j,j}^{(n - k)} s^n =
+\sum_{n = 1}^{\infty} \sum_{k = 1}^{n - 1} f_{i, j}^{(k)} p_{j,j}^{(n - k)} s^n +
+\sum_{n = 1}^{\infty} f_{i, j}^{(n)} \underbrace{p_{j,j}^{(0)}}_{1} s^n \underset{(\ast)} =
+F_{i,j}(s) P_{j,j}(s) + F_{i,j}(s)
 \]
 
-where in $(\ast)$ it has been used that $\sum_{n = 1}^{\infty} \sum_{m = 1}^{\infty} p_{i, j}^{(n)} f_{i,j}^{(m)} s^{n + m}$ can be rewritten as (fixes $k$, there we can take finite $m$ positive values and $k - m$ positive):
+where in $(\ast)$ it has been used that:
 
 \[
-\sum_{n = 1}^{\infty} \sum_{m = 1}^{n - 1} f_{i, j}^{(m)} p_{j,j}^{(n - m)} s^n
+\sum_{n = 1}^{\infty} \sum_{k = 1}^{\infty} p_{i, j}^{(n)} f_{i,j}^{(k)} s^{n + k} =
+\sum_{n = 1}^{\infty} \sum_{k = 1}^{n - 1} f_{i, j}^{(k)} p_{j,j}^{(n - k)} s^n
 \]
 
 We deduce:
@@ -704,30 +651,34 @@ F_{i,j}(s) = \frac{P_{i,j}(s)}{1 + P_{j,j}(s)}
 \label{eq:Fs-Ps-relation}
 \end{equation}
 
-Although this is just a theoretical relationship for the moment, we can observe, on the one hand:
+Although this is just a theoretical relationship, we can observe, on the one hand:
 
-\[
+\begin{equation}
 F_{i,j}(1) = f_{i,j} = \probi{\tau_j < \infty}
-\]
+\label{prop:hitting-probs-F}
+\end{equation}
+
 and if the condition $f_{i,j} = 1$ is met:
 
 \[
-F_{i,j}'(j) = \sum_{n = 1}^{\infty} n f_{i,j}^{(n)} = \expecti{\tau_j}
+F_{i,j}'(1) = \sum_{n = 1}^{\infty} n f_{i,j}^{(n)} = \expecti{\tau_j}
 \]
 
 #+begin_definition
-Taking a fixed state $j$, we can define:
+Taking a fixed state $j$, we can name:
 
-1. The expected number of visited to $j$  as $P_{i,j}(1) = \sum_{n = 1}^{\infty} p_{i,j}^{(n)}$
-2. The total number of visits to $j$  as $V_j = \sum_{n = 1}^{\infty} \mathbb{1}_{X_n = j}$
+1. The total number of visits to $j$  as $V_j = \sum_{n = 1}^{\infty} \mathbb{1}_{X_n = j}$
+2. The expected number of visited to $j$  as $\expecti{V_j}$
 #+end_definition
 
 #+begin_proposition
 It holds that $\expecti{V_j} = P_{i,j}(1)$
+\label{prop:mean-num-visits-P}
 #+end_proposition
 
 #+begin_proof
-Straightforward from $\expecti{V_j} = \sum_{n = 1}^{\infty} \expecti{\mathbb{1}_{X_n = j}} = \sum_{n = 1}^{\infty} p_{i,j}^{(n)}$
+Straightforward from $\expecti{V_j} = \sum_{n = 1}^{\infty} \expecti{\mathbb{1}_{X_n = j}} =
+  \sum_{n = 1}^{\infty} p_{i,j}^{(n)} = P_{i,j}(1)$
 #+end_proof
 
 *** Average arrival times
@@ -741,11 +692,11 @@ e_{i,j} = \expecti{\tau_j} = \sum_{n = 1}^{\infty} n f_{i,j}^{(n)}
 #+end_definition
 
 #+begin_proposition
-e_{i,j} = 1 + \sum_{k \neq j} p_{i, k} e_{k, j}
+It holds e_{i,j} = 1 + \sum_{k \neq j} p_{i, k} e_{k, j}
 #+end_proposition
 
 #+begin_proof
-It holds: $f_{i,j}^{(1)} = p_{i,j}$ and $f_{i,j}^{(n)} = \sum_{k\neq j} p_{i,k} f_{k,j}^{(n-1)}$.
+On the one hand: $f_{i,j}^{(1)} = p_{i,j}$ and $f_{i,j}^{(n)} = \sum_{k\neq j} p_{i,k} f_{k,j}^{(n-1)}$.
 
 Therefore, and having in mind that $f_{i,j} = 1$.
 
@@ -758,8 +709,6 @@ e_{i,j} &= \sum_{n = 1}^{\infty} n f_{i,j}^{(n)} = p_{i,j} + \sum_{n = 2}^{\inft
 \end{align*}
 #+end_proof
 
-Note this last proposition can be used to compute $e_{i,j}$ with a computer.
-
 *** Mean number of visits to a state
 
 #+begin_proposition
@@ -770,68 +719,52 @@ If $f_{j,j} \neq 1$, we have:
   \label{eq:char-mean-number-visits}
 \end{equation}
 
-Moreover, it holds $f_{i,i} = 1 \dimplies \expecti{V_i} = \infty$.
-
-Let us note this is a characterization of $f_{i,i} = 1$. Since $\expecti{V_i} =
-\sum_{n > 0} p_{i,i}^{(n)}$, it holds:
-
-\[
-  \probi{X_n = i \textrm{ for some } n} = 1 \dimplies
-  \probi{X_n = i \textrm{ for infinitely many } n} = 1
-\]
-
+Moreover, it holds $f_{j, j} = 1 \dimplies \expecti{V_j} = \infty$.
 \label{prop:fii-equiv}
 #+end_proposition
 
 #+begin_proof
-From \eqref{eq:Fs-Ps-relation} we can deduce:
+From \eqref{eq:Fs-Ps-relation}, \eqref{prop:hitting-probs-F} and
+Proposition \eqref{prop:mean-num-visits-P} we can deduce $\expectj{V_j} = \frac{f_{jj}}{1 - f_{j,j}}$ and
 
 \[
-P_{i,j}(1) = F_{i,j}(1) \bigg\{1 + P_{j,j}(1) \equiv \expecti{V_j}\bigg\} = \frac{f_{j,j}}{1 - f_{j,j}}
+\expecti{V_j} = P_{i,j}(1) = F_{i,j}(1) \bigg\{1 + P_{j,j}(1) \bigg\} =
+F_{i,j}(1) \bigg\{1 + \expectj{V_j} \bigg\} = \frac{f_{j,j}}{1 - f_{j,j}}
 \]
 
-If $f_{i,j} \neq 1$ then $\probi{\tau_j = \infty} > 0$ and hence $\expecti{\tau_j} = \infty$.
+In the case $f_{ij} = 0$ is easy to prove $\expecti{V_j} = 0$. $f_{jj} = 1$ and $f_{ij} > 0$
+implies $\expecti{V_j} = \infty$, using reductio ad absurdum in
+$\expecti{V_j} = f_{ij}(1 + \expectj{V_j})$
 #+end_proof
 
-#+begin_lemma
+#+begin_proposition
 There is an equivalence between:
 
-1. $\exists n >0 : p_{i,j}^{(n)} > 0$
+1. $\exists n >0 : p_{i,j}^{(n)} > 0$ (note we will name this $i \goto j$ afterwards)
 2. $\expecti{V_j} > 0$
 3. $f_{i,j} > 0$
 
-\label{lemma:fij-equivs}
-#+end_lemma
+\label{prop:fij-equivs}
+#+end_proposition
 
 #+begin_proof
 Since $\expecti{V_j} = \sum_{n = 1}^{\infty} p_{i,j}^{(n)}$, clearly i. is equivalent to ii.
 
-ii. is equivalent to iii. can be deduced from $\expecti{V_j} = f_{i,j}(1 + \expectj{V_j})$.
+ii. is equivalent to iii. can be deduced from $\expecti{V_j} = f_{i,j}(1 + \expectj{V_j})$ and using similar
+arguments to the ones in the previous proof.
 #+end_proof
 
 ** Classification of states
 *** Communicating classes
 
 #+begin_definition
-The state $i\in E$ communicates with $j\in S$, and we will write it like $i \rightarrow j$
-iff $p_{i,j}^{(n)} > 0$ for some $n > 0$.
+The state $i\in S$ communicates with $j\in S$, and we will write it like $i \rightarrow j$
+iff $p_{i,j}^{(n)} > 0$ for some $n > 0$. It can be proven it is a transitive relation
+using Proposition \eqref{prop:chapman-kolmogorov}.
 
-If $i \longrightarrow j$ and $j \longrightarrow i$ then we will say that both states communicate and
+If $i \goto j$ and $j \goto i$ then we will say that both states communicate and
 we will represent it as $i \dgoto j$.
 #+end_definition
-
-#+begin_proposition
-Given $i \neq j$, it holds:
-
-\[
-i \goto j \dimplies \expecti{V_j} > 0 \dimplies f_{i,j} > 0
-\]
-\label{goto-characterization}
-#+end_proposition
-
-#+begin_proof
-Straightforward from Lemma \eqref{lemma:fij-equivs}.
-#+end_proof
 
 #+begin_definition
 State $i\in S$ is essential if $i \goto j$ always implies $j \goto i$. We denote the set
@@ -840,42 +773,39 @@ of essential states by $S^{\ast}$.
 
 #+begin_lemma
 If $i\in S^{\ast}$ and $i \goto j$, then $j \in S^{\ast}$
+\label{lemma:transitive-es}
 #+end_lemma
 
 #+begin_proof
-Given $j \goto k$, then by transivity $i \goto k$. Since $i$ is essential, $k \goto i$,
+Given $j \goto k$, then by transitivity $i \goto k$. Since $i$ is essential, $k \goto i$,
 which applying transitivity again from $i \goto j$, gives us $k \goto j$.
 #+end_proof
 
 #+begin_proposition
-$\dgoto$ is an equivalence relationship in $S^{\ast}$, and we can decompose:
+$\dgoto$ is an equivalence relation in $S^{\ast}$, and we can decompose:
 
 \[
 S^{\ast} = C_1 \cup C_2 \cup \ldots \cup C_r
 \]
 
-where for every $i, j \in C_k$, it holds $i \dgoto j$, and if $i \in C_k, j \in C_l$ where $k \neq l$, then $i \not\goto j$ or $j \not\goto i$.
+where for every $i, j \in C_k$, it holds $i \dgoto j$.
 
 \label{prop:equiv-classes}
 #+end_proposition
 
 #+begin_proof
-1. Reflexivity holds because given $i \in S^{\ast}$, then $p_{i,j} > 0$ for some $j \in S$. Because of the previous lemma $j \in S^{\ast}$. Therefore $i \goto j$ implies $j \goto i$ because of the essentiality.
-2. Transitivity holds trivially.
+We have:
+1. Reflexivity holds because given $i \in S^{\ast}$, and $p_{i,j} > 0$ for some $j \in S$ then $j \in S^{\ast}$ and $i \dgoto j$ using previous Lemma \eqref{lemma:transitive-es}.
+2. Symmetry holds trivially.
 3. Transitivity holds because if $p_{i,j}^{(n)} > 0$ and $p_{j,k}^{(m)} > 0$ then
-\[
-p_{i,k}^{(n + m)} \ge p_{i,j}^{(n)} \cdot p_{j,k}^{(m)} > 0
-\]
-
-The second part is trivial from the deduced equivalence property.
+$p_{i,k}^{(n + m)} \ge p_{i,j}^{(n)} \cdot p_{j,k}^{(m)} > 0$
 #+end_proof
 
-Therefore, reordering the states of the matrix, with $P_k$ is the transition matrix for the
-states in $C_k$ (which only communicate with themselves), where the last rows are formed by the
-transition probabilities from the non-essential states: $Q_k$,
-where those are the probabilities of going from $S - S^{\ast}$ to $C_k$ (and never returning),
-and $W$ where that is the probability of the non-essential states of communicating with
-themselves.
+For a DTMC, we can reorder the states of the matrix: let $P_k$ be the transition matrix for the
+states in $C_k$ (which only communicate with themselves); $Q_k$ the probabilities of
+going from $S - S^{\ast}$ to $C_k$ (and never returning); and $R$ the probability
+of the non-essential states communicating with themselves. The transition (stochastic by rows)
+matrix we get is:
 
 \begin{equation}
   \left(\begin{array}{cccccccccc}
@@ -888,34 +818,13 @@ themselves.
                 &        &            &       &        &\bcell & \bcell P_r & \bcell & \\
                 &        &            &       &        &\bcell &   \bcell   & \bcell & \\
     \rowcolor{gray!20}
-      Q_1       &        &   Q_2      &       & \ldots &       &    Q_r     &        & W\\
+      Q_1       &        &   Q_2      &       & \ldots &       &    Q_r     &        & R\\
   \end{array}\right)
 \label{eq:canonic-form}
 \end{equation}
 
-Each $C_k$ is said to be an irreducible and closed sub-chain of the original transition matrix
-$P$; closed because from one state from $C_k$ we can only go back to another state in the same
-set; irreducible because all their states communicate among themselves. The same structure of
-power matrices appears in $P^n$, $n > 2$:
-
-\begin{equation}
-  \left(\begin{array}{cccccccccc}
-  \gcell P_1^{n}   &        &                  &       &        &       &                   &        & \\
-                   & \rcell & \rcell           & \rcell&        &       &                   &        & \\
-                   & \rcell & \rcell P_2^{n}   & \rcell&        &       &                   &        & \\
-                   & \rcell & \rcell           & \rcell&        &       &                   &        & \\
-                   &        &                  &       & \ddots &       &                   &        & \\
-                   &        &                  &       &        &\bcell &   \bcell          & \bcell & \\
-                   &        &                  &       &        &\bcell & \bcell P_r^{n}    & \bcell & \\
-                   &        &                  &       &        &\bcell &   \bcell          & \bcell & \\
-    \rowcolor{gray!20}
-      Q_1 \cdot P_1^{n-1} & & Q_2 \cdot P_2^{n-1} &    & \ldots &       & Q_r \cdot P_r^{n} &        & W^n\\
-  \end{array}\right)
-\label{eq:canonic-form-pow}
-\end{equation}
-
 #+begin_definition
-A Markov chain where all its states are essential and with only a communicating class is called
+A Markov chain where all its states are essential and only a communicating class is called
 irreducible Markov chain.
 #+end_definition
 
@@ -925,61 +834,44 @@ irreducible Markov chain.
 An state $i\in S$ is called recurrent iff $f_{i,i} = 1$ and transient iff $f_{i,i} < 0$
 #+end_definition
 
-By Proposition \eqref{prop:fii-equiv} it is easy to show the following characterization:
+Hence $\sum_{n = 1}^{\infty} p_{i,i}^{(n)}$ diverges when $i$ is recurrent and converges when $i$ is transient.
 
 #+begin_proposition
-It holds:
-
-1. $i\in S$ is recurrent iff $\probi{X_n = i \textrm{ for infinitely many } n} = 1$
-2. $i\in S$ is transient iff $\probi{X_n = i \textrm{ for infinitely many } n} = 0$
-\label{prop:rec-tran-characterization}
-#+end_proposition
-
-If an state is recurrent, then $\probi{V_i = \infty} = 1$ and $\expecti{V_i} = \infty$ and
-$\probj{V_i = 0 \vee V_i = \infty} = 1$. If an state is transient, then $\probi{V_i < \infty}$
-and $\expecti{V_i} < \infty$.
-
-Therefore $\sum_{n = 1}^{\infty} p_{i,i}^{(n)}$ diverges when $i$ is recurrent and converges
-when $i$ is transient.
-
-#+begin_proposition
-If $i$ is a recurrent state and $j$ communicates with $i$, then $f_{j,i} = f_{i,j} = f_{j,j} = 1$,
-and $j$ is recurrent. Therefore, all non essential states are transient.
+If $i$ is a recurrent state and $i$ communicates with $j$, then $f_{j,i} = f_{i,j} = f_{j,j} = 1$,
+and $j$ is recurrent. Therefore, all the states of a communicating class are either
+recurrent or transient.
 \label{prop:recurrent-classes}
 #+end_proposition
 
 #+begin_proof
-By Proposition \eqref{goto-characterization}, $f_{i,j} > 0$. Since $i$ is recurrent $f_{ii} = 1$
+By Proposition \eqref{prop:fij-equivs}, $f_{i,j} > 0$. Since $i$ is recurrent $f_{ii} = 1$
 and by Equation \eqref{eq:fij-recurrence}:
 
 \[
 1 = f_{i,i} = p_{i,i} + \sum_{k \neq i} p_{i,k} f_{k,i}
 \]
 
-$i \goto j$ means there exists $k_1, k_2, \ldots k_r$ verifying:
+$i \goto j$ means there exists $k_1, k_2, \ldots, k_r$ verifying:
 
 \[
-p{i, k_1} \cdot p_{k_1, k_2} \cdots p_{k_{r}, k_j} > 0
+p_{i, k_1} \cdot p_{k_1, k_2} \cdots p_{k_{r}, j} > 0
 \]
 
-Since $\sum_{k} p_{k,k} = 1$, and $0 \le f_{k,i} \le 1$, then it must hold $f_{k,i} = 1$ for all
+Since $\sum_{k} p_{i,k} = 1$, and $0 \le f_{k,i} \le 1$, then it must hold $f_{k,i} = 1$ for all
 $k$ such that $p_{i,k} > 0$. In particular $f_{k_1,i} = 1$, and we deduce:
 
 \[
 1 = f_{k_1,i} = p_{k_1,k_1} + \sum_{k\neq k_1} p_{k_1,k} f_{k,i}
 \]
 
-We get $1 = f_{k_2, i}$ by an analogous argument, and we can recursively proceed until we
-arrive at $f_{j,i} = 1$.
+We get $1 = f_{k_2, i}$ by an analogous argument, and recursively we arrive at $f_{j,i} = 1$.
 
-Since we have proven $f_{i,i} > 0$, $f_{i,j} > 0$, $f_{j,i} = 1$ then by Lemma \eqref{lemma:fij-equivs}
-we deduce there exist $u, v, n$: $p_{i,j}^{(u)} > 0$, $p_{j,i}^{(v)}, $p_{i,i}^{(n)} > 0$.
-#+end_proof
-
-So for every $n \ge u + v$ we deduce:
+Since $f_{i,j} > 0$, $f_{j,i} = 1$ then by Proposition \eqref{prop:fij-equivs}
+we deduce there exist $u, v$: $p_{i,j}^{(u)} > 0, p_{j,i}^{(v)} > 0$.
+So for every $n \ge u + v$ we arrive at:
 
 \[
-p_{j,j}^{(n)} \ge p_{j,i}^{(v)} p_{i,i}^{(n - u - v)} p_{i,j}^{(u)}
+p_{j,j}^{(n)} \ge p_{j,i}^{(v)} p_{i,i}^{(n - u + v)} p_{i,j}^{(u)}
 \]
 
 Since $f_{i,i} = 1$, then $\sum_{n = 1}^{\infty} p_{i,i}^{(n)} = \infty$ by Proposition \eqref{prop:fii-equiv},
@@ -991,24 +883,18 @@ p_{j,i}^{(v)} p_{i,j}^{(u)} \sum_{n = u + v}^{\infty} p_{i,i}^{(n)} = \infty
 \end{align*}
 
 Again from Proposition \eqref{prop:fii-equiv} we deduce $f_{j,j} = 1$. We have proved $j$ is
-recurrent, but also that $j \goto i$, and we can deduce $f_{i,j} = 1$ by the same procedure
-we started this demonstration with.
+recurrent, but also that $j \goto i$, and we can deduce $f_{i,j} = 1$ with an identical procedure.
 #+end_proof
 
-#+begin_corollary
-If $i,j \in S$ are in the same communicating class they are both either recurrent or transient.
-\label{corollary:comm-classes}
-#+end_corollary
-
 #+begin_definition
-We will say a communicating class is recurrent (resp. transient) iff one of its states (iff
-all, by the previous corollary) are recurrent (resp. transient).
+We will say a communicating class is recurrent (transient resp.) iff all of its states
+are recurrent (transient resp.). We will say a communicating class $C$ is closed if it
+holds $i \goto j$ and $i\in C$ implies $j\in C$.
 #+end_definition
 
 #+begin_proposition
-All the closed irreducible subchains of a Markov chain (with finite space state S) are recurrent,
-and every Markov chain has at least one subchain of such type. A state is transient iff it is
-non-essential.
+All the closed irreducible subchains of a DTMC are recurrent, and every DTMC has
+at least one subchain of such type. A state is transient iff it is non-essential.
 \label{prop:one-recurrent-class}
 #+end_proposition
 
@@ -1020,28 +906,26 @@ Let us fix some $i \in S$. We have
 \sum_{n = 1}^{\infty} \sum_{j \in S} p_{i,j}^{(n)} = \sum_{n = 1}^{\infty} 1 = \infty
 \]
 
-And therefore, it exits at least one $\expecti{V_j} = \infty \equiv f_{j,j} = 1$, so the subchain which
-contains $j$ is recurrent. The same argument can be applied to the other subchains. Therefore, if we have
-a chain and a certain state $j$ in that chain, $f_{j,j} = 1$ and $j$ cannot be transient. In other words,
-if $j$ is transient, $j$ is non-essential.
+We conclude there exits at least one $\expecti{V_j} = \infty \leftrightarrow f_{j,j} = 1$, so the subchain which
+contains $j$ is recurrent. The same argument can be applied to the other subchains.
 #+end_proof
 
 #+begin_corollary
-In a Markov chain with finitely many states, a communicating class is recurrent iff it is closed.
+In a DTMC, a communicating class is recurrent iff it is closed.
 \label{corollary:comm-recurrence}
 #+end_corollary
 
 #+begin_proof
-If we have a non closed class $C$, there exist $i \in C, j \in S - C$ such that $p_{i,j} > 0$ and
-$p_{j, i} = 0$. Therefore $f_{j,i} = 0$ by \eqref{goto-characterization}.
+If we have a non closed class $C$, there exist $i \in C, j \in S - C$ such that $i \goto j$ and $j\neq \goto j$.
+Therefore $f_{j,i} = 0$ by Proposition \eqref{prop:fij-equivs}.
 
 Therefore:
 
-\begin{align*}
-f_{i,i} &= p_{i,i} + \sum_{k \neq i} p_{i, k} f_{k,i} = \\
-        &= p_{i,i} + \sum_{k \neq i, j} p_{i, k} f_{k, i} < \\
-        &< \sum_{k \neq j} p_{i, k} \underset{p_{i,j} > 0}{<} 1
-\end{align*}
+\[
+f_{i,i} = p_{i,i} + \sum_{k \neq i} p_{i, k} f_{k,i}
+        = p_{i,i} + \sum_{k \neq i, j} p_{i, k} f_{k, i}
+        < \sum_{k \neq j} p_{i, k} \underset{p_{i,j} > 0}{<} 1
+\]
 
 and the class would not be recurrent.
 
@@ -1067,7 +951,7 @@ lim_{s\nearrow 1} \frac{1 - F_{i,i}(s)}{1 - s} < \infty \dimplies lim_{s\nearrow
 #+end_lemma
 
 #+begin_proof
-Let us observe that for the limit exists it must be $\lim_{s\nearrow 1} F_{i,i}(s) = f_{i,i} = 1$ iff $i$ is recurrent.
+Let us observe that for the limit to exist it must be $\lim_{s\nearrow 1} F_{i,i}(s) = f_{i,i} = 1$ iff $i$ is recurrent.
 
 \[
 \lim_{s\nearrow 1} \frac{1 - F_{i,i}(s)}{1 - s} = \frac{1}{1 - s} \sum_{n = 1}^{\infty} (1 - s^n) f_{i,i}^{(n)} =
@@ -1178,7 +1062,7 @@ subchain, $C$, it does so with the initial probabilities
 $(f_{i,j}^{\ast} / f_{i,C}^{\ast})_{j \in C}$.
 
 It we call $V = \bigg(\expecti{V_j}\bigg)_{i,j \not\in S^{\ast}}$, we have, taking a look at
-the matrix that \eqref{eq:canonic-form-pow} that $V = \sum_{n = 1}^{\infty} W^n$.
+the matrix that \eqref{eq:canonic-form} that $V = \sum_{n = 1}^{\infty} R^n$.
 
 Also, we can define $Q = (Q_1, \ldots, Q_r)$ the matrix of transition probabilities from
 $S - S^{\ast}$ to $S^{\ast}$, and $q = Q \cdot \left(\begin{array}{c} 1 \\ 1 \\ \vdots \\ 1 \end{array}\right)$ (the row-wise sum of $Q$). And we will call
@@ -1389,7 +1273,7 @@ given by $[1, \ldots, s]$ (since in a stochastic matrix we
 can reorder the states and the related properties of reachability such as states classification, powers, etc
 translate correctly from the original to the reordered matrix)
 
-Since $P$ is ergodic (regular $implies$ ergodic), it exists a path from every node $i$ to every other node
+Since $P$ is ergodic (regular $implies$ ergodic), there exists a path from every node $i$ to every other node
 $j$, and that path has at most length $m-1$ by Lemma \eqref{lemma:reachability}.
 
 Let us split $P^{m + s(m - 2)} = P^{m - s}(P^s)^{m -1}$ and we partition:
@@ -1663,8 +1547,8 @@ sum for the $i$ -th row is:
 
 \[ \frac{1}{2} + \frac{1}{2} \sum_{j = 1}^m p_{ij} = \frac{1}{2} + \frac{1}{2} = 1 \]
 
-To show that it is ergodic, fixed $i,j$, we must show that it exists a power matrix $\underbrace{\left\{\frac{1}{2}(I + P)\right\}}_{A}^m$ such that
-$(A^m)_{ij} > 0$. Since $P$ is ergodic, it exists $P^k$ such that $(P^k)_{ij} > 0$, and
+To show that it is ergodic, fixed $i,j$, we must show that there exists a power matrix $\underbrace{\left\{\frac{1}{2}(I + P)\right\}}_{A}^m$ such that
+$(A^m)_{ij} > 0$. Since $P$ is ergodic, there exists $P^k$ such that $(P^k)_{ij} > 0$, and
 $\left\{\frac{1}{2}(I + P)\right\}^k = R + P^k$ where all of the elements of $R$ are non negative. Since its
 diagonal is positive Lemma \eqref{lemma:ergodic-pos-diagonal} ends our proof.
 
@@ -1914,7 +1798,7 @@ S = C_1 \cup C_2 \cup \ldots \cup C_r
 where for every $i, j \in C_k$, it holds $i \dgoto j$, and if $i \in C_k, j \in C_l$ where $k \neq l$, then $i \not\goto j$ or $j \not\goto i$.
 #+end_proposition
 
-The Corollary \eqref{corollary:comm-classes} is still valid with this definition, and gets used in the software.
+Proposition \eqref{prop:recurrent-classes} is still valid with this definition, and gets used in the software.
 
 ** Communicating classes based algorithms
 The original algorithm to compute the communicating classes of a given markovchain, and whether
