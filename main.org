@@ -88,7 +88,7 @@ clasificación de estados, incluyendo clases comunicantes, transitoriedad, recur
 cadenas de Markov ergódicas y regulares y su relación con las distribuciones estacionarias, tiempos medio
 de llegada y de recurrencia, \ldots
 
-La sección [[=markovchain= package]] describe el trabajo hecho en el paquete de R =markovchain=. Esta librería
+La sección [[R package]] describe el trabajo hecho en el paquete de R =markovchain=. Esta librería
 es un proyecto de sofware libre que permite analizar cadenas de Markov discretas desde un punto
 de vista probabilístico y estadístico (inferencia). El autor de este trabajo ha analizado la parte del análisis
 probabilístico que este paquete proporciona y se han identificado los puntos clave donde los algoritmos podrían
@@ -135,7 +135,7 @@ number of states: hitting times and probabilities, classification of states, inc
 transience, recurrence and absorption, ergodic and regular Markov chains and their relationship with
 steady states, mean first passage and recurrence times, \ldots
 
-Section [[=markovchain= package]] describes the work done in =markovchain= R package. This software library
+Section [[R package]] describes the work done in =markovchain= R package. This software library
 comprises open source utilities which allow to analyze discrete Markov chains from a probabilistic
 and statistical (inference) perspective. The author of the present work analyzed the discrete time probabilistic
 analysis provided by this package and identified key points where the algorithms could be improved, both from
@@ -181,7 +181,7 @@ Markov chains with a finite state space, which becase of finiude are the most na
 represent in a computer.
 
 Among programming languages nowadays, R is probably the most used ones among statisticians and the main
-competitor of =python= in machine learning programming. The =markovchain= package
+competitor of =python= in machine learning programming. The R package
 [fn::[[https://github.com/spedygiorgio/markovchain][https://github.com/spedygiorgio/markovchain]]] [[citep:dtmc]] is an open source library available
 at the official R packages repository, CRAN [fn::[[https://cran.r-project.org/web/packages/index.html][https://cran.r-project.org/web/packages/index.html]]], which
 aims to provide easy representations, plotting and analysis of discrete time Markov chains. It is placed in
@@ -1522,6 +1522,7 @@ only solution of the system:
 \[
 \twopartsys{(I - P^t)w}{0}{\onerow \cdot w}{1}
 \]
+\label{lemma:steady-states-computation}
 #+end_lemma
 
 #+begin_proof
@@ -1544,6 +1545,7 @@ By means of Theorem \eqref{th:steady-ergodic} we have unicity and that the syste
 must have a unique solution.
 #+end_proof
 ** Steady states
+
 We are now in appropriate conditions for depicting how steady states of a general stochastic matrix can be computed.
 
 #+begin_proposition
@@ -1720,99 +1722,47 @@ and therefore, subtracting and using Proposition \eqref{prop:ss-and-recurrence-p
 \[ m_{ij} = \frac{z_{jj} - z_{ij}}{w_j} \]
 #+end_proof
 
-* =markovchain= package
+* R package
+This chapter describes the work carried out in [[https://github.com/spedygiorgio/markovchain][markovchain]] package putting into practice the theoretical
+knowledge acquired throughout previous chapters. The library is designed to be used with =R= language and
+provides algorithms to perform analysis of Markov chains. We have focused in the discrete time homogeneous
+part.
+
+The package is coded both in =R= and =C++=. Our main objective was to propose mathematical driven improvements
+to the aforementioned library. Most of the algorithms in this section are an original work and have been
+designed by the author of this report. Of course we have tried to take into account some existent algorithms as
+starting point to propose improvements, such as [[citep:feres]]. As a general guide for the additions to the
+package to be compatible with the requisites and the good practices for =R=, we have used [[citep:rhadleypkg]].
+
+Code has been integrated in the upstream version for the library, available at [[https://cran.r-project.org/web/packages/markovchain/][CRAN]], the official
+repository for R packages. To browse the added code, one could go to the repository that hosts the
+project [fn::[[https://github.com/spedygiorgio/markovchain]]]. This section only describes the algorithms,
+and does not contain listings of code due to space constraints.
+
+** Communicating classes based algorithms
 We can propose an alternative definition of communicating property, taking $n \ge 0$ instead of $n > 0$,
 which has been the one used in the software from the start:
 
 #+begin_definition
 The state $i\in E$ communicates with $j\in S$, and we will write it like $i \rightarrow j$
-iff $p_{i,j}^{(n)} > 0$ for some $n \ge 0$.
+iff $p_{i,j}^{(n)} > 0$ for some $n \ge 0$, where $p_{ij}^{(0)} := \delta_{ij}$
 #+end_definition
 
-Therefore, we can reformualte Proposition \eqref{prop:equiv-classes} as:
+Therefore, we since Proposition \eqref{prop:equiv-classes} was not valid in $S$ because of lack of reflexivity,
+which has been added with this new definition, we can reformulate it as:
 
 #+begin_proposition
-$\dgoto$ is an equivalence relationship in $S^{\ast}$, and we can decompose:
-
-\[
-S = C_1 \cup C_2 \cup \ldots \cup C_r
-\]
-
-where for every $i, j \in C_k$, it holds $i \dgoto j$, and if $i \in C_k, j \in C_l$ where $k \neq l$, then $i \not\goto j$ or $j \not\goto i$.
+$\dgoto$ is an equivalence relationship in $S$
 #+end_proposition
 
-Proposition \eqref{prop:recurrent-classes} is still valid with this definition, and gets used in the software.
+This modification does not affect further results.
 
-** Communicating classes based algorithms
-The original algorithm to compute the communicating classes of a given markovchain, and whether
-they were closed or not, was based on \cite{feres}. The algorithm runs in $\algcomp{n^3}$ where
-$n$ is the number of states of the input Markov chain. The problem is that it is excessively
-inefficient when it comes to easy inputs.
+\texttt{commClassesKernel} constitutes a core algorithm in the pakcage, since computation of
+communicating classes, classification of states or steady states algorithm depend on it. It calculates
+a matrix of communicating classes (where the entry $(i, j)$ is $true$ iff $i \dgoto j$) and whether the
+class $[i]$ is closed (iff $v(i) = true$). The original algorithm was based on \cite{feres} and run
+in $\algcomp{m^4}$ in worst cases for inputs such as:
 
-\begin{algorithm}[h]
-\begin{algorithmic}[1]
-  \REQUIRE $P_{m \times m}$ an stochastic matrix
-  \NEWLINE
-  \FOR{$i \in \{1, \ldots, m\}$}
-    \STATE{$b = (\underset{(1)}{false}, \ldots \underset{(m)}{false})$}
-    \STATE{$b[i] \leftarrow true$ since $p_{i,i}^{(0)} = 1$}
-    \STATE{$k' = 0$}
-    \STATE{$k = 1$}
-    \STATE{$a = [i]$ a list with the states $i$ can communicate with}
-    \NEWLINE
-    \WHILE{$k' \neq k$}
-      \STATE{$k' = \sum_{l = 1}^{n} \mathbb{1}_{b[l] = true}$}
-      \STATE{Set $c[l] = \sum_{k \in a} (P(k,i))$ for $l \in \{1, \ldots n\}$}
-      \STATE{Set $a = \{l: c[l] > 0, l \in \{1, \ldots n\}\}$}
-      \STATE{Set $b[l] = true$ for each $l \in a$ and $k = \card{a}$}
-    \ENDWHILE
-    \NEWLINE
-    \STATE{Set $T(i,\_) = b$}
-  \ENDFOR
-  \NEWLINE
-  \STATE{Set $C(i,j) = T(j, i) \textrm{ and } T(i, j)$ (it holds $i \goto j$ and $j \goto i$)}
-  \STATE{Set $v[i] = \textrm{ true iff } \card{ \{j: C(i,j) = true \} }= \card{ \{j: T(i,j) = true \} }$}
-  \NEWLINE
-  \RETURN{$[C, v]$, where $C(i,j)$ is true iff $i,j$ are in the same communicating class,
-          and $v[i]$ is true iff the class for $i$ is closed}
-\end{algorithmic}
-\caption{Original \texttt{commClassesKernel} algorithm}
-\label{alg:commClassesKernelOld}
-\end{algorithm}
-
-
-\begin{algorithm}[h]
-\begin{algorithmic}[1]
-  \REQUIRE $P_{m \times m}$ an stochastic matrix
-  \STATE{Parse the graph for the states keeping $S[i]$ an adjacency list for
-          each state $i \in \{1, \ldots, m\}$}
-  \NEWLINE
-  \FOR{$i \in \{1, \ldots, m\}$}
-    \STATE{$a = stack \{ i \}$ a list with the states $i$ can communicate with}
-    \STATE{$b = (\underset{(1)}{false}, \ldots \underset{(m)}{false})$}
-    \WHILE{$a$ is not empty}
-       \STATE{$k =$ \texttt{a.pop()}}
-       \STATE{$T(i,k) = true$}
-       \FOR{$l \in S[k]$}
-         \IF{$T(i,l) == false$}
-           \STATE{\texttt{a.push(l)}}
-         \ENDIF
-       \ENDFOR
-    \ENDWHILE
-  \ENDFOR
-  \NEWLINE
-  \STATE{Set $C(i,j) = T(j, i) \textrm{ and } T(i, j)$ (it holds $i \goto j$ and $j \goto i$)}
-  \STATE{Set $v[i] = \textrm{ true iff } \card{ \{j: C(i,j) = true \} }= \card{ \{j: T(i,j) = true \} }$}
-  \NEWLINE
-  \RETURN{$[C, v]$, where $C(i,j)$ is true iff $i,j$ are in the same communicating class,
-          and $v[i]$ is true iff the class for $i$ is closed}
-\end{algorithmic}
-\caption{\texttt{commClassesKernel} algorithm}
-\label{alg:commClassesKernel}
-\end{algorithm}
-
-
-For the homogeneous Markov chain with transition matrix as follows
 \[
 \left(\begin{array}{ccccc}
 0 & 1 & 0 & \ldots & 0\\
@@ -1823,15 +1773,47 @@ For the homogeneous Markov chain with transition matrix as follows
 \end{array}\right)
 \]
 
-the original algorithm would run in $\algcomp{n^4}$, whereas our improved algorithm would
-run in $\algcomp{n^3}$, due to the adjacency lists and the \textit{backtracking} approach to
-visit all the nodes In the general case (a matrix with $\approx n^2$ non-zero entries,
-complexity of our algorithm would be $\algcomp{n^3}$ and the old one would be $\algcomp{n^4}$
-still.
+We have improved it turning it into a $\algcomp{m^3}$ algorithm, using
+backtracking [fn::[[https://en.wikipedia.org/wiki/Backtracking]]] techniques and adjacency lists. The key
+for this changes has been to visualize the Markov chain as a directed graph and apply knowledge for
+traversing graphs.
+
+\begin{algorithm}[H]
+\begin{algorithmic}[1]
+  \REQUIRE $P_{m \times m}$ an stochastic matrix
+  \STATE{Parse the graph $G(P)$ keeping $S[i]$ an adjacency list for
+          each state $i \in \{1, \ldots, m\}$}
+  \NEWLINE
+  \FOR{$i \in \{1, \ldots, m\}$}
+    \STATE{$a =$ \texttt{stack\{i\}} a list with the states $i$ can communicate with}
+    \STATE{$b = (\underset{(1)}{false}, \ldots \underset{(m)}{false})$}
+    \WHILE{$a$ is not empty}
+       \STATE{$k =$ \texttt{a.pop()}}
+       \STATE{$T_{i,k} = true$}
+       \FOR{$l \in S[k]$}
+         \IF{$T(i,l) = false$}
+           \STATE{\texttt{a.push(l)}}
+         \ENDIF
+       \ENDFOR
+    \ENDWHILE
+  \ENDFOR
+  \NEWLINE
+  \STATE{Set $C(i,j) = T(j, i)\wedge T(i, j)$ (it holds $i \goto j$ and $j \goto i$)}
+  \STATE{Set $v(i) = true \textrm{ iff } \card{ \{j: C(i,j) = true \} }= \card{ \{j: T(i,j) = true \} }$}
+  \NEWLINE
+  \RETURN{$[C, v]$}
+\end{algorithmic}
+\caption{\texttt{commClassesKernel} algorithm}
+\label{alg:commClassesKernel}
+\end{algorithm}
 
 *** Communicating classes
 
-\begin{algorithm}[h]
+We can propose an algorithm based on Algorithm \eqref{alg:commClassesKernel}. This algorithm runs in
+$\algcomp{n^3}$ since creating the list from communicating classes from the communicating matrix is
+$\algcomp{n^2}$ in the worst case, but we need the output of \texttt{commClassesKernel}.
+
+\begin{algorithm}[H]
 \begin{algorithmic}[1]
   \REQUIRE $P_{m \times m}$ an stochastic matrix
   \STATE{Do $[C, v] = \textrm{\texttt{commClassesKernel}}$}
@@ -1841,15 +1823,15 @@ still.
   \STATE{Initialize $A = \emptyset$}
   \NEWLINE
   \FOR{$i \in \{1, \ldots, m\}$}
-    \STATE{$B = \emptyset$}
-    \IF{not $w_i$ (class not computed)}
+    \STATE{$C = \emptyset$}
+    \IF{not $w(i)$ (class not computed)}
       \FOR{$j \in \{1, \ldots, m\}$}
          \IF{$C(i,j)$}
-            \STATE{$B := B \bigcup \{j\}$}
-            \STATE{$w_j := true$}
+            \STATE{$C := C \bigcup \{j\}$}
+            \STATE{$w(j) := true$}
          \ENDIF
       \ENDFOR
-      \STATE{$A := A \bigcup \{B\}$}
+      \STATE{$A := A \bigcup \{C\}$}
     \ENDIF
   \ENDFOR
   \NEWLINE
@@ -1860,15 +1842,21 @@ still.
 \end{algorithm}
 
 *** Transient and recurrent classes / states
-For Markov chains with a finite number of states, Corollary \eqref{corollary:comm-recurrence}
-guarantees us that recurrent classes and closed classes are the same [fn::[[https://github.com/spedygiorgio/markovchain/issues/171][markovchain issue#171]]]
+We provide the algorithm for computing recurrent classes and
+recurrent states, since the ones for transient classes / states are similar (they have been improved in
+the package too).
 
-\begin{algorithm}[h]
+Note that for DTMCs, Corollary \eqref{corollary:comm-recurrence} guarantees us that recurrent classes
+and closed classes are the same. \texttt{recurrentClasses} algorithm is quite similar to
+\texttt{communicatingClasses} one, with the difference that parsing the communicating matrix we should
+check that the class for the state we are inspecting is closed.
+
+With a similar rationale that the one provided for Algorithm \eqref{alg:commClasses},
+Algorithm \eqref{alg:recurrentClasses} and Algorithm \eqref{alg:recurrentStates} are $\algcomp{m^3}$.
+
+\begin{algorithm}[H]
 \begin{algorithmic}[1]
   \REQUIRE $P_{m \times m}$ an stochastic matrix
-  \IF{$P$ is stochastic by columns}
-    \STATE{$P := P^t$}
-  \ENDIF
   \STATE{Do $[C, v] = \textrm{\texttt{commClassesKernel}}(P)$}
   \STATE{Mark all states' class as not computed :
          $w = (\underset{(1)}{false}, \ldots, \underset{(m)}{false})$
@@ -1876,15 +1864,15 @@ guarantees us that recurrent classes and closed classes are the same [fn::[[http
   \STATE{Initialize $A = \emptyset$}
   \NEWLINE
   \FOR{$i \in \{1, \ldots, m\}$}
-    \STATE{$B = \emptyset$}
-    \IF{$v_i$ (class closed) and not $w_i$ (class not computed)}
+    \STATE{$C = \emptyset$}
+    \IF{$v(i)$ (class closed) and not $w(i)$ (class not computed)}
       \FOR{$j \in \{1, \ldots, m\}$}
          \IF{$C(i,j)$}
             \STATE{$B := B \bigcup \{j\}$}
-            \STATE{$w_j := true$}
+            \STATE{$w(j) := true$}
          \ENDIF
       \ENDFOR
-      \STATE{$A := A \bigcup \{B\}$}
+      \STATE{$A := A \bigcup \{C\}$}
     \ENDIF
   \ENDFOR
   \NEWLINE
@@ -1894,48 +1882,14 @@ guarantees us that recurrent classes and closed classes are the same [fn::[[http
 \label{alg:recurrentClasses}
 \end{algorithm}
 
-\begin{algorithm}[h]
+\begin{algorithm}[H]
 \begin{algorithmic}[1]
   \REQUIRE $P_{m \times m}$ an stochastic matrix
-  \IF{$P$ is stochastic by columns}
-    \STATE{$P := P^t$}
-  \ENDIF
-  \STATE{Do $[C, v] = \textrm{\texttt{commClassesKernel}}(P)$}
-  \STATE{Mark all states' class as not computed :
-         $w = (\underset{(1)}{false}, \ldots, \underset{(m)}{false})$
-  }
-  \STATE{Initialize $A = \emptyset$}
-  \NEWLINE
-  \FOR{$i \in \{1, \ldots, m\}$}
-    \STATE{$B = \emptyset$}
-    \IF{not $v_i$ (class not closed) and not $w_i$ (class not computed)}
-      \FOR{$j \in \{1, \ldots, m\}$}
-         \IF{$C(i,j)$}
-            \STATE{$B := B \bigcup \{j\}$}
-            \STATE{$w_j := true$}
-         \ENDIF
-      \ENDFOR
-      \STATE{$A := A \bigcup \{B\}$}
-    \ENDIF
-  \ENDFOR
-  \NEWLINE
-  \RETURN{$A$}
-\end{algorithmic}
-\caption{\texttt{transientClasses} algorithm}
-\label{alg:transientClasses}
-\end{algorithm}
-
-\begin{algorithm}[h]
-\begin{algorithmic}[1]
-  \REQUIRE $P_{m \times m}$ an stochastic matrix
-  \IF{$P$ is stochastic by columns}
-    \STATE{$P := P^t$}
-  \ENDIF
   \STATE{Do $[C, v] = \textrm{\texttt{commClassesKernel}}(P)$}
   \STATE{Initialize $A = \emptyset$}
   \NEWLINE
   \FOR{$i \in \{1, \ldots, m\}$}
-    \IF{$w_i$}
+    \IF{$v(i)$}
       \STATE{$A := A \bigcup \{i\}$}
     \ENDIF
   \ENDFOR
@@ -1946,56 +1900,18 @@ guarantees us that recurrent classes and closed classes are the same [fn::[[http
 \label{alg:recurrentStates}
 \end{algorithm}
 
-\begin{algorithm}[h]
-\begin{algorithmic}[1]
-  \REQUIRE $P_{m \times m}$ an stochastic matrix
-  \IF{$P$ is stochastic by columns}
-    \STATE{$P := P^t$}
-  \ENDIF
-  \STATE{Do $[C, v] = \textrm{\texttt{commClassesKernel}}(P)$}
-  \STATE{Initialize $A = \emptyset$}
-  \NEWLINE
-  \FOR{$i \in \{1, \ldots, m\}$}
-    \IF{not $w_i$}
-      \STATE{$A := A \bigcup \{i\}$}
-    \ENDIF
-  \ENDFOR
-  \NEWLINE
-  \RETURN{$A$}
-\end{algorithmic}
-\caption{\texttt{transientStates} algorithm}
-\label{alg:transientStates}
-\end{algorithm}
-
 *** Steady States
+**** Original approach
+The original algorithm present in the package consisted in trying to compute the eigen vectors for
+the eigen value $1$ and normalize each vector by its sum. If some negative value arose (even after
+normalizing and obtaining probability vectors), then the transition matrix was subseted to retain only
+states corresponding to recurrent states, same procedure was applied (computing eigen vectors) and
+obtained vectors were completed with $0$ in appropriate places.
 
-**** First approach
+It is interesting to provide a small sketch of the original algorithm to compute steady states from
+eigen vectors to analyze flaws in that old approach.
 
-First idea was to try computing the eigen vectors for the eigen value $1$. If some negative value arose (even after normalizing and obtaining probability vectors), then we could refine the approach of using the recurrent states to compute the steady states.
-
-\begin{algorithm}[h]
-\begin{algorithmic}[1]
-  \REQUIRE $P_{m \times m}$ an stochastic matrix
-  \IF{$P$ is stochastic by rows}
-    \STATE{$P := P^t$}
-  \ENDIF
-  \STATE{Call $S = \textrm{\texttt{computeSteadyStates}}(P)$}
-  \IF{There is any negative element in $S$}
-    \STATE{Compute $S =$\texttt{steadyStatesByRecurrentClasses}$(P)$}
-  \ENDIF
-  \NEWLINE
-  \IF{$P$ was stochastic by rows originally}
-     \STATE{$S:= S^t$}
-  \ENDIF
-  \NEWLINE
-  \RETURN{$S$}
-\end{algorithmic}
-\caption{\texttt{steadyStates} algorithm}
-\label{alg:steadyStatesFirst}
-\end{algorithm}
-
-
-\begin{algorithm}[h]
+\begin{algorithm}[H]
 \begin{algorithmic}[1]
   \REQUIRE $P_{m \times m}$ an stochastic matrix by columns
   \STATE{Compute $v = (e_1, \ldots, e_k)$, eigen values for $P$, i.e.
@@ -2009,101 +1925,60 @@ First idea was to try computing the eigen vectors for the eigen value $1$. If so
       \in \mathbb{C}^m: Pv_i = e_k v_i
     \]
   }
-  \STATE{Compute $S = (Re(v_1), \ldots, Re(v_l)) = (u_1, \ldots, u_l)$, eigen vectors for eigen values $1$}
-  \FOR{$j = 1, \ldots, l$}
-    \STATE{$s_j = \sum_{i = 1}^m u_j^{(i)}$}
-    \IF{$s_j$ is $0$}
-      \STATE{$s_j = 1$}
-    \ENDIF
+  \STATE{Compute $S = (Re(v_1) | \ldots | Re(v_k)) = (u_1| \ldots |u_k)$, eigen vectors for eigen values $1$}
+  \FOR{$i = 1, \ldots, k$}
+    \STATE{$s_i = \sum_{j = 1}^m u_{ij}$}
   \ENDFOR
-  \STATE{Normalize each column $u_j := u_j / s_j$}
+  \STATE{Normalize each column $u_i := u_i / s_i$}
   \NEWLINE
-  \RETURN{$S = (u_1, \ldots, u_l)$}
+  \RETURN{$S = (u_1 | \ldots | u_k)$}
 \end{algorithmic}
 \caption{\texttt{computeSteadyStates} algorithm}
 \label{alg:computeSteadyStatesFirst}
 \end{algorithm}
 
 
-Note the step of taking $(u_1, \ldots, u_l) = (Re(v_1), \ldots, Re(v_l))$ is fundamented in the fact that every matrix if $e_j \in \mathbb{R}$ is eigen value for $P$, and $P \cdot u_j = e_j \cdot v_j$, i.e. $u_j$ is an eigen vector tied to $e_j$, then $Re(v_j$ and $Im(v_j)$ are also eigen vectors tied to $e_j$.
+Note the step of taking $(u_1, \ldots, u_l) = (Re(v_1), \ldots, Re(v_l))$ is fundamented in the fact
+that if $e_j \in \complexes$ is eigen value for $P$, and $P \cdot u_j = e_j \cdot v_j$, i.e. $u_j$ is an eigen vector tied to $e_j$, then $Re(v_j$ and $Im(v_j)$ are also eigen vectors tied to $e_j$.
 
 However, the aforementioned algorithm, as the original one, has several problems:
 
-1. The computation of eigen values for a matrix in the general case, as described in [fn::[[https://en.wikipedia.org/wiki/Eigenvalue_algorithm#Iterative_algorithms][eigenAlgorithm]]] can take up to $\algcomp{m^3}$ or $\algcomp{m^4}$ and since iterative algorithms and their convergence is used, we could end up having rounding problems (i.e. how to securely search for the $1$ eigen values).
-2. Taking real parts does not ensure that we end up with linearly independent eigen vectors. The original algorithm also presented this problem. Let us propose a counterexample of this. If the matrix $P$ has real eigen vectors $\{u, v\}$ which are linearly independent and are tied to the eigen value $1$, $\{u + iu, u + iv\}$ are also independent eigen vectors whore real parts are $\{u,u\}$. We cannot assure that the eigen values computation method is going to output real eigen vectors only (we can only make assurances in the case the matrix $P$ is symmetric).
+1. Algorithms to compute eigen vectors are iterative [fn::[[https://en.wikipedia.org/wiki/Eigenvalue_algorithm#Iterative_algorithms]]] and can take up to $\algcomp{m^3}$ or $\algcomp{m^4}$ (in each iteration!). Also because convergence is used we could end up having rounding problems (i.e. how to securely search for the $1$ eigen values) and uncertainty about the algorithmic complexity (we do not know how many iterations we need for them to converge beforehand).
+2. Taking real parts does not ensure we end up with linearly independent eigen vectors. Let us propose a counterexample of this. If the matrix $P$ has real eigen vectors $\{u, v\}$ which are linearly independent and are tied to the eigen value $1$, then $\{u + iu, u + iv\}$ are also independent eigen vectors whose real parts are $\{u,u\}$. We cannot assure that the eigen values computation method is going to output real eigen vectors only (we can only make assurances in the case the matrix $P$ is symmetric).
 
 As result, we could be using this algorithm and obtain less steady states than we should.
 
+**** Improved approach
 
-\begin{algorithm}[h]
+The goal was to find an algebraic approach with guaranteed algorithmic complexity (of $\algcomp{m^3}$),
+instead of having and uncertain iterative method. Following the theoretical section [[Steady states]], we
+fulfilled that objective.
+
+Given $P_1, \ldots, P_r$ the decomposition of the transition matrix $P$ for its recurrent classes,
+as expressed in its canonic form \eqref{eq:canonic-form}. Solving the system from Lemma
+\eqref{lemma:steady-states-computation} for each $k = 1, \ldots, r$ can be done in $\algcomp{m^2}$.
+Therefore, the total cost of the algorithm, since computing recurrent classes is $\algcomp{m^3}$,
+is $\algcomp{m^3}$, as we were aiming for.
+
+
+\begin{algorithm}[H]
 \begin{algorithmic}[1]
   \REQUIRE $P_{m \times m}$ an stochastic matrix by columns
-  \STATE{$C = \textrm{\texttt{recurrentClasses}}(P) = \{C_1, \ldots, C_l\}$, where for all $k=1, \ldots, l$
+  \STATE{$C = \textrm{\texttt{recurrentClasses}}(P) = \{C_1, \ldots, C_r\}$, where for all $k=1, \ldots, r$
          $C_k = \{i^{(k)}_1, \ldots, i^{(k)}_{l_k}\} \subseteq \{1, \ldots, m\}$ is a recurrent class}
   \NEWLINE
-  \FOR{$k = 1, \ldots, l$}
+  \FOR{$k = 1, \ldots, r$}
     \STATE{Compute the submatrix $P_k$ from the matrix \eqref{eq:canonic-form},
            subseting $P_k = P[C_k, C_k]$}
-    \STATE{Call $v_k = \textrm{\texttt{computeSteadyStates}}(P_k)$}
-    \IF{Some element from $v_k$ is negative}
-      \STATE{Stop the algorithm, we cannot compute steady states}
-    \ENDIF
-    \STATE{Else do
-      \[
-        u_j = \twopartdefow{v_t}{j = i^{(k)}_t \textrm{ for some } t \in \{1, \ldots l_k\}}{0}
-      \]
-    }
-  \ENDFOR
-  \NEWLINE
-  \RETURN{$S = (u_1, \ldots u_l)$}
-\end{algorithmic}
-\caption{\texttt{steadyStatesByRecurrentClasses} algorithm}
-\label{alg:steadyStatesByRecurrentClassesFirst}
-\end{algorithm}
-
-**** Second approach
-
-We could think of using only \eqref{alg:steadyStatesByRecurrentClassesFirst} and drop \eqref{alg:computeSteadyStatesFirst},
-and therefore use only the recurrent classes to compute the steady states. But problem of not having assurances about the
-convergence (and later search for the unitary eigen values) and the algorithmic complexity of the method pushed us to find
- another algebraic approach with guaranteed algorithmic complexity of $\algcomp{m^3}$.
-
-Since we want to find for $k=1, \ldots, l$ $P_k \cdot u_k = u_k$, and by the theorem TODO each block has a unique steady state, we know the
-kernel of $P_k - I$ has dimension $1$ (because $u_k$ is not null and if it had more dimensionality than $1$ we would have more steady states).
-Hence, we cannot solve $(\alpha_{ij}) u_k = (P_k - I) \cdot u_k = 0$ with an unique solution $u_k$, but we can solve:
-
-\[
-\widetilde{P}_k = (\widetilde{p}_ij) = \twopartdefow{1}{i = 1}{\alpha_{ik}} \qquad
-\widetilde{P}_k \cdot u_k = \left(\begin{array}{c} 1 \\ 0 \\ \vdots 0 \end{array}\right)
-\]
-
-Solving this last system for each $k = 1, \ldots, l$ can be done in $\algcomp{m^2}$. Therefore, the total cost of the algorithm, since computing recurrent classes is $\algcomp{m^3}$, is $\algcomp{m^3}$, as we were aiming for.
-
-
-\begin{algorithm}[h]
-\begin{algorithmic}[1]
-  \REQUIRE $P_{m \times m}$ an stochastic matrix by columns
-  \IF{$P$ is stochastic by rows}
-    \STATE{$P := P^t$}
-  \ENDIF
-  \STATE{$C = \textrm{\texttt{recurrentClasses}}(P) = \{C_1, \ldots, C_l\}$, where for all $k=1, \ldots, l$
-         $C_k = \{i^{(k)}_1, \ldots, i^{(k)}_{l_k}\} \subseteq \{1, \ldots, m\}$ is a recurrent class}
-  \NEWLINE
-  \FOR{$k = 1, \ldots, l$}
-    \STATE{Compute the submatrix $P_k$ from the matrix \eqref{eq:canonic-form},
-           subseting $P_k = P[C_k, C_k]$}
-    \STATE{Compute $\widetilde{P}_k$}
     \STATE{Compute $u_k$ solving the system:
       \[
-         \widetilde{P}_k \cdot u_k = \left(\begin{array}{c} 1 \\ 0 \\ \vdots 0 \end{array}\right)
+         \twopartsys{(I - P_k)u_k}{0}{\onerow \cdot u_k}{1}
       \]
     }
+    \STATE{Compute the vector $v_k$ as $u_k$ completing with $0$ in states outside of $C_k$}
   \ENDFOR
   \NEWLINE
-  \STATE{$S = (u_1, \ldots u_l)$}
-  \IF{$P$ was stochastic by rows originally}
-     \STATE{$S:= S^t$}
-  \ENDIF
+  \STATE{$S := (v_1, \ldots v_r)$}
   \NEWLINE
   \RETURN{$S$}
 \end{algorithmic}
@@ -2113,7 +1988,7 @@ Solving this last system for each $k = 1, \ldots, l$ can be done in $\algcomp{m^
 
 ** Markov chain classification
 
-\begin{algorithm}[h]
+\begin{algorithm}[H]
 \begin{algorithmic}[1]
   \REQUIRE $P_{m \times m}$ an stochastic matrix
   \NEWLINE
@@ -2128,7 +2003,7 @@ Solving this last system for each $k = 1, \ldots, l$ can be done in $\algcomp{m^
 \label{alg:isIrreducible}
 \end{algorithm}
 
-\begin{algorithm}[h]
+\begin{algorithm}[H]
 \begin{algorithmic}[1]
   \REQUIRE $P_{m \times m}$ an stochastic matrix
   \REQUIRE $n$ the exponent
@@ -2148,7 +2023,7 @@ Solving this last system for each $k = 1, \ldots, l$ can be done in $\algcomp{m^
 \label{alg:matrixPow}
 \end{algorithm}
 
-\begin{algorithm}[h]
+\begin{algorithm}[H]
 \begin{algorithmic}[1]
   \REQUIRE $P_{m \times m}$ an stochastic matrix
   \NEWLINE
@@ -2164,7 +2039,7 @@ Solving this last system for each $k = 1, \ldots, l$ can be done in $\algcomp{m^
 \end{algorithm}
 
 ** Absorption
-\begin{algorithm}[h]
+\begin{algorithm}[H]
 \begin{algorithmic}[1]
   \REQUIRE $P_{m \times m}$ an stochastic matrix
   \NEWLINE
@@ -2179,7 +2054,7 @@ Solving this last system for each $k = 1, \ldots, l$ can be done in $\algcomp{m^
 \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[h]
+\begin{algorithm}[H]
 \begin{algorithmic}[1]
   \REQUIRE $P_{m \times m}$ an stochastic matrix
   \NEWLINE
@@ -2294,7 +2169,7 @@ which are linearly dependent. Our hypothesis is that if we treat the closed comm
 
 In conclusion using \eqref{corollary:comm-recurrence} and \eqref{prop:recurrent-classes}, if we have a closed communicating class $C$, then $f_{i,j} = 1$ for all $i,j \in C$ and $f_{k,j}  = 0$ for all $k\not\in C$. The algorithm we get would be something alike:
 
-\begin{algorithm}[h]
+\begin{algorithm}[H]
 \begin{algorithmic}[1]
   \REQUIRE $P_{m \times m}$ an stochastic matrix
   \STATE{\texttt{communicating} = Communicating classes for $P$}
@@ -2341,7 +2216,7 @@ regular). Due to backward compatibility with the previous version, the algorithm
 ergodic matrix and a set of states \texttt{destination} and it would compute the mean first passage time
 from the states not in \texttt{destination} to any of the states there.
 
-\begin{algorithm}[h]
+\begin{algorithm}[H]
 \begin{algorithmic}[1]
   \REQUIRE $P_{m \times m}$ an \textbf{ergodic} matrix
   \REQUIRE \texttt{destination} a subset of $\{1, \ldots, m \}$. Empty by default.
@@ -2359,7 +2234,7 @@ from the states not in \texttt{destination} to any of the states there.
 \label{alg:mfpt}
 \end{algorithm}
 
-\begin{algorithm}[h]
+\begin{algorithm}[H]
 \begin{algorithmic}[1]
   \REQUIRE $P_{m \times m}$ an stochastic matrix
   \STATE{$[u_1, \ldots, u_n] = \texttt{steadyStates}(P)$}
@@ -2382,12 +2257,12 @@ Firstly a few considerations should be made:
 
 + Reading software someone else's software is extremely time-consuming and implies an effort comparable to understanding mathematical proofs that have not been written by oneself: you always have to figure out how all the different pieces fit together, why does certain trick work or it does not, writting style is hardly ever going to be close to yours and it constitutes an incremental process where most probably you are going to have to dive several times into the same fragment to understand the whole.
 + Lack of appropriate academic material has been a constant throughout this project: we could either find good mathematical proofs, but lacking sense of how algorithms could be implemented in a computer, or the other way around.
-+ The algorithms presented in chaper [[=markovchain= package]] are in their majority an original work based on my own mathematical and computer science knowledge. They are the result of a long process of trial and error, and although only final versions made it to this report, lots of intermediate versions for them were lost along the way. The rationale behind this is that the development workflow looked something alike: identify where the former algorithms of the package could fail or give incomplete results, code a proposal, test it, improve it, find its weak points, write it in paper, analyze it mathematically and algorithmically, think of new improvements and repeat from second step onwards until a satisfactory version was found.
++ The algorithms presented in chaper [[R package]] are in their majority an original work based on my own mathematical and computer science knowledge. They are the result of a long process of trial and error, and although only final versions made it to this report, lots of intermediate versions for them were lost along the way. The rationale behind this is that the development workflow looked something alike: identify where the former algorithms of the package could fail or give incomplete results, code a proposal, test it, improve it, find its weak points, write it in paper, analyze it mathematically and algorithmically, think of new improvements and repeat from second step onwards until a satisfactory version was found.
 
 ** Conclussions
 Therefore, and having that into account, the main values of this work can be summarized in the following points:
 
-+ Open knowledge: the report is hosted at a public repository [fn::[[https://github.com/ncordon/graduate-dissertation][https://github.com/ncordon/graduate-dissertation]]] so that everyone can consult it, improve it or use its information citing the author. The coding efforts have been integrated into the =markovchain= package, available at CRAN R official repository [fn::[[https://cranlogs.r-pkg.org/badges/markovchain][https://cranlogs.r-pkg.org/badges/markovchain]]], as open software, which means everyone can contribute to it, propose ideas, use it or modify it (as long as they give credit to their authors). Autorship of the relevant parts of the sofware described in this project can be corroborated with the history of the Github public respository. [fn::[[https://github.com/spedygiorgio/markovchain/commits?author=ncordon][https://github.com/spedygiorgio/markovchain/commits?author=ncordon]]].
++ Open knowledge: the report is hosted at a public repository [fn::[[https://github.com/ncordon/graduate-dissertation][https://github.com/ncordon/graduate-dissertation]]] so that everyone can consult it, improve it or use its information citing the author. The coding efforts have been integrated into the R package, available at CRAN R official repository [fn::[[https://cranlogs.r-pkg.org/badges/markovchain][https://cranlogs.r-pkg.org/badges/markovchain]]], as open software, which means everyone can contribute to it, propose ideas, use it or modify it (as long as they give credit to their authors). Autorship of the relevant parts of the sofware described in this project can be corroborated with the history of the Github public respository. [fn::[[https://github.com/spedygiorgio/markovchain/commits?author=ncordon][https://github.com/spedygiorgio/markovchain/commits?author=ncordon]]].
 + Cooperation: having our efforts integrated in an open software package means that we are adding more value to what other people did before us, being able to impact more people that if we had presented a separate software.
 + Research and development: the main intent of this work was to do scientific programming driven by mathematical viewpoints and that is what we have tried to capture along this work. I believe the level of correctness that has been reached is really satisfaying. And in spite of all the struggles to grasp actionable mathematical knowledge from different sources, in the end we have been able to manipulate theoretical constructs in an useful way from the software perspective.
 + Versatility: Markov chains may not include extremely complicated mathematics (although the learning curve is hard due to the abundance of slightly similar but different concepts), but they certainly require skills in different areas, as it was stated alongside this work: graphs, linear algebra, probability, programming. In adition to this, coding project is multilanguage, with a mixture of R and C++ languages, which certainly has added more challenges to the endeavour of improving the library.
@@ -2663,7 +2538,7 @@ We have designed a better approach for testing the package:
 1. Still test against known examples taken from books (giving them credit for that). More examples in this regard have been added.
 1. Generate random Markov chains of random dimnension, given both by by-rows stochastic matrices and by-column ones. We cannot generate non numerable infinite instances of course, to cover the $\forall$ that quantifies the property, but at least we should get a little more closer than just a couple of examples.
 1. Of course we cannot compute the solution for random instances by hand. However, we can check that different implications, equivalences and characteristic equation systems inspired from the chapter [[Markov chains]] are verified by the result of the coded methods.
-1. All algorithms coded in chapter [[=markovchain= package]] have been tested using this approach, and work done in this sense can be consulted in the =testthat= [fn::[[https://github.com/spedygiorgio/markovchain/tree/master/tests/testthat][https://github.com/spedygiorgio/markovchain/tree/master/tests/testthat]]] folder from the project.
+1. All algorithms coded in chapter [[R package]] have been tested using this approach, and work done in this sense can be consulted in the =testthat= [fn::[[https://github.com/spedygiorgio/markovchain/tree/master/tests/testthat][https://github.com/spedygiorgio/markovchain/tree/master/tests/testthat]]] folder from the project.
 
 Below we describe the structure of that folder and some of the most important tests carried out
 (where =setupData.R= generates random instances for general Markov chains, Markov chains with identity
