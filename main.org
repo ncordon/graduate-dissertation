@@ -836,6 +836,7 @@ Then we can say \eqref{eq:canonic-form} is the canonic form for the Markov chain
 #+begin_definition
 A Markov chain where there only exists a communicating class is called irreducible (or ergodic)
 Markov chain.
+\label{def:irreducible}
 #+end_definition
 
 *** Recurrence and transience
@@ -1110,22 +1111,23 @@ Equation \eqref{eq:tau-ast-inf}. And summing in $j \in S^{\ast}$ in \eqref{eq:ta
 #+end_proof
 
 #+begin_definition
-The matrix $N = (I - R)^{-1}$ is called fundamental matrix for the Markov chain. The entry $n_{ij}$ represents the
+The matrix $N := (I - R)^{-1}$ is called fundamental matrix for the Markov chain. The entry $n_{ij}$ represents the
 number of times the process is in transient state $j$ if it is started in also transient state $i$
 (counting the initial state as $1$ step).
 #+end_definition
 
 #+begin_definition
-Let $t_i$ be the number of steps before the chain is absorbed, given that the chain starts in $i$.
-Then $t = N\cdot \onecol$
+We will call $t_i$ to the mean number of steps before the chain is absorbed, given that the chain starts in $i$,
+with $i$ a transient state.
 #+end_definition
 
 #+begin_proposition
-If $S - S^{\ast}$ is finite, then $(I - R)^{-1}$ exists and:
+If $S - S^{\ast}$ is finite, then $N = (I - R)^{-1}$ exists, $N = I + V$ and:
 
 \begin{eqnarray}
-F^{\ast} = (I - R)^{-1} Q \label{eq:char-absorption-probs}\\
-f^{\ast} = 1 \nonumber
+F^{\ast} = N\cdot Q \nonumber\\
+t = N \cdot \onecol \nonumber\\
+f^{\ast} = 1 \nonumber \label{eq:char-absorption-probs}\\
 \end{eqnarray}
 
 where the last equation tells us the absorption would take place almost surely.
@@ -1139,7 +1141,10 @@ It holds:
 \]
 and therefore $(I + V) = (I - R)^{-1}$ (finiteness is used in this affirmation).
 
-To check the other part, since the rows of the transition matrix from $S - S^{\ast}$ sum one,
+It is clear that if we take $N = I + R + R^2 + \ldots$, then $N_{ij}$ represents the mean number of
+steps the chain hits $j$ if it starts at $i$ (counting the initial state). Thus, $t = N \cdot \onecol$.
+
+Since the rows of the transition matrix from $S - S^{\ast}$ sum one,
 
 \[
 Q1_{S^{\ast}} + R 1_{S - S^{\ast}} = 1_{S - S^{\ast}} \dimplies Q1_{S^{\ast}} = (I - R) 1_{S - S^{\ast}}
@@ -1304,6 +1309,7 @@ row-wise products), we have shown $P^{m + s(m - 2)} > 0$.
 
 #+begin_corollary
 $P_{m \times m}$ is regular iff $P^{m^2 - 2m + 2} > 0$
+\label{corollary:regular-cond}
 #+end_corollary
 
 #+begin_proof
@@ -1730,14 +1736,14 @@ part.
 
 The package is coded both in =R= and =C++=. Our main objective was to propose mathematical driven improvements
 to the aforementioned library. Most of the algorithms in this section are an original work and have been
-designed by the author of this report. Of course we have tried to take into account some existent algorithms as
+designed by the author of this report. We have tried to take into account some existent algorithms as
 starting point to propose improvements, such as [[citep:feres]]. As a general guide for the additions to the
 package to be compatible with the requisites and the good practices for =R=, we have used [[citep:rhadleypkg]].
 
-Code has been integrated in the upstream version for the library, available at [[https://cran.r-project.org/web/packages/markovchain/][CRAN]], the official
+Code has been integrated in the upstream version for the library and is available at [[https://cran.r-project.org/web/packages/markovchain/][CRAN]], the official
 repository for R packages. To browse the added code, one could go to the repository that hosts the
-project [fn::[[https://github.com/spedygiorgio/markovchain]]]. This section only describes the algorithms,
-and does not contain listings of code due to space constraints.
+project [fn::[[https://github.com/spedygiorgio/markovchain]]]. Due to space constraints, this section only
+describes the algorithms, and does not contain listings of code.
 
 ** Communicating classes based algorithms
 We can propose an alternative definition of communicating property, taking $n \ge 0$ instead of $n > 0$,
@@ -1748,8 +1754,8 @@ The state $i\in E$ communicates with $j\in S$, and we will write it like $i \rig
 iff $p_{i,j}^{(n)} > 0$ for some $n \ge 0$, where $p_{ij}^{(0)} := \delta_{ij}$
 #+end_definition
 
-Therefore, we since Proposition \eqref{prop:equiv-classes} was not valid in $S$ because of lack of reflexivity,
-which has been added with this new definition, we can reformulate it as:
+Proposition \eqref{prop:equiv-classes} was not valid in $S$ because of lack of reflexivity,
+which has been added with this new definition. Therefore, we can reformulate it as:
 
 #+begin_proposition
 $\dgoto$ is an equivalence relationship in $S$
@@ -1774,9 +1780,8 @@ in $\algcomp{m^4}$ in worst cases for inputs such as:
 \]
 
 We have improved it turning it into a $\algcomp{m^3}$ algorithm, using
-backtracking [fn::[[https://en.wikipedia.org/wiki/Backtracking]]] techniques and adjacency lists. The key
-for this changes has been to visualize the Markov chain as a directed graph and apply knowledge for
-traversing graphs.
+backtracking [fn::[[https://en.wikipedia.org/wiki/Backtracking]]] techniques and adjacency lists, considering
+the Markov chain as a directed graph.
 
 \begin{algorithm}[H]
 \begin{algorithmic}[1]
@@ -1789,17 +1794,18 @@ traversing graphs.
     \STATE{$b = (\underset{(1)}{false}, \ldots \underset{(m)}{false})$}
     \WHILE{$a$ is not empty}
        \STATE{$k =$ \texttt{a.pop()}}
-       \STATE{$T_{i,k} = true$}
+       \STATE{$b[k] = true$}
+       \STATE{$T_{ik} = true$}
        \FOR{$l \in S[k]$}
-         \IF{$T(i,l) = false$}
-           \STATE{\texttt{a.push(l)}}
+         \IF{$b[l] = false$}
+           \STATE{\texttt{a.push}$(l)$}
          \ENDIF
        \ENDFOR
     \ENDWHILE
   \ENDFOR
   \NEWLINE
-  \STATE{Set $C(i,j) = T(j, i)\wedge T(i, j)$ (it holds $i \goto j$ and $j \goto i$)}
-  \STATE{Set $v(i) = true \textrm{ iff } \card{ \{j: C(i,j) = true \} }= \card{ \{j: T(i,j) = true \} }$}
+  \STATE{Set $C_{ij} = T_{ij}\wedge T_{ji}$ (it holds $i \goto j$ and $j \goto i$)}
+  \STATE{Set $v[i] = true \textrm{ iff } \bigg[\card{ \{j: C_{ij} = true \} }= \card{ \{j: T_{ij} = true \} } \bigg]$}
   \NEWLINE
   \RETURN{$[C, v]$}
 \end{algorithmic}
@@ -1809,9 +1815,10 @@ traversing graphs.
 
 *** Communicating classes
 
-We can propose an algorithm based on Algorithm \eqref{alg:commClassesKernel}. This algorithm runs in
-$\algcomp{n^3}$ since creating the list from communicating classes from the communicating matrix is
-$\algcomp{n^2}$ in the worst case, but we need the output of \texttt{commClassesKernel}.
+We can propose an algorithm based on Algorithm \eqref{alg:commClassesKernel}, which runs in
+$\algcomp{m^3}$ since creating the list of communicating classes from the communicating matrix is
+$\algcomp{m^2}$ in the worst case, but we need the output of \texttt{commClassesKernel}. The former one
+was $\algcomp{m^4}$.
 
 \begin{algorithm}[H]
 \begin{algorithmic}[1]
@@ -1823,15 +1830,15 @@ $\algcomp{n^2}$ in the worst case, but we need the output of \texttt{commClasses
   \STATE{Initialize $A = \emptyset$}
   \NEWLINE
   \FOR{$i \in \{1, \ldots, m\}$}
-    \STATE{$C = \emptyset$}
-    \IF{not $w(i)$ (class not computed)}
+    \STATE{$B= \emptyset$}
+    \IF{not $w[i]$ (class not computed)}
       \FOR{$j \in \{1, \ldots, m\}$}
-         \IF{$C(i,j)$}
-            \STATE{$C := C \bigcup \{j\}$}
-            \STATE{$w(j) := true$}
+         \IF{$C_{ij}$}
+            \STATE{$B := B \bigcup \{j\}$}
+            \STATE{$w[j] := true$}
          \ENDIF
       \ENDFOR
-      \STATE{$A := A \bigcup \{C\}$}
+      \STATE{$A := A \bigcup \{B\}$}
     \ENDIF
   \ENDFOR
   \NEWLINE
@@ -1842,7 +1849,7 @@ $\algcomp{n^2}$ in the worst case, but we need the output of \texttt{commClasses
 \end{algorithm}
 
 *** Transient and recurrent classes / states
-We provide the algorithm for computing recurrent classes and
+We provide the algorithms for computing recurrent classes and
 recurrent states, since the ones for transient classes / states are similar (they have been improved in
 the package too).
 
@@ -1864,15 +1871,15 @@ Algorithm \eqref{alg:recurrentClasses} and Algorithm \eqref{alg:recurrentStates}
   \STATE{Initialize $A = \emptyset$}
   \NEWLINE
   \FOR{$i \in \{1, \ldots, m\}$}
-    \STATE{$C = \emptyset$}
-    \IF{$v(i)$ (class closed) and not $w(i)$ (class not computed)}
+    \STATE{$B = \emptyset$}
+    \IF{$v[i]$ (class closed) and not $w[i]$ (class not computed)}
       \FOR{$j \in \{1, \ldots, m\}$}
-         \IF{$C(i,j)$}
+         \IF{$C_{ij}$}
             \STATE{$B := B \bigcup \{j\}$}
-            \STATE{$w(j) := true$}
+            \STATE{$w[j] := true$}
          \ENDIF
       \ENDFOR
-      \STATE{$A := A \bigcup \{C\}$}
+      \STATE{$A := A \bigcup \{B\}$}
     \ENDIF
   \ENDFOR
   \NEWLINE
@@ -1885,11 +1892,11 @@ Algorithm \eqref{alg:recurrentClasses} and Algorithm \eqref{alg:recurrentStates}
 \begin{algorithm}[H]
 \begin{algorithmic}[1]
   \REQUIRE $P_{m \times m}$ an stochastic matrix
+  \NEWLINE
   \STATE{Do $[C, v] = \textrm{\texttt{commClassesKernel}}(P)$}
   \STATE{Initialize $A = \emptyset$}
-  \NEWLINE
   \FOR{$i \in \{1, \ldots, m\}$}
-    \IF{$v(i)$}
+    \IF{$v[i]$}
       \STATE{$A := A \bigcup \{i\}$}
     \ENDIF
   \ENDFOR
@@ -1903,13 +1910,13 @@ Algorithm \eqref{alg:recurrentClasses} and Algorithm \eqref{alg:recurrentStates}
 *** Steady States
 **** Original approach
 The original algorithm present in the package consisted in trying to compute the eigen vectors for
-the eigen value $1$ and normalize each vector by its sum. If some negative value arose (even after
-normalizing and obtaining probability vectors), then the transition matrix was subseted to retain only
-states corresponding to recurrent states, same procedure was applied (computing eigen vectors) and
-obtained vectors were completed with $0$ in appropriate places.
+the eigen value $1$ and normalize each one by its sum. If some negative value arose (even after
+normalizing and obtaining probability vectors), then the transition matrix was subsetted to retain
+just the states corresponding to recurrent states, same procedure was applied (computing eigen vectors) and
+resulting vectors were completed with $0$ in appropriate places.
 
 It is interesting to provide a small sketch of the original algorithm to compute steady states from
-eigen vectors to analyze flaws in that old approach.
+eigen vectors to analyze flaws in that approach.
 
 \begin{algorithm}[H]
 \begin{algorithmic}[1]
@@ -1918,22 +1925,22 @@ eigen vectors to analyze flaws in that old approach.
     \[
       \forall e_j \in \mathbb{C} \quad \exists v_j =
               \left(\begin{array}{c}
-                v_j^{(1)} \\
+                v_{j1} \\
                 \vdots \\
-                v_j^{(m)}
+                v_{jm}
               \end{array}\right)
-      \in \mathbb{C}^m: Pv_i = e_k v_i
+      \in \mathbb{C}^m: Pv_j = e_j v_j
     \]
   }
   \STATE{Compute $S = (Re(v_1) | \ldots | Re(v_k)) = (u_1| \ldots |u_k)$, eigen vectors for eigen values $1$}
   \FOR{$i = 1, \ldots, k$}
     \STATE{$s_i = \sum_{j = 1}^m u_{ij}$}
+    \STATE{Normalize each column $u_i := u_i / s_i$}
   \ENDFOR
-  \STATE{Normalize each column $u_i := u_i / s_i$}
   \NEWLINE
   \RETURN{$S = (u_1 | \ldots | u_k)$}
 \end{algorithmic}
-\caption{\texttt{computeSteadyStates} algorithm}
+\caption{Former \texttt{steadyStates} algorithm}
 \label{alg:computeSteadyStatesFirst}
 \end{algorithm}
 
@@ -1941,31 +1948,30 @@ eigen vectors to analyze flaws in that old approach.
 Note the step of taking $(u_1, \ldots, u_l) = (Re(v_1), \ldots, Re(v_l))$ is fundamented in the fact
 that if $e_j \in \complexes$ is eigen value for $P$, and $P \cdot u_j = e_j \cdot v_j$, i.e. $u_j$ is an eigen vector tied to $e_j$, then $Re(v_j$ and $Im(v_j)$ are also eigen vectors tied to $e_j$.
 
-However, the aforementioned algorithm, as the original one, has several problems:
+However, the aforementioned algorithm entails several problems:
 
-1. Algorithms to compute eigen vectors are iterative [fn::[[https://en.wikipedia.org/wiki/Eigenvalue_algorithm#Iterative_algorithms]]] and can take up to $\algcomp{m^3}$ or $\algcomp{m^4}$ (in each iteration!). Also because convergence is used we could end up having rounding problems (i.e. how to securely search for the $1$ eigen values) and uncertainty about the algorithmic complexity (we do not know how many iterations we need for them to converge beforehand).
-2. Taking real parts does not ensure we end up with linearly independent eigen vectors. Let us propose a counterexample of this. If the matrix $P$ has real eigen vectors $\{u, v\}$ which are linearly independent and are tied to the eigen value $1$, then $\{u + iu, u + iv\}$ are also independent eigen vectors whose real parts are $\{u,u\}$. We cannot assure that the eigen values computation method is going to output real eigen vectors only (we can only make assurances in the case the matrix $P$ is symmetric).
+1. Algorithms to compute eigen vectors are iterative [fn::[[https://en.wikipedia.org/wiki/Eigenvalue_algorithm#Iterative_algorithms]]] and can take up to $\algcomp{m^3}$ or $\algcomp{m^4}$ (in each iteration!). Also, because of the use of convergence, we could end up having rounding problems (i.e. how to securely search for the $1$ eigen values) and uncertainty about the algorithmic complexity (we do not know how many iterations we need for them to converge beforehand).
+2. Taking real parts does not ensure we will end up with linearly independent eigen vectors. Let us propose a counterexample of this. If the matrix $P$ has real eigen vectors $\{u, v\}$ which are linearly independent and are tied to the eigen value $1$, then $\{u + iu, u + iv\}$ are also independent eigen vectors whose real parts are $\{u,u\}$. We cannot assure that the eigen values computation method is going to output real eigen vectors only (we can only make such an assurance when the matrix $P$ is symmetric).
 
-As result, we could be using this algorithm and obtain less steady states than we should.
+As result, we could be could get less steady states than we should.
 
 **** Improved approach
 
-The goal was to find an algebraic approach with guaranteed algorithmic complexity (of $\algcomp{m^3}$),
+The goal was to find an algebraic approach with guaranteed algorithmic complexity,
 instead of having and uncertain iterative method. Following the theoretical section [[Steady states]], we
 fulfilled that objective.
 
-Given $P_1, \ldots, P_r$ the decomposition of the transition matrix $P$ for its recurrent classes,
+Let $P_1, \ldots, P_r$ be the decomposition of the transition matrix $P$ for its recurrent classes,
 as expressed in its canonic form \eqref{eq:canonic-form}. Solving the system from Lemma
 \eqref{lemma:steady-states-computation} for each $k = 1, \ldots, r$ can be done in $\algcomp{m^2}$.
 Therefore, the total cost of the algorithm, since computing recurrent classes is $\algcomp{m^3}$,
-is $\algcomp{m^3}$, as we were aiming for.
+is $\algcomp{m^3}$.
 
 
 \begin{algorithm}[H]
 \begin{algorithmic}[1]
   \REQUIRE $P_{m \times m}$ an stochastic matrix by columns
-  \STATE{$C = \textrm{\texttt{recurrentClasses}}(P) = \{C_1, \ldots, C_r\}$, where for all $k=1, \ldots, r$
-         $C_k = \{i^{(k)}_1, \ldots, i^{(k)}_{l_k}\} \subseteq \{1, \ldots, m\}$ is a recurrent class}
+  \STATE{$\{C_1, \ldots, C_r\} = \textrm{\texttt{recurrentClasses}}(P)$}
   \NEWLINE
   \FOR{$k = 1, \ldots, r$}
     \STATE{Compute the submatrix $P_k$ from the matrix \eqref{eq:canonic-form},
@@ -1978,7 +1984,7 @@ is $\algcomp{m^3}$, as we were aiming for.
     \STATE{Compute the vector $v_k$ as $u_k$ completing with $0$ in states outside of $C_k$}
   \ENDFOR
   \NEWLINE
-  \STATE{$S := (v_1, \ldots v_r)$}
+  \STATE{$S := (v_1 | \ldots | v_r)$}
   \NEWLINE
   \RETURN{$S$}
 \end{algorithmic}
@@ -1988,50 +1994,65 @@ is $\algcomp{m^3}$, as we were aiming for.
 
 ** Markov chain classification
 
+Given a matrix $P_{m\times m}$, former =communicatingClasses= algorithm was $\algcomp{m^4}$. New algorithm
+uses the new version of =communicatingClasses= and has been ported to C++. Therefore, its new complexity is
+$\algcomp{m^3}$. This algorithm is based on Definition \eqref{def:irreducible}.
+
 \begin{algorithm}[H]
 \begin{algorithmic}[1]
   \REQUIRE $P_{m \times m}$ an stochastic matrix
   \NEWLINE
-  \STATE{${C_1, \ldots, C_n} = \texttt{CommunicatingClasses}(P)$}
+  \STATE{$\{C_1, \ldots, C_n\} = \texttt{communicatingClasses}(P)$}
   \IF{$n = 1$}
-    \RETURN{True}
+    \RETURN{true}
   \ELSE
-    \RETURN{False}
+    \RETURN{false}
   \ENDIF
 \end{algorithmic}
 \caption{\texttt{is.irreducible} algorithm}
 \label{alg:isIrreducible}
 \end{algorithm}
 
+Note that for $P_{m\times m}$, computing the power $P^n$ using the normal matrix product algorithm and
+iterating is $\algcomp{n \cdot m^3}$. The naive algorithm to compute $P^{m^2 - 2m + 2}$, which is what
+we need by means of Lemma \eqref{lemma:ergodic-pos-diagonal}, would be $O(m^5)$. But we can think of a
+better way of doing this, since every number can be expressed as a sum
+of powers of $2$ (we can encode an arbitrary number using binary representation). Algorithm
+\eqref{alg:matrixPow} formalizes this idea.
+
 \begin{algorithm}[H]
 \begin{algorithmic}[1]
   \REQUIRE $P_{m \times m}$ an stochastic matrix
   \REQUIRE $n$ the exponent
   \NEWLINE
-  \STATE{$R:= I_{m \times m}$}
+  \STATE{$Q:= I_{m \times m}$}
   \STATE{$A = P$}
   \WHILE{$n > 0$}
     \IF{$n mod(2) = 1$}
-      \STATE{$R := R + A$}
+      \STATE{$Q := Q + A$}
     \ENDIF
     \STATE{$A = A * A$}
     \STATE{$n := n / 2$}
   \ENDWHILE
-  \RETURN{$R$}
+  \RETURN{$Q$}
 \end{algorithmic}
 \caption{$\algcomp{log(n)}$ \texttt{matrixPow} algorithm}
 \label{alg:matrixPow}
 \end{algorithm}
 
+Using this Algorithm \eqref{alg:matrixPow}, Corollary \eqref{corollary:regular-cond} and Lemma
+\eqref{lemma:ergodic-pos-diagonal}, we can arrive to an efficient procedure to compute whether a
+matrix may be regular. This procedure works in $\algcomp{log(m) m^3}$.
+
 \begin{algorithm}[H]
 \begin{algorithmic}[1]
   \REQUIRE $P_{m \times m}$ an stochastic matrix
   \NEWLINE
-  \IF{Some element $p_ii > 0$}
-    \STATE{$d = \#\{i \in \{1, \ldots, m\}: p_{ii} > 0\}$}
+  \STATE{$d = \#\{i \in \{1, \ldots, m\}: p_{ii} > 0\}$}
+  \IF{$d > 0$}
     \RETURN{$\texttt{matrixPow}(P, 2m - d - 1) > 0$}
   \ELSE
-    \STATE{$\texttt{matrixPow}(P, m^2 - 2m + 2) > 0$}
+    \RETURN{$\texttt{matrixPow}(P, m^2 - 2m + 2) > 0$}
   \ENDIF
 \end{algorithmic}
 \caption{\texttt{is.regular} algorithm}
@@ -2039,15 +2060,24 @@ is $\algcomp{m^3}$, as we were aiming for.
 \end{algorithm}
 
 ** Absorption
+Based on Proposition \eqref{prop:i-r-invertible}, we have added the following algorithms to the library.
+The first one, \eqref{alg:meanAbsorptionTime}, runs in $\algcomp{m^3}$ (computing transient
+states is $\algcomp{m^3}$, subsetting the matrix $\algcomp{m^2}$ and computing the inverse is $\algcomp{m^3}$).
+The second one, \eqref{alg:absorptionProbabilities} runs in $\algcomp{m^3}$ following an analogous reasoning.
+
 \begin{algorithm}[H]
 \begin{algorithmic}[1]
   \REQUIRE $P_{m \times m}$ an stochastic matrix
+  \REQUIRE $C$ destination set, $\emptyset$ by default.
   \NEWLINE
-  \STATE{$T = \texttt{transientStates}(P)$}
-  \STATE{$R = \texttt{recurrentStates}(R)$}
-  \STATE{Compute $W = P[T, T]$}
-  \STATE{Compute the fundamental matrix $N = (I - W)^{-1}$}
-  \STATE{Compute $t = N \cdot c$}
+  \IF{$C = \emptyset$}
+    \STATE{$B = \texttt{recurrentStates}(R)$}
+  \ELSE
+    \STATE{Set $B = \{1, \ldots, m\} - C$}
+  \ENDIF
+  \STATE{Compute $R = P[B, B]$}
+  \STATE{Compute the fundamental matrix $N = (I - R)^{-1}$}
+  \STATE{Compute $t = N \cdot \onecol$}
   \RETURN{$t$}
 \caption{\texttt{meanAbsorptionTime} algorithm}
 \label{alg:meanAbsorptionTime}
@@ -2058,27 +2088,20 @@ is $\algcomp{m^3}$, as we were aiming for.
 \begin{algorithmic}[1]
   \REQUIRE $P_{m \times m}$ an stochastic matrix
   \NEWLINE
-  \STATE{$T = \texttt{transientStates}(P)$}
-  \STATE{$R = \texttt{recurrentStates}(R)$}
-  \STATE{Compute $W = P[T, T]$}
-  \STATE{Compute the fundamental matrix $N = (I - W)^{-1}$}
-  \STATE{Compute $F^{*} = N \cdot P[transient, recurrent$}
+  \STATE{$A = \texttt{transientStates}(P)$}
+  \STATE{$B = \texttt{recurrentStates}(R)$}
+  \STATE{Compute $R = P[B, B]$}
+  \STATE{Compute the fundamental matrix $N = (I - R)^{-1}$}
+  \STATE{Compute $F^{*} = N \cdot P[A, B]$}
   \RETURN{$F^{\ast}$}
 \caption{\texttt{absorptionProbabilities} algorithm}
 \label{alg:absorptionProbabilities}
 \end{algorithmic}
 \end{algorithm}
 ** Hitting probabilities
-We want to come up with an algorithm to compute the hitting probabilities for a Markov chain.  We have not found anything documented in the literature with respect to the computation of these probabilities algorithmically, so we had tried to come up with our own algorithm.
-
-The first thought would be to re-write the system \eqref{eq:fij-recurrence} matrix-wise. Let us
-remember those equations:
-
-\[
-f_{i,j} = p_{i,j} + \sum_{k \neq j} p_{i,k} f_{k,j}
-\]
-
-Rewriting the system:
+We did not found anything documented in the literature with respect to the computation of these probabilities
+algorithmically, so we had tried to come up with our own algorithm. The first thought would be to re-write
+the system \eqref{eq:fij-recurrence} matrix-wise:
 
 \begin{equation*}
 A = \left(\begin{array}{c|c|c|c}
@@ -2095,104 +2118,87 @@ A = \left(\begin{array}{c|c|c|c}
 \begin{eqnarray*}
 A_1 &=
 \left(\begin{matrix}
-  -1     & p_{1,2}       & p_{1,3}   & \ldots & p_{1,n} \\
-  0      & (p_{2,2} - 1) & p_{2,3}   & \ldots & p_{2,n} \\
+  -1     & p_{12}       & p_{13}   & \ldots & p_{1m} \\
+  0      & (p_{22} - 1) & p_{23}   & \ldots & p_{2m} \\
   \vdots & \vdots        & \vdots    & \ddots & \vdots  \\
-  0      & p_{n, 2}      & p_{n,3}   & \ldots & (p_{n,n} - 1)
+  0      & p_{m 2}      & p_{m3}   & \ldots & (p_{mm} - 1)
   \end{matrix}\right)\\
 A_2 &= \left(\begin{matrix}
-  (p_{1,1} - 1) & 0      & p_{1,3}   & \ldots & p_{1,n} \\
-  p_{2,1}       & -1     & p_{2,3}   & \ldots & p_{2,n} \\
+  (p_{11} - 1) & 0      & p_{13}   & \ldots & p_{1m} \\
+  p_{21}       & -1     & p_{23}   & \ldots & p_{2m} \\
   \vdots        & \vdots & \vdots    & \ddots & \vdots  \\
-  p_{n,1}       & 0      & p_{n,3}   & \ldots & (p_{n,n} - 1)
+  p_{m1}       & 0      & p_{m3}   & \ldots & (p_{mm} - 1)
   \end{matrix}\right)\\
 \vdots & \vdots\\
 A_n &= \left(\begin{matrix}
-  (p_{1,1} - 1) & p_{1,2}      & p_{1,3}   & \ldots & 0 \\
-  p_{2,1}       & (p_{2,2} -1) & p_{2,3}   & \ldots & 0 \\
+  (p_{11} - 1) & p_{12}      & p_{13}   & \ldots & 0 \\
+  p_{21}       & (p_{22} -1) & p_{23}   & \ldots & 0 \\
   \vdots        & \vdots       & \vdots    & \ddots & \vdots  \\
-  p_{n,1}       & p_{n,2}      & p_{n,3}   & \ldots & -1
+  p_{m1}       & p_{m2}      & p_{m3}   & \ldots & -1
   \end{matrix}\right)\\
 \end{eqnarray*}
 
 \begin{equation*}
 \begin{array}{rlrl}
 X = \left(\begin{array}{c}
-f_{1,1} \\
-f_{2,1} \\
-\vdots  \\
-f_{n,1} \\
-f_{1,2} \\
-\vdots  \\
-f_{n,2} \\
-\vdots  \\
-f_{1,n} \\
-\vdots  \\
-f_{n,n}
+X_1 \\
+X_2 \\
+\vdots \\
+X_m \\
 \end{array}\right) &
 X_j = \left(\begin{array}{c}
-f_{1,j} \\
-f_{2,j} \\
+f_{1j} \\
+f_{2j} \\
 \vdots  \\
-f_{n,j}
+f_{mj}
 \end{array}\right) &
 C = - \left(\begin{array}{c}
-p_{1,1} \\
-p_{2,1} \\
+C_1 \\
+C_2 \\
 \vdots  \\
-p_{n,1} \\
-p_{2,2} \\
+C_m
+\end{array}\right) &
+C_j = \left(\begin{array}{c}
+p_{1j} \\
+p_{2j} \\
 \vdots  \\
-p_{n,2} \\
-\vdots  \\
-p_{1,n} \\
-\vdots  \\
-p_{n,n}
+p_{mj}
 \end{array}\right)
 \end{array}
 \end{equation*}
 
-And we end up with the system:
+we end up with the system:
 
 \begin{equation}
 AX = C
 \end{equation}
 
-Let us remember that standard algorithms to compute the inverse of a matrix are $\algcomp{n^3}$ where $n$ is the number of rows / columns of the matrix. Clearly, we can solve this system, provided that it has solution, blockwise, solving $A_j X_j = C_j$, but the matrix $A$ may not be invertible in some cases. For example let us imagine the $i$ -th state has transition probabilities: $(0, \ldots, 0, \underset{i)}{1}, 0, \ldots, 0)$. Then that same row would turn into $(0,0, \ldots, 0)$ for some block, thus obtaining a singular matrix. Another case which may give us problems could be: state $i$ has the following transition probabilities: $(0, \ldots, 0, \underset{j)}{1}, 0, \ldots, 0)$ and the state $j$ has the following transition probabilities: $(0, \ldots, 0, \underset{i)}{1}, 0, \ldots, 0)$. Then when constructing some blocks we will end up with rows:
+Clearly, we can solve this system, provided that it has solution, by blocks $A_j X_j = C_j$, but
+the matrix $A$ may not be invertible in some cases. Our hypothesis is that if we treated the
+closed communicating classes differently (using the canonic form from Equation \eqref{eq:canonic-form}),
+then we could delete the linearity in the system.
 
-\begin{eqnarray*}
-(0, \ldots, 0, \underset{i)}{-1}, 0, \ldots, 0, \underset{j)}{1}, 0, \ldots, 0) \\
-(0, \ldots, 0, \underset{i)}{1},  0, \ldots, 0, \underset{j)}{-1}, 0, \ldots, 0)
-\end{eqnarray*}
-
-which are linearly dependent. Our hypothesis is that if we treat the closed communicating classes differently (see \eqref{eq:canonic-form} for context), we are deleting the linearity in the system. This is an untested hypothesis of course, but computationally, the difference between proving it or not would be minimal (let us suppose we prove it, then some matrixes would still not be invertible due to numeric errors, numbers very close to zero, or to the overflow, etc, so the corresponding method would still have to perform a warning for not solvable problems).
-
-In conclusion using \eqref{corollary:comm-recurrence} and \eqref{prop:recurrent-classes}, if we have a closed communicating class $C$, then $f_{i,j} = 1$ for all $i,j \in C$ and $f_{k,j}  = 0$ for all $k\not\in C$. The algorithm we get would be something alike:
+In conclusion using Corollary \eqref{corollary:comm-recurrence} and Proposition
+\eqref{prop:recurrent-classes}, if we have a closed communicating class $C$,
+then $f_{i,j} = 1$ for all $i,j \in C$ and $f_{k,j}  = 0$ for all $k\not\in C$.
+The algorithm we get would be something alike:
 
 \begin{algorithm}[H]
 \begin{algorithmic}[1]
   \REQUIRE $P_{m \times m}$ an stochastic matrix
-  \STATE{\texttt{communicating} = Communicating classes for $P$}
-  \STATE{\texttt{closed} = Boolean vector where the $i$ -th position is true iff the communicating class for $i$ is closed}
+  \NEWLINE
+  \STATE{$[C,v] = \texttt{commClassesKernel(P)}$}
   \NEWLINE
   \FOR{$j \in \{1, \ldots, m\}$}
     \STATE{Compute the matrix $A_j$}
-    \STATE{Compute the indepent terms $C_j$}
+    \STATE{Compute the independent terms $C_j$}
     \FOR{$i \in \{1, \ldots, m\}$}
-      \IF{\texttt{closed}(i)}
+      \IF{$v[i]$ ($i$ is closed)}
         \FOR{$k \in \{1, \ldots, m\}$}
-           \IF{$k \neq i$}
-              \STATE{$A_j(i, k) = 0$}
-           \ELSE
-              \STATE{$A_j(i, i) = 1$}
-           \ENDIF
+           \STATE{$A_j(i,k) = \delta_{ik}$}
         \ENDFOR
         \NEWLINE
-        \IF{\texttt{communicating}(i, j)}
-          \STATE{$C_j(i) = 1$}
-        \ELSE
-          \STATE{$C_j(i) = 0$}
-        \ENDIF
+        \STATE{$C_j(i) = C_{ij}$}
       \ENDIF
     \ENDFOR
     \NEWLINE
@@ -2218,26 +2224,32 @@ from the states not in \texttt{destination} to any of the states there.
 
 \begin{algorithm}[H]
 \begin{algorithmic}[1]
-  \REQUIRE $P_{m \times m}$ an \textbf{ergodic} matrix
-  \REQUIRE \texttt{destination} a subset of $\{1, \ldots, m \}$. Empty by default.
+  \REQUIRE $P_{m \times m}$ an ergodic matrix
+  \REQUIRE $C$ destination set, $\emptyset$ by default.
   \NEWLINE
-  \IF{\texttt{destination} is empty}
+  \IF{$C = \emptyset$}
     \STATE{Compute $w = \texttt{steadyStates}(P)$ (there should be only one)}
     \STATE{Compute $Z = (I - P + W)^{-1}$}
     \STATE{Compute $m_{ij} = (Z_{jj} - Z_{ij}) * w^{-j}$ for all $i, j \in \{1, \ldots, m\}$}
     \RETURN{$M = (m_{ij})$}
   \ELSE
-    \STATE{$M = \texttt{computeMeanAborptionTimes}(P, \texttt{destination})$}
+    \STATE{$M = \texttt{meanAborptionTime}(P, C)$}
   \ENDIF
+  \RETURN{M}
 \end{algorithmic}
 \caption{\texttt{meanFirstPassageTime} algorithm}
 \label{alg:mfpt}
 \end{algorithm}
 
+Based on Proposition \eqref{prop:ss-and-recurrence-prob} and having into account the canonic form
+\eqref{eq:canonic-form}, we can compute the mean recurrence times for the transient states of a
+Markov chain. Thus, the following algorithm has been added to the package:
+
 \begin{algorithm}[H]
 \begin{algorithmic}[1]
   \REQUIRE $P_{m \times m}$ an stochastic matrix
-  \STATE{$[u_1, \ldots, u_n] = \texttt{steadyStates}(P)$}
+  \NEWLINE
+  \STATE{$(u_1 | \ldots | u_n) = \texttt{steadyStates}(P^t)$}
   \STATE{$r = (0, \ldots, 0)$}
   \FOR{Each steady state $u_i$}
     \FOR{$j = 1, \ldots, m$}
@@ -2246,7 +2258,7 @@ from the states not in \texttt{destination} to any of the states there.
       \ENDIF
     \ENDFOR
   \ENDFOR
-  \RETURN{$r = \{(j, r_j): r_j > 0\}$}
+  \RETURN{$\{(j, r_j): r_j > 0\}$}
 \end{algorithmic}
 \caption{\texttt{meanRecurrenceTime} algorithm}
 \label{alg:mrt}
