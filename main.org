@@ -1763,49 +1763,33 @@ $\dgoto$ is an equivalence relationship in $S$
 
 This modification does not affect further results.
 
-\texttt{commClassesKernel} constitutes a core algorithm in the pakcage, since computation of
-communicating classes, classification of states or steady states algorithm depend on it. It calculates
-a matrix of communicating classes (where the entry $(i, j)$ is $true$ iff $i \dgoto j$) and whether the
-class $[i]$ is closed (iff $v(i) = true$). The original algorithm was based on \cite{feres} and run
-in $\algcomp{m^4}$ in worst cases for inputs such as:
+=commClassesKernel= (=.commClassesKernelRcpp= in the code) constitutes a core algorithm in the package,
+since computation of communicating classes, classification of states or steady states algorithm depend
+on it. It calculates a matrix of communicating classes (where the entry $(i, j)$ is $true$ iff $i \dgoto j$)
+and whether the class $[i]$ is closed ($v(i) = true$). The original algorithm was based on \cite{feres}
+and run in $\algcomp{m^4}$ in worst cases.
 
-\[
-\left(\begin{array}{ccccc}
-0 & 1 & 0 & \ldots & 0\\
-0 & 0 & 1 & \ldots & 0\\
-\vdots & \vdots & \vdots & \ddots & \vdots \\
-0 & 0 & 0 & \ldots & 1 \\
-1 & 0 & 0 & \ldots & 0
-\end{array}\right)
-\]
-
-We have improved it turning it into a $\algcomp{m^3}$ algorithm, using
-backtracking [fn::[[https://en.wikipedia.org/wiki/Backtracking]]] techniques and adjacency lists, considering
-the Markov chain as a directed graph.
+We have improved it turning it into a $\algcomp{m^2}$ algorithm. This has been done treating the
+problem as the directed graph problem of finding its strongly connected components. We have used a
+modification of Tarjan's algorithm from [[citep:tarjan]].
 
 \begin{algorithm}[H]
 \begin{algorithmic}[1]
   \REQUIRE $P_{m \times m}$ an stochastic matrix
-  \STATE{Parse the graph $G(P)$ keeping $S[i]$ an adjacency list for
-          each state $i \in \{1, \ldots, m\}$}
   \NEWLINE
-  \FOR{$i \in \{1, \ldots, m\}$}
-    \STATE{$a =$ \texttt{stack\{i\}} a list with the states $i$ can communicate with}
-    \STATE{$b = (\underset{(1)}{false}, \ldots \underset{(m)}{false})$}
-    \WHILE{$a$ is not empty}
-       \STATE{$k =$ \texttt{a.pop()}}
-       \STATE{$b[k] = true$}
-       \STATE{$T_{ik} = true$}
-       \FOR{$l \in S[k]$}
-         \IF{$b[l] = false$}
-           \STATE{\texttt{a.push}$(l)$}
-         \ENDIF
-       \ENDFOR
-    \ENDWHILE
+  \STATE{$\{L_1, \ldots, L_r\} = \texttt{Tarjan}(P)$}
+  \STATE{$C := (false)_{m\times m}, \quad v := (false, \ldots, false)_{1 \times m}$}
+  \FOR{$k \in \{1, \ldots, r\}$}
+    \FOR{$i \in L_k$}
+      \STATE{$\texttt{isClosed} = \exists j\in \{1, \ldots, m\}, j \not\in L_k: P(i, j) > 0$}
+    \ENDFOR
+    \FOR{$i \in L_k$}
+      \STATE{$v[i] := \texttt{isClosed}$}
+      \FOR{$j \in L_k$}
+        \STATE{$C_{ij} = true$}
+      \ENDFOR
+    \ENDFOR
   \ENDFOR
-  \NEWLINE
-  \STATE{Set $C_{ij} = T_{ij}\wedge T_{ji}$ (it holds $i \goto j$ and $j \goto i$)}
-  \STATE{Set $v[i] = true \textrm{ iff } \bigg[\card{ \{j: C_{ij} = true \} }= \card{ \{j: T_{ij} = true \} } \bigg]$}
   \NEWLINE
   \RETURN{$[C, v]$}
 \end{algorithmic}
@@ -1813,11 +1797,66 @@ the Markov chain as a directed graph.
 \label{alg:commClassesKernel}
 \end{algorithm}
 
+
+\begin{algorithm}[H]
+\begin{algorithmic}[1]
+  \REQUIRE $P_{m \times m}$ an adjacency matrix
+  \NEWLINE
+  \STATE{\texttt{i := 0}}
+  \STATE{$\texttt{disc := } (-1, \ldots, -1)_{1 \times m}, \quad \texttt{low := }(-1, \ldots, -1)_{1 \times m}$}
+  \STATE{$\texttt{exploring := stack\{\}}, \quad \texttt{onStack := } (false, \ldots, false)_{1 \times m}$}
+  \STATE{$\texttt{components := } \emptyset$}
+  \FOR{$v \in \{1, \ldots, m\}$}
+    \IF{$disc[v] = -1$}
+      \STATE{\texttt{strongConnect(v)}}
+    \ENDIF
+  \ENDFOR
+  \RETURN{$\texttt{components} = \{L_1, \ldots, L_r\}$}
+\end{algorithmic}
+\caption{\texttt{Tarjan} algorithm}
+\label{alg:tarjan}
+\end{algorithm}
+
+
+\begin{algorithm}[H]
+\begin{algorithmic}[1]
+  \REQUIRE data structures passed by \texttt{Tarjan} algorithm
+  \NEWLINE
+  \STATE{$\texttt{disc[v] := } i, \quad \texttt{low[v] := } i$}
+  \STATE{\texttt{i := i + 1}}
+  \STATE{\texttt{exploring.push(v)}}
+  \STATE{$\texttt{onStack[v] := } true$}
+  \NEWLINE
+  \FOR{$w \in \{1, \ldots, m\}$}
+    \IF{$P(v, w) > 0$}
+      \IF{$\texttt{disc[w]} = -1$}
+        \STATE{\texttt{strongConnect(w)}}
+        \STATE{\texttt{low[v] = min(low[v], low[w])}}
+      \ELSIF{\texttt{onStack[w]}}
+        \STATE{\texttt{low[v] = min(low[v], disc[w])}}
+      \ENDIF
+    \ENDIF
+  \ENDFOR
+  \IF{\texttt{low[v] = disc[v]}}
+    \STATE{$L := \emptyset$}
+    \REPEAT
+      \STATE{$w := \texttt{exploring.pop()}$}
+      \STATE{$L = L \cup \{w\}$}
+      \STATE{\texttt{onStack[w] := false}}
+    \UNTIL{$w = v$}
+    \STATE{$\texttt{components := components} \cup \{L\}$}
+  \ENDIF
+\end{algorithmic}
+\caption{\texttt{strongConnect}}
+\label{alg:tarjan}
+\end{algorithm}
+
+
 *** Communicating classes
 
 We can propose an algorithm based on Algorithm \eqref{alg:commClassesKernel}, which runs in
-$\algcomp{m^3}$ since creating the list of communicating classes from the communicating matrix is
-$\algcomp{m^2}$ in the worst case, but we need the output of \texttt{commClassesKernel}. The former one
+$\algcomp{m^2}$ since creating the list of communicating classes from the communicating matrix is
+$\algcomp{m^2}$, same as calling \texttt{commClassesKernel}. The former one
 was $\algcomp{m^4}$.
 
 \begin{algorithm}[H]
@@ -1859,7 +1898,7 @@ and closed classes are the same. \texttt{recurrentClasses} algorithm is quite si
 check that the class for the state we are inspecting is closed.
 
 With a similar rationale that the one provided for Algorithm \eqref{alg:commClasses},
-Algorithm \eqref{alg:recurrentClasses} and Algorithm \eqref{alg:recurrentStates} are $\algcomp{m^3}$.
+Algorithm \eqref{alg:recurrentClasses} and Algorithm \eqref{alg:recurrentStates} are $\algcomp{m^2}$.
 
 \begin{algorithm}[H]
 \begin{algorithmic}[1]
@@ -1964,8 +2003,8 @@ fulfilled that objective.
 Let $P_1, \ldots, P_r$ be the decomposition of the transition matrix $P$ for its recurrent classes,
 as expressed in its canonic form \eqref{eq:canonic-form}. Solving the system from Lemma
 \eqref{lemma:steady-states-computation} for each $k = 1, \ldots, r$ can be done in $\algcomp{m^2}$.
-Therefore, the total cost of the algorithm, since computing recurrent classes is $\algcomp{m^3}$,
-is $\algcomp{m^3}$.
+Therefore, the total cost of the algorithm, since computing recurrent classes is $\algcomp{m^2}$,
+is $\algcomp{m^2}$.
 
 
 \begin{algorithm}[H]
@@ -1996,7 +2035,7 @@ is $\algcomp{m^3}$.
 
 Given a matrix $P_{m\times m}$, former =communicatingClasses= algorithm was $\algcomp{m^4}$. New algorithm
 uses the new version of =communicatingClasses= and has been ported to C++. Therefore, its new complexity is
-$\algcomp{m^3}$. This algorithm is based on Definition \eqref{def:irreducible}.
+$\algcomp{m^2}$. This algorithm is based on Definition \eqref{def:irreducible}.
 
 \begin{algorithm}[H]
 \begin{algorithmic}[1]
@@ -2062,7 +2101,7 @@ matrix may be regular. This procedure works in $\algcomp{log(m) m^3}$.
 ** Absorption
 Based on Proposition \eqref{prop:i-r-invertible}, we have added the following algorithms to the library.
 The first one, \eqref{alg:meanAbsorptionTime}, runs in $\algcomp{m^3}$ (computing transient
-states is $\algcomp{m^3}$, subsetting the matrix $\algcomp{m^2}$ and computing the inverse is $\algcomp{m^3}$).
+states is $\algcomp{m^2}$, subsetting the matrix $\algcomp{m^2}$ and computing the inverse is $\algcomp{m^3}$).
 The second one, \eqref{alg:absorptionProbabilities} runs in $\algcomp{m^3}$ following an analogous reasoning.
 
 \begin{algorithm}[H]
@@ -2104,39 +2143,21 @@ algorithmically, so we had tried to come up with our own algorithm. The first th
 the system \eqref{eq:fij-recurrence} matrix-wise:
 
 \begin{equation*}
-A = \left(\begin{array}{c|c|c|c}
-  A_1 & \bigzero & \ldots & \bigzero \\
-\hline
-  \bigzero & A_2 & \ldots & \bigzero \\
-\hline
-  \vdots & \vdots & \ddots & \bigzero \\
-\hline
-  \bigzero & \bigzero & \ldots & A_m
-\end{array}\right)
+\begin{array}{rcl}
+A_1 = \left(\begin{matrix}
+  -1     & p_{12}       & \ldots & p_{1m} \\
+  0      & (p_{22} - 1) & \ldots & p_{2m} \\
+  \vdots & \vdots       & \ddots & \vdots  \\
+  0      & p_{m 2}      & \ldots & (p_{mm} - 1)
+  \end{matrix}\right) & \ldots &
+A_m = \left(\begin{matrix}
+  (p_{11} - 1) & p_{12}      & \ldots & 0 \\
+  p_{21}       & (p_{22} -1) & \ldots & 0 \\
+  \vdots        & \vdots     & \ddots & \vdots  \\
+  p_{m1}       & p_{m2}      & \ldots & -1
+  \end{matrix}\right)
+\end{array}
 \end{equation*}
-
-\begin{eqnarray*}
-A_1 &=
-\left(\begin{matrix}
-  -1     & p_{12}       & p_{13}   & \ldots & p_{1m} \\
-  0      & (p_{22} - 1) & p_{23}   & \ldots & p_{2m} \\
-  \vdots & \vdots        & \vdots    & \ddots & \vdots  \\
-  0      & p_{m 2}      & p_{m3}   & \ldots & (p_{mm} - 1)
-  \end{matrix}\right)\\
-A_2 &= \left(\begin{matrix}
-  (p_{11} - 1) & 0      & p_{13}   & \ldots & p_{1m} \\
-  p_{21}       & -1     & p_{23}   & \ldots & p_{2m} \\
-  \vdots        & \vdots & \vdots    & \ddots & \vdots  \\
-  p_{m1}       & 0      & p_{m3}   & \ldots & (p_{mm} - 1)
-  \end{matrix}\right)\\
-\vdots & \vdots\\
-A_m &= \left(\begin{matrix}
-  (p_{11} - 1) & p_{12}      & p_{13}   & \ldots & 0 \\
-  p_{21}       & (p_{22} -1) & p_{23}   & \ldots & 0 \\
-  \vdots        & \vdots       & \vdots    & \ddots & \vdots  \\
-  p_{m1}       & p_{m2}      & p_{m3}   & \ldots & -1
-  \end{matrix}\right)\\
-\end{eqnarray*}
 
 \begin{equation*}
 \begin{array}{rlrl}
@@ -2170,11 +2191,19 @@ p_{mj}
 we end up with the system:
 
 \begin{equation}
-AX = L
+\left(\begin{array}{c|c|c|c}
+  A_1 & \bigzero & \ldots & \bigzero \\
+\hline
+  \bigzero & A_2 & \ldots & \bigzero \\
+\hline
+  \vdots & \vdots & \ddots & \bigzero \\
+\hline
+  \bigzero & \bigzero & \ldots & A_m
+\end{array}\right) X = L
 \end{equation}
 
 Clearly, we can solve this system, provided that it has solution, by blocks $A_j X_j = L_j$, but
-the matrix $A$ may not be invertible in some cases. Our hypothesis is that if we treated the
+the matrix $A_j$ may not be invertible in some cases. Our hypothesis is that if we treated the
 closed communicating classes differently (using the canonic form from Equation \eqref{eq:canonic-form}),
 then we could delete the linearity in the system.
 
@@ -2203,7 +2232,7 @@ systems, and complexity of =commClassesKernel= is $\algcomp{m^3}$, this procedur
         \STATE{$L_{j}[i] = C_{ij}$}
       \ENDIF
     \ENDFOR
-    \STATE{Compute $X_j = A_j^{-1} \cdot L_j$}
+    \STATE{Solve $A_j \cdot X_j = L_j$}
   \ENDFOR
   \RETURN{$X = \left(\begin{array}{c}
                X_1 \\
@@ -2221,7 +2250,8 @@ Based on Theorem \eqref{th:mfpt-computation}, we ported and polished the followi
 version of it was already in the package, although it did not made checkings about the matrix being
 regular). Due to backward compatibility with the previous version, the algorithm can be called with an
 ergodic matrix and a set of states \texttt{destination} and it would compute the mean first passage time
-from the states not in \texttt{destination} to any of the states there.
+from the states not in \texttt{destination} to any of the states there. This algorithm is $\algcomp{m^3}$,
+since it needs to compute an inverse matrix.
 
 \begin{algorithm}[H]
 \begin{algorithmic}[1]
@@ -2244,7 +2274,7 @@ from the states not in \texttt{destination} to any of the states there.
 
 Based on Proposition \eqref{prop:ss-and-recurrence-prob} and having into account the canonic form
 \eqref{eq:canonic-form}, we can compute the mean recurrence times for the transient states of a
-Markov chain. Thus, the following algorithm has been added to the package:
+Markov chain. Thus, the following algorithm has been added to the package ($\algcomp{m^2}$ complexity):
 
 \begin{algorithm}[H]
 \begin{algorithmic}[1]
