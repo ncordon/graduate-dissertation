@@ -682,34 +682,6 @@ Straightforward from $\expecti{V_j} = \sum_{n = 1}^{\infty} \expecti{\mathbb{1}_
   \sum_{n = 1}^{\infty} p_{i,j}^{(n)} = P_{i,j}(1)$
 #+end_proof
 
-*** Average arrival times
-
-#+begin_definition
-If $f_{i,j} = 1$, we define the average arrival time from $i$ to $j$ as:
-
-\[
-e_{i,j} = \expecti{\tau_j} = \sum_{n = 1}^{\infty} n f_{i,j}^{(n)}
-\]
-#+end_definition
-
-#+begin_proposition
-It holds e_{i,j} = 1 + \sum_{k \neq j} p_{i, k} e_{k, j}
-#+end_proposition
-
-#+begin_proof
-On the one hand: $f_{i,j}^{(1)} = p_{i,j}$ and $f_{i,j}^{(n)} = \sum_{k\neq j} p_{i,k} f_{k,j}^{(n-1)}$.
-
-Therefore, and having in mind that $f_{i,j} = 1$.
-
-\begin{align*}
-e_{i,j} &= \sum_{n = 1}^{\infty} n f_{i,j}^{(n)} = p_{i,j} + \sum_{n = 2}^{\infty} n \sum_{k \neq j} p_{i,k} f_{k,j}^{(n-1)} \\
-        &= p_{i,j} + \sum_{k \neq j} p_{i,k} \sum_{n = 2}^{\infty} n f_{k,j}^{(n-1)} \\
-        &= p_{i,j} + \sum_{k \neq j} p_{i,k} \bigg\{ \sum_{n = 2}^{\infty} f_{k,j}^{(n-1)} + \sum_{n = 2}^{\infty} (n-1)f_{k,j}^{(n-1)} \bigg\} \\
-        &= p_{i,j} + \sum_{k \neq j} p_{i,k} f_{k,j} + \sum_{k \neq j} p_{i,k} e_{k,j} \\
-        &\underset{\eqref{eq:fij-recurrence}}{=} 1 + \sum_{k\neq j} p_{i,k} e_{k,j}
-\end{align*}
-#+end_proof
-
 *** Mean number of visits to a state
 
 #+begin_proposition
@@ -944,9 +916,14 @@ Reciprocally, Proposition \eqref{prop:one-recurrent-class} gives us the result w
 #+end_proof
 
 #+begin_definition
+We define the mean recurrence time for $i$ as
+$r_{i} := \expecti{\tau_{i}} = \sum_{n = 1}^{\infty} n f_{ii}^{(n)}$
+#+end_definition
+
+#+begin_definition
 We say that a recurrent state $i \in S$ is:
-1. Positive recurrent iff $e_{i,i} < \infty$.
-1. Null recurrent iff $e_{i,i} = \infty$.
+1. Positive recurrent iff $r_i < \infty$.
+1. Null recurrent iff $r_i = \infty$.
 #+end_definition
 
 #+begin_lemma
@@ -966,7 +943,7 @@ Let us observe that for the limit to exist it must be $\lim_{s\nearrow 1} F_{i,i
 \lim_{s\nearrow 1} \frac{1 - F_{i,i}(s)}{1 - s} =
 \frac{1}{1 - s} \sum_{n = 1}^{\infty} (1 - s^n) f_{i,i}^{(n)} =
 \sum_{n = 1}^{\infty} (1 + s + \ldots + s^{n-1}) f_{i,i}^{(n)}
-\underset{s\nearrow 1}{\rightarrow} \sum_{n = 1}^\infty n f_{i,i}^{(n)} = e_{i,i}
+\underset{s\nearrow 1}{\rightarrow} \sum_{n = 1}^\infty n f_{i,i}^{(n)} = r_i
 \]
 
 The second part is deduced from Equation \eqref{eq:Fs-Ps-relation}.
@@ -986,6 +963,7 @@ p_{j,i}^{(v)} \cdot p_{i,j}^{(u)} > 0, \quad p_{j,j}^{(n)} \ge p_{j,i}^{(v)} \cd
 
 Therefore:
 
+\allowdisplaybreaks
 \begin{align*}
 (1-s) \bigg\{1 + P_{j,j}(s)\bigg\} = (1-s) \bigg\{1 + \sum_{n = 1}^{\infty} p_{j,j}^{(n)} s^n\bigg\} = \\
 (1-s) \bigg\{1 + \sum_{n = 1}^{u + v - 1} p_{j,j}^{(n)} s^n + \sum_{n = u + v}^{\infty} p_{j,j}^{(n)} s^n \bigg\} \ge \\
@@ -1004,7 +982,7 @@ And exchanging the roles of $i$ and $j$, we deduce $i$ is positive recurrent iff
 #+end_proof
 
 #+begin_proposition
-Every DTMC is positive recurrent
+Every irreducible DTMC is positive recurrent
 #+end_proposition
 
 #+begin_proof
@@ -1609,20 +1587,12 @@ Given an ergodic Markov chain, we call the expected number of steps to reach a s
 as mean first passage time from $i$ to $j$. We note it $m_{ij}$. Formally:
 
 \[
-  \tau_{j} := \min \{n \ge 0: X_n = j, X_{k} \neq j,  0 \le< k < n\}
-  \qquad m_{ij} := \expecti{\tau_{j}}
+  \tau_{j}^{\ast} := \min \{n \ge 0: X_n = j\}
+  \qquad m_{ij} := \expecti{\tau_{j}^{\ast}}
 \]
 
-Obviously by the definition $m_{ii} = 0$
-#+end_definition
-
-#+begin_definition
-If the initial state of an ergodic Markov is $i$, then we define the mean recurrence time for $i$ as:
-
-\[
- \tau_{i}^{\ast} := \min \{t: X_t = i, X_{l} \neq i, t > 0, l < t\}
- \qquad r_{i} := \expecti{\tau_{i}^{\ast}}
-\]
+Formally, the only condition we should ask to be able to define $m_{ij}$ with $i\neq j$ would be that
+$f_{ij} = 1$. Obviously by the definition $m_{ii} = 0$
 #+end_definition
 
 #+begin_proposition
@@ -1630,25 +1600,26 @@ It holds
 
 \begin{eqnarray*}
   & m_{ij}  &= 1 + \sum_{k \neq j} p_{ik} m_{kj} \\
-  & r_i     &= 1 + \sum_{k} p_{ik} m_{ki}
+  & r_{i}  &= 1 + \sum_{k} p_{ik} m_{ki}
 \end{eqnarray*}
 
 \label{prop:mfpt-rec}
 #+end_proposition
 
 #+begin_proof
-The following recurrence holds:
+It holds: $m_{i,j} = \expecti{\tau_j^{\ast}} = \sum_{n = 0}^{\infty} n f_{i,j}^{(n)}$
 
-\[
-  m_{ij} = p_{ij} + \sum_{k \neq j} p_{ik} (m_{kj} + 1)
-  \underset{\sum_{k} p_{ik} = 1}{=} 1 + \sum_{k \neq j} p_{ik} m_{kj}
-\]
+On the one hand: $f_{i,j}^{(1)} = p_{i,j}$ and $f_{i,j}^{(n)} = \sum_{k\neq j} p_{i,k} f_{k,j}^{(n-1)}$. Therefore, and having in mind that $f_{i,j} = 1$:
 
-Analogously:
+\begin{align*}
+m_{i,j} &= \sum_{n = 1}^{\infty} n f_{i,j}^{(n)} = p_{i,j} + \sum_{n = 2}^{\infty} n \sum_{k \neq j} p_{i,k} f_{k,j}^{(n-1)} \\
+        &= p_{i,j} + \sum_{k \neq j} p_{i,k} \sum_{n = 2}^{\infty} n f_{k,j}^{(n-1)} \\
+        &= p_{i,j} + \sum_{k \neq j} p_{i,k} \bigg\{ \sum_{n = 2}^{\infty} f_{k,j}^{(n-1)} + \sum_{n = 2}^{\infty} (n-1)f_{k,j}^{(n-1)} \bigg\} \\
+        &= p_{i,j} + \sum_{k \neq j} p_{i,k} f_{k,j} + \sum_{k \neq j} p_{i,k} m_{k,j} \\
+        &\underset{\eqref{eq:fij-recurrence}}{=} 1 + \sum_{k\neq j} p_{i,k} m_{k,j}
+\end{align*}
 
-\[
-  r_i = \sum_{k} p_{ik}(m_{ki} + 1) = 1 + \sum_{k} p_{ik} m_{ki}
-\]
+Analogously for $r_i$.
 #+end_proof
 
 Matricially, we can define $M = (m_{ij})$, $D = (\delta_{ij} \cdot r_i)$,
@@ -2212,7 +2183,7 @@ In conclusion using Corollary \eqref{corollary:comm-recurrence} and Proposition
 then $f_{i,j} = 1$ for all $i,j \in C$ and $f_{k,j}  = 0$ for all $k\not\in C$.
 It can be proven that matrices we get after doing that substitution are invertible.
 Solving a system $m \times m$ can be done in $\algcomp{m^2}$. Therefore since we have to solve $m$
-systems, and complexity of =commClassesKernel= is $\algcomp{m^3}$, this procedure runs in $\algcomp{m^3}$.
+systems, and complexity of =commClassesKernel= is $\algcomp{m^2}$, this procedure runs in $\algcomp{m^3}$.
 
 \begin{algorithm}[H]
 \begin{algorithmic}[1]
@@ -2234,15 +2205,39 @@ systems, and complexity of =commClassesKernel= is $\algcomp{m^3}$, this procedur
     \ENDFOR
     \STATE{Solve $A_j \cdot X_j = L_j$}
   \ENDFOR
-  \RETURN{$X = \left(\begin{array}{c}
-               X_1 \\
-               \vdots \\
-               X_m
-               \end{array}\right)$
-         }
+  \RETURN{$X = (X_1 | \ldots | X_m)$}
 \end{algorithmic}
-\caption{Algorithm to compute hitting probabilities}
+\caption{\texttt{hittingProbabilities} algorithm}
 \label{alg:hittingProbs}
+\end{algorithm}
+
+Related to hitting probabilities, we have added an algorithm to compute the mean number of visits to
+a state when we start in a given one, based on Proposition \eqref{prop:fii-equiv}, which is $\algcomp{m^3}$,
+since it needs to call Algorithm \eqref{alg:hittingProbs}.
+
+\begin{algorithm}[H]
+\begin{algorithmic}[1]
+  \REQUIRE $P_{m \times m}$ an stochastic matrix
+  \NEWLINE
+  \STATE{$(f_{ij}) = \texttt{hittingProbs}(P)$}
+  \FOR{$j \in \{1, \ldots, m\}$}
+    \STATE{$\texttt{isOne := } f_{jj} = 1$}
+    \IF{$not \, \texttt{isOne}$}
+      \STATE{$r = \frac{1}{1 - f_{jj}}$}
+    \ENDIF
+    \FOR{$i \in \{1, \ldots, m\}$}
+      \IF{$f_{ij} = 0$}
+        \STATE{$\expecti{V_j} = 0$}
+      \ELSE
+        \STATE{$\expecti{V_j} = \texttt{if isOne } +\infty \texttt{ else } r \cdot f_{ij}$}
+      \ENDIF
+    \ENDFOR
+  \ENDFOR
+  \NEWLINE
+  \RETURN{$(\expecti{V_j})_{m \times m}$}
+\end{algorithmic}
+\caption{\texttt{meanNumVisits} algorithm}
+\label{alg:mean-num-visits}
 \end{algorithm}
 
 ** Mean first passage time and recurrence times
@@ -2251,7 +2246,7 @@ version of it was already in the package, although it did not made checkings abo
 regular). Due to backward compatibility with the previous version, the algorithm can be called with an
 ergodic matrix and a set of states \texttt{destination} and it would compute the mean first passage time
 from the states not in \texttt{destination} to any of the states there. This algorithm is $\algcomp{m^3}$,
-since it needs to compute an inverse matrix.
+since it computes an inverse matrix.
 
 \begin{algorithm}[H]
 \begin{algorithmic}[1]
