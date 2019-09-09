@@ -1819,7 +1819,7 @@ modification of Tarjan's algorithm from [[citep:tarjan]].
   \ENDIF
 \end{algorithmic}
 \caption{\texttt{strongConnect}}
-\label{alg:tarjan}
+\label{alg:strongConnect}
 \end{algorithm}
 
 
