@@ -134,7 +134,7 @@ number of states: hitting times and probabilities, classification of states, inc
 transience, recurrence and absorption, ergodic and regular Markov chains and their relationship with
 steady states, mean first passage and recurrence times, \ldots
 
-Section [[R package]] describes the work done in =markovchain= R package. This software library
+Chapter [[R package]] describes the work done in =markovchain= R package. This software library
 comprises open source utilities which allow to perform probabilistic and statistical analyses of
 discrete Markov chains. The author of the present work analyzed the discrete time probabilistic
 capabilities provided by this package and identified key points where the algorithms could be improved, both from
@@ -184,7 +184,8 @@ competitor of python in machine learning programming. The R package
 at the official R packages repository, CRAN [fn::[[https://cran.r-project.org/web/packages/index.html][https://cran.r-project.org/web/packages/index.html]]], which
 aims to provide easy representations, plotting and analysis of discrete time Markov chains. It is placed in
 91st percentile in terms of total downloads (compared to rest of packages of CRAN), and its trend of
-downloads continues to be in the 90th monthly percentile as it can be observed in the figure [[fig:mc-downloads]] (approximately 4000 downloads a month [fn::[[https://cranlogs.r-pkg.org/badges/markovchain][https://cranlogs.r-pkg.org/badges/markovchain]]]). We should point
+downloads continues to be in the 90th monthly percentile as it can be observed in the figure [[fig:mc-downloads]]
+(over 4000 downloads a month [fn::[[https://cranlogs.r-pkg.org/badges/markovchain][https://cranlogs.r-pkg.org/badges/markovchain]]]). We should point
 out that package is not only written in R. The core parts are coded in C++, since it is faster than R.
 
 Being that =markovchain= is widely used, a lot of methods could be improved from the mathematical correctness
@@ -200,12 +201,12 @@ conditions for the system are these ones? Even small contributions to the softwa
 users and researchers.
 
 #+header: :width 5 :height 5 :R-dev-args
-#+begin_src R :session examples :results output graphics :file imgs/percentiles.svg :exports results :cache yes :eval no-export
+#+begin_src R :session examples :results output graphics :file imgs/percentile.svg :exports results :cache yes :eval no-export
 library("packageRank")
 library("ggplot2")
 
 start <- as.Date("01-08-19",format="%d-%m-%y")
-end <- as.Date("25-08-19",format="%d-%m-%y")
+end <- as.Date("30-08-19",format="%d-%m-%y")
 current <- start
 downloads <- c()
 percentile <- c()
@@ -2291,18 +2292,18 @@ Markov chain. Thus, the following algorithm has been added to the package ($\alg
 * Conclusions and future work
 Firstly a few considerations should be made:
 
-+ Reading software someone else's software is extremely time-consuming and implies an effort comparable to understanding mathematical proofs that have not been written by oneself: you always have to figure out how all the different pieces fit together, why does certain trick work or it does not, writting style is hardly ever going to be close to yours and it constitutes an incremental process where most probably you are going to have to dive several times into the same fragment to understand the whole.
++ Reading someone else's software is extremely time-consuming and implies an effort comparable to understanding mathematical proofs that have not been written by oneself: you always have to figure out how all the different pieces fit together, why does certain trick work or it does not, writting style is hardly ever going to be close to yours and it constitutes an incremental process where most probably you are going to have to dive several times into the same fragment to understand the whole picture.
 + Lack of appropriate academic material has been a constant throughout this project: we could either find good mathematical proofs, but lacking sense of how algorithms could be implemented in a computer, or the other way around.
-+ The algorithms presented in chaper [[R package]] are in their majority an original work based on my own mathematical and computer science knowledge. They are the result of a long process of trial and error, and although only final versions made it to this report, lots of intermediate versions for them were lost along the way. The rationale behind this is that the development workflow looked something alike: identify where the former algorithms of the package could fail or give incomplete results, code a proposal, test it, improve it, find its weak points, write it in paper, analyze it mathematically and algorithmically, think of new improvements and repeat from second step onwards until a satisfactory version was found.
++ The algorithms presented in chaper [[R package]] are in their vast majority an original work based on my own mathematical and computer science knowledge. They are the result of a long process of trial and error, and although only final versions made it to this report, lots of intermediate versions for them were lost along the way. The rationale behind this is that the development workflow looked something alike: identify where the former algorithms of the package could fail or give incomplete results, code a proposal, test it, improve it, find its weak points, write it in paper, analyze it mathematically and algorithmically, think of new improvements and repeat from second step onwards until a satisfactory point was reached.
 
 ** Conclussions
 Therefore, and having that into account, the main values of this work can be summarized in the following points:
 
-+ Open knowledge: the report is hosted at a public repository [fn::[[https://github.com/ncordon/graduate-dissertation][https://github.com/ncordon/graduate-dissertation]]] so that everyone can consult it, improve it or use its information citing the author. The coding efforts have been integrated into the R package, available at CRAN R official repository [fn::[[https://cranlogs.r-pkg.org/badges/markovchain][https://cranlogs.r-pkg.org/badges/markovchain]]], as open software, which means everyone can contribute to it, propose ideas, use it or modify it (as long as they give credit to their authors). Autorship of the relevant parts of the sofware described in this project can be corroborated with the history of the Github public respository. [fn::[[https://github.com/spedygiorgio/markovchain/commits?author=ncordon][https://github.com/spedygiorgio/markovchain/commits?author=ncordon]]].
++ Open knowledge: the report is hosted at a public repository [fn::[[https://github.com/ncordon/graduate-dissertation][https://github.com/ncordon/graduate-dissertation]]] so that everyone can consult it, improve it or use its information citing the author. The coding efforts have been integrated into the R package, available at CRAN official repository [fn::[[https://cranlogs.r-pkg.org/badges/markovchain][https://cranlogs.r-pkg.org/badges/markovchain]]], as open software, which means everyone can contribute to it, propose ideas, use it or modify it (as long as they give credit to their authors). Autorship of the relevant parts of the sofware described in this project can be corroborated with the history of the Github public respository. [fn::[[https://github.com/spedygiorgio/markovchain/commits?author=ncordon][https://github.com/spedygiorgio/markovchain/commits?author=ncordon]]].
 + Cooperation: having our efforts integrated in an open software package means that we are adding more value to what other people did before us, being able to impact more people that if we had presented a separate software.
-+ Research and development: the main intent of this work was to do scientific programming driven by mathematical viewpoints and that is what we have tried to capture along this work. I believe the level of correctness that has been reached is really satisfaying. And in spite of all the struggles to grasp actionable mathematical knowledge from different sources, in the end we have been able to manipulate theoretical constructs in an useful way from the software perspective.
-+ Versatility: Markov chains may not include extremely complicated mathematics (although the learning curve is hard due to the abundance of slightly similar but different concepts), but they certainly require skills in different areas, as it was stated alongside this work: graphs, linear algebra, probability, programming. In adition to this, coding project is multilanguage, with a mixture of R and C++ languages, which certainly has added more challenges to the endeavour of improving the library.
-+ A lot of not so visible work: sending the software to a repository as CRAN implies that the package has to be thorougly documented, all the tests for the algorithms included in it have to correctly be checked and ultimately we had to verify CRAN standards to publish. This implies a huge maintenance work that may not be fairly reflected in this report.
++ Research and development: the main intent of this work was to do scientific programming driven by mathematical viewpoints and that is what we have tried to capture along this work. I believe the level of correctness that has been achieved is really satisfaying. And in spite of all the struggles to grasp actionable mathematical knowledge from different sources, in the end we have been able to manipulate theoretical constructs in an useful way from the software perspective.
++ Versatility: Markov chains may not include extremely complicated mathematics (although the learning curve is hard due to the abundance of slightly similar but different concepts), but they certainly require skills in different areas, as it was stated alongside this work: graphs, linear algebra, probability or programming, to name a few. In adition to this, project is multilanguage, with a mixture of R and C++ languages, which certainly has posed more challenges to the endeavour of improving the library.
++ A lot of not so visible work: sending the software to a repository as CRAN implies that the package has to be thorougly documented, all the tests for the algorithms included in it have to be correctly checked and ultimately we had to verify CRAN standards to publish. This implies a huge maintenance work that may not be fairly reflected in this report.
 
 
  #+LaTeX: \appendix
