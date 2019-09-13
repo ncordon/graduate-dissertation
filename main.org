@@ -66,7 +66,7 @@ providing me with great support.
 
 Also, many thanks to Giorgio, my tutor, since he always kept an open mind when it
 came to me proposing work to do on his package. He encouraged me to try different approaches and I had
-plenty of proposals from his side to work on. I have had plenty of good challenges to dive in, learn and
+plenty of proposals from his side to work on. I have had lots of good challenges to dive in, learn and
 apply new knowledge thanks to him.
 
 * Abstract
@@ -77,7 +77,7 @@ apply new knowledge thanks to him.
 Las cadenas de Markov son un área de estudio que comprende conocimientos de, por nombrar algunas,
 probabilidad, inferencia, álgebra lineal, grafos o teoría de algoritmos (puesto que las cadenas discretas
 pueden ser simuladas en un ordenador). Por todo lo expuesto representan un campo de
-estudio interesante desde el punto de vista matemático e informático, y las hacen una temática ideal desde
+estudio interesante desde el ángulo matemático e informático, y las hacen una temática ideal desde
 el punto de vista de la interdisciplinariedad del máster Fisymat.
 
 En el capítulo [[Markov chains]] introducimos las cadenas de Markov en tiempo discreto, con su definición y la
@@ -89,31 +89,30 @@ cadenas de Markov ergódicas y regulares y su relación con las distribuciones e
 de llegada y de recurrencia, \ldots
 
 La sección [[R package]] describe el trabajo hecho en el paquete de R =markovchain=. Esta librería
-es un proyecto de sofware libre que permite analizar cadenas de Markov discretas desde un punto
-de vista probabilístico y estadístico (inferencia). El autor de este trabajo ha analizado la parte del análisis
+es un proyecto de sofware libre que permite realizar un análisis probabilístico y estadístico
+de cadenas de Markov discretas. El autor de este trabajo ha analizado la parte del análisis
 probabilístico que este paquete proporciona y se han identificado los puntos clave donde los algoritmos podrían
-ser mejorados, desde el punto de vista de la corrección matemática y la eficiencia algorítmica. También se han
+ser mejorados, desde el punto de vista de la corrección matemática y la eficiencia algorítmica. Asimismo, se han
 añadido nuevas colecciones de algoritmos. Tanto los procedimientos refactorizados como los añadidos están relacionados
-con los contenidos teóricos descritos en el capítulo anterior, y han sido abordados gracias a los conocimientos
-matemáticos adquiridos a través de la bibliografía.
+con los contenidos teóricos descritos en el capítulo anterior.
 
 Los algoritmos mejorados / reprogramados oscilan desde la identificación de clases comunicantes, pasando por
 el cálculo de los tiempos medios de llegada o la descripción de clases recurrentes y transitorias. Como
 consecuencia de ellos, ha sido redise\-ñada la clasificación de estados de una manera más eficiente, así como
 la transformación a forma canónica. Además, el algoritmo del cálculo de distribuciones estacionarias ha sido
 altamente mejorado, puesto que el antiguo podía devolver resultados incorrectos. Las nuevas incorporaciones
-versan principalmente sobre cantidades relacionadas con la absorción (tiempo medio de absorción, probabilidad
-de absorción), número esperado de visitas a un estado, el tiempo medio de recurrencia, las probabilidades de
+versan principalmente sobre cantidades relacionadas con la absorción (tiempo medio y probabilidad de absorción),
+número esperado de visitas a un estado, el tiempo medio de recurrencia, las probabilidades de
 llegada, el cálculo eficiente de la accesibilidad a estados, de potencias y la clasificación de cadenas
 (regulares, ergódicas, no ergódicas).
 
 En el capítulo [[Conclusions and future work]] se esbozan ideas para trabajo futuro en el sofware, a tenor del
 conocimiento ganado durante el estudio teórico y práctico de la librería, que en conjunción deberían llevar
-a la publicación de dicho software en una revista académica de alto impacto.
+a la publicación del mismo en una revista académica de alto impacto.
 
-El anexo [[Appendix]] incluye instrucciones sobre cómo instalar y usar el sofware. Asimismo, se explican otras
+El anexo [[Appendix]] incluye instrucciones sobre cómo instalar y usar el sofware. Además, se explican otras
 labores realizadas en el marco de este proyecto: incorporación de /tests/ a la librería basados en la
-comprobación de propiedades matemáticas, revisión de documentación así como el diseño de una página web
+comprobación de propiedades matemáticas, revisión de documentación y diseño de una página web
 para incrementar la visibilidad del paquete y mejorar el acceso a la documentación del mismo.
 
 \vspace*{1cm}
@@ -124,9 +123,9 @@ para incrementar la visibilidad del paquete y mejorar el acceso a la documentaci
 \vspace{1cm}
 
 Markov chains are a mathematical area which encompasses, to name a few, probability, inference, linear
-algebra, gaphs or algorithms theory (since discrete markov chains can be simulated in a computer). All of
+algebra, graphs or algorithms theory (since discrete markov chains can be simulated in a computer). All of
 the aforementioned conditions make them an interesting study from both the mathematical and computer science
-viewpoint, and therefore a perfect topic from the interdisciplinary nature of Fisymat master's degree.
+viewpoint, and therefore a perfect topic for the interdisciplinary nature of Fisymat master's degree.
 
 In chapter [[Markov chains]] we introduce discrete time Markov chains with their definition and
 Chapman-Kolmogorov equation. In chapter [[Time-homogeneous Markov chains]] we present a theoretical review of
@@ -136,17 +135,16 @@ transience, recurrence and absorption, ergodic and regular Markov chains and the
 steady states, mean first passage and recurrence times, \ldots
 
 Section [[R package]] describes the work done in =markovchain= R package. This software library
-comprises open source utilities which allow to analyze discrete Markov chains from a probabilistic
-and statistical (inference) perspective. The author of the present work analyzed the discrete time probabilistic
-analysis provided by this package and identified key points where the algorithms could be improved, both from
-the mathematical correctness perspective and from the computational algorithmic efficiency. Also a collection
+comprises open source utilities which allow to perform probabilistic and statistical analyses of
+discrete Markov chains. The author of the present work analyzed the discrete time probabilistic
+capabilities provided by this package and identified key points where the algorithms could be improved, both from
+the mathematical correctness and the computational algorithmic efficiency perspectives. Also a collection
 of new algorithms were added. All those procedures (both the newly added and the refactored ones) are
-related to the theoretical contents described in the previous chapter, and have been tackled thanks to the
-mathematics knowledge acquired from the bibliography.
+related to the theoretical contents described in the previous chapter.
 
 The improved / recoded algorithms range from communicating classes identification, to mean first passage
-times computation or recurrent (transient resp.) classes description. Also as a consequence of those, state
-classification has been redesigned in a more efficient manner, as well as conversion to canonic form. Moreover,
+times computation or recurrent (resp. transient) classes description. As a consequence of those, state
+classification has been redesigned in a more efficient manner, as well as conversion to canonic form. Furthermore,
 steady states algorithm has been highly improved, due to the fact that incorrect results could arise
 from the former one. The added algorithms are mainly related to absorption related quantities (mean
 aborption time, absorption probability), mean number of visits to a state, mean recurrence times, hitting
@@ -155,10 +153,10 @@ probabilities, efficient reachability, power computation and Markov chain classi
 
 In chapter [[Conclusions and future work]] we outline future work that could be done in the package, in light
 of the knowledge we have gathered during the theoretical and practical study of the library, and that should
-cumminate with its publication in a high impact journal.
+culminate with its publication in a high impact journal.
 
-Appendix [[Appendix]] includes instructions on how to install and use the software. Furthermore, it explains more
-work developed within this project: addition of tests for the libary based in check of mathematical
+Appendix [[Appendix]] includes instructions on how to install and use the software. It also explains more
+work developed within this project: addition of tests for the library consisting on check of mathematical
 properties, review of documentation and design of a web page to increase the visibility of the
 sofware and improve access to its documentation.
 
@@ -172,16 +170,16 @@ sofware and improve access to its documentation.
 * Introduction
 
 To fully understand this work we assume previous notions of probability, programming and familiarity with big
-$\mathcal{O}$ algoritmic notation [fn::[[https://en.wikipedia.org/wiki/Big_O_notation][https://en.wikipedia.org/wiki/Big_O_notation]]].
+$\mathcal{O}$ algoritmic notation [fn::[[https://en.wikipedia.org/wiki/Big_O_notation][https://en.wikipedia.org/wiki/BigOnotation]]].
 
-Markov chains are still nowadays a highly researched area of mathematics and computer science which is used
-in a wide variety of fields: weather prediction, actuarial science, algorithms (for example used in Markov
+Markov chains are still a highly researched area of mathematics and computer science nowadays.
+They are used in a wide variety of fields: weather prediction, actuarial science, algorithms (for example used in Markov
 chain Monte Carlo methods), physics, speech recognition, genetics, \ldots. We focus in this work on discrete
-Markov chains with a finite state space, which becase of finiude are the most natural Markov chain we can
+Markov chains with a finite state space, which because of finitude are the most natural Markov chain we can
 represent in a computer.
 
-Among programming languages nowadays, R is probably the most used ones among statisticians and the main
-competitor of =python= in machine learning programming. The R package
+Among programming languages nowadays, R is probably the most used one among statisticians and the main
+competitor of python in machine learning programming. The R package
 [fn::[[https://github.com/spedygiorgio/markovchain][https://github.com/spedygiorgio/markovchain]]] [[citep:dtmc]] is an open source library available
 at the official R packages repository, CRAN [fn::[[https://cran.r-project.org/web/packages/index.html][https://cran.r-project.org/web/packages/index.html]]], which
 aims to provide easy representations, plotting and analysis of discrete time Markov chains. It is placed in
@@ -193,8 +191,8 @@ Being that =markovchain= is widely used, a lot of methods could be improved from
 perspective (for example the computation of steady states could return a linearly dependent base of the
 convex space of steady states, which is not correct) and the computational efficiency one (use less
 iterative methods and more algebraic ones, improve efficiency for methods in general). Effiency is extremely
-important because it can be the difference between being able to analyze a Markov chain with a $10\times 10$
-transition matrix or a $100\times 100$ one. Also the package was lacking methods to perform a more complete
+important because it can represent the difference between being able to analyze a Markov chain with $10\times 10$
+dimension transition matrix or a $100\times 100$ one. Furthermore, the package was lacking methods to perform a more complete
 analysis of Markov chains and answer possible questions like: what is the probability of ever hitting that
 state? (whatever the state represents: bankruptcy in case of actuarial analysis, a tornado in case of
 wheather prediction, etc), or how many times are we going to pass through a certain state if initial
@@ -246,7 +244,7 @@ to practical driving theory study, the work is presented backwards, with theoret
 first. To summarize, what we intend to do is mathematical driven scientific programming.
 
 * Markov chains
-This section is based in [[citep:velez]], although other theoretical references such as [[citep:takis]]
+This section is based on [[citep:velez]], although other theoretical references such as [[citep:takis]]
 or [[citep:zitkovic]] have been used. Ergodic Markov chains section is based on [[citep:horn]] and
 [[citep:grinstead]]. Mean first passage time section is mainly based on [[citep:grinstead]].
 
@@ -870,8 +868,8 @@ recurrent, but also that $j \goto i$, and we can deduce $f_{i,j} = 1$ with an id
 #+end_proof
 
 #+begin_definition
-We will say a communicating class is recurrent (transient resp.) iff all of its states
-are recurrent (transient resp.). We will say a communicating class $C$ is closed if it
+We will say a communicating class is recurrent (resp. transient) iff all of its states
+are recurrent (resp. transient). We will say a communicating class $C$ is closed if it
 holds $i \goto j$ and $i\in C$ implies $j\in C$.
 #+end_definition
 
