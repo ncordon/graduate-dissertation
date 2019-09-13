@@ -170,7 +170,7 @@ sofware and improve access to its documentation.
 * Introduction
 
 To fully understand this work we assume previous notions of probability, programming and familiarity with big
-$\mathcal{O}$ algoritmic notation [fn::[[https://en.wikipedia.org/wiki/Big_O_notation][https://en.wikipedia.org/wiki/BigOnotation]]].
+$\mathcal{O}$ algoritmic notation [fn::https://en.wikipedia.org/wiki/Big_O_notation].
 
 Markov chains are still a highly researched area of mathematics and computer science nowadays.
 They are used in a wide variety of fields: weather prediction, actuarial science, algorithms (for example used in Markov
@@ -180,12 +180,12 @@ represent in a computer.
 
 Among programming languages nowadays, R is probably the most used one among statisticians and the main
 competitor of python in machine learning programming. The R package
-[fn::[[https://github.com/spedygiorgio/markovchain][https://github.com/spedygiorgio/markovchain]]] [[citep:dtmc]] is an open source library available
-at the official R packages repository, CRAN [fn::[[https://cran.r-project.org/web/packages/index.html][https://cran.r-project.org/web/packages/index.html]]], which
+[fn::https://github.com/spedygiorgio/markovchain] [[citep:dtmc]] is an open source library available
+at the official R packages repository, CRAN [fn::https://cran.r-project.org/web/packages/index.html], which
 aims to provide easy representations, plotting and analysis of discrete time Markov chains. It is placed in
 91st percentile in terms of total downloads (compared to rest of packages of CRAN), and its trend of
 downloads continues to be in the 90th monthly percentile as it can be observed in the figure [[fig:mc-downloads]]
-(over 4000 downloads a month [fn::[[https://cranlogs.r-pkg.org/badges/markovchain][https://cranlogs.r-pkg.org/badges/markovchain]]]). We should point
+(over 4000 downloads a month [fn::https://cranlogs.r-pkg.org/badges/markovchain]). We should point
 out that package is not only written in R. The core parts are coded in C++, since it is faster than R.
 
 Being that =markovchain= is widely used, a lot of methods could be improved from the mathematical correctness
@@ -2299,14 +2299,12 @@ Firstly a few considerations should be made:
 ** Conclussions
 Therefore, and having that into account, the main values of this work can be summarized in the following points:
 
-+ Open knowledge: the report is hosted at a public repository [fn::[[https://github.com/ncordon/graduate-dissertation][https://github.com/ncordon/graduate-dissertation]]] so that everyone can consult it, improve it or use its information citing the author. The coding efforts have been integrated into the R package, available at CRAN official repository [fn::[[https://cranlogs.r-pkg.org/badges/markovchain][https://cranlogs.r-pkg.org/badges/markovchain]]], as open software, which means everyone can contribute to it, propose ideas, use it or modify it (as long as they give credit to their authors). Autorship of the relevant parts of the sofware described in this project can be corroborated with the history of the Github public respository. [fn::[[https://github.com/spedygiorgio/markovchain/commits?author=ncordon][https://github.com/spedygiorgio/markovchain/commits?author=ncordon]]].
-+ Cooperation: having our efforts integrated in an open software package means that we are adding more value to what other people did before us, being able to impact more people that if we had presented a separate software.
++ Open knowledge: the report is hosted at a public repository [fn::https://github.com/ncordon/graduate-dissertation] so that everyone can consult it, improve it or use its information citing the author. The coding efforts have been integrated into the R package, available at CRAN official repository [fn::https://cran.r-project.org/web/packages/markovchain], as open source software, which means everyone can contribute to it, propose ideas, use it or modify it (as long as they give credit to their authors). Autorship of the relevant parts of the sofware described in this project can be corroborated with the history of the Github public respository. [fn::https://github.com/spedygiorgio/markovchain/commits?author=ncordon].
++ Cooperation: having our efforts integrated in an open source software package means that we are adding more value to what other people did before us, being able to impact more people that if we had presented a separate software.
 + Research and development: the main intent of this work was to do scientific programming driven by mathematical viewpoints and that is what we have tried to capture along this work. I believe the level of correctness that has been achieved is really satisfaying. And in spite of all the struggles to grasp actionable mathematical knowledge from different sources, in the end we have been able to manipulate theoretical constructs in an useful way from the software perspective.
 + Versatility: Markov chains may not include extremely complicated mathematics (although the learning curve is hard due to the abundance of slightly similar but different concepts), but they certainly require skills in different areas, as it was stated alongside this work: graphs, linear algebra, probability or programming, to name a few. In adition to this, project is multilanguage, with a mixture of R and C++ languages, which certainly has posed more challenges to the endeavour of improving the library.
 + A lot of not so visible work: sending the software to a repository as CRAN implies that the package has to be thorougly documented, all the tests for the algorithms included in it have to be correctly checked and ultimately we had to verify CRAN standards to publish. This implies a huge maintenance work that may not be fairly reflected in this report.
 
-
- #+LaTeX: \appendix
 ** Future work
 We propose the following lines of further development for the package:
 
@@ -2339,9 +2337,11 @@ P^{m - 1} &=& \left(\begin{array}{ccccccccccc}
 }_{m - 2}
 \end{eqnarray*}
 + Try to write an article for Journal of Statistical Software [fn::[[https://www.jstatsoft.org/index]]], a [[https://www.scimagojr.com/journalsearch.php?q=12137&tip=sid][Q1]] (in Software and in Statistics and Probability categories) open access journal which publishes papers for sofware with highly mathematical foundation. Given the importance of the package and the improvements it is receiving it would be suitable to publish it, as long as we keep adding valuable content to it and we fulfill our purpose of creating bindings for Python.
+
+#+LaTeX: \appendix
 * Appendix
 ** Installation of markovchain
-As prerequisite, R [fn::[[https://cloud.r-project.org][https://cloud.r-project.org]]] should be installed. In \textit{Debian} based distributions can be installed as:
+As prerequisite, R [fn::https://cloud.r-project.org] should be installed. In \textit{Debian} based distributions can be installed as:
 
 #+attr_latex: :options style=vs, bgcolor=light-gray
 #+begin_src bash :eval no
@@ -2355,9 +2355,9 @@ In \textit{Arch Linux} based distributions as:
   sudo pacman -S r
 #+end_src
 
-It could be useful to have RStudio [fn::[[https://www.rstudio.com][https://www.rstudio.com]]] installed too (although it is not
+It could be useful to have RStudio [fn::https://www.rstudio.com] installed too (although it is not
 mandatory to execute the software). To install the
-=markovchain= [fn::[[https://github.com/spedygiorgio/markovchain][https://github.com/spedygiorgio/markovchain]]] package, one could do (from an R terminal
+=markovchain= [fn::https://github.com/spedygiorgio/markovchain] package, one could do (from an R terminal
 or inside RStudio):
 
 #+attr_latex: :options style=vs, bgcolor=light-gray
@@ -2575,7 +2575,7 @@ We have designed a better approach for testing the package:
 1. Still test against known examples taken from books (giving them credit for that). More examples in this regard have been added.
 1. Generate random Markov chains of random dimnension, given both by by-rows stochastic matrices and by-column ones. We cannot generate non numerable infinite instances of course, to cover the $\forall$ that quantifies the property, but at least we should get a little more closer than just a couple of examples.
 1. Of course we cannot compute the solution for random instances by hand. However, we can check that different implications, equivalences and characteristic equation systems inspired from the chapter [[Markov chains]] are verified by the result of the coded methods.
-1. All algorithms coded in chapter [[R package]] have been tested using this approach, and work done in this sense can be consulted in the =testthat= [fn::[[https://github.com/spedygiorgio/markovchain/tree/master/tests/testthat][https://github.com/spedygiorgio/markovchain/tree/master/tests/testthat]]] folder from the project.
+1. All algorithms coded in chapter [[R package]] have been tested using this approach, and work done in this sense can be consulted in the =testthat= [fn::https://github.com/spedygiorgio/markovchain/tree/master/tests/testthat] folder from the project.
 
 Below we describe the structure of that folder and some of the most important tests carried out
 (where =setupData.R= generates random instances for general Markov chains, Markov chains with identity
@@ -2629,7 +2629,7 @@ transition matrix or Markov chains with strictly positive matrices):
 *** Documentation
 Further work on the package has been port its [[https://github.com/spedygiorgio/markovchain/tree/master/vignettes][vignettes]] (main form of documentation of an R package)
 from =Sweave= to =knitr=, update and curate the documentation for the package or design a
-web page [fn::[[https://spedygiorgio.github.io/markovchain/][https://spedygiorgio.github.io/markovchain/]]].
+web page [fn::https://spedygiorgio.github.io/markovchain/].
 
 * Bibliography :ignore:
 \bibliography{references}
