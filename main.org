@@ -17,6 +17,45 @@
 #+latex_header: \input{config/macros}
 
 \newpage
+* Authenticity declaration :ignore:
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
+
+\thispagestyle{empty}
+
+\vspace*{3cm}
+
+\begin{center}
+\textsc{Declaración}
+\end{center}
+
+\vspace*{3.5cm}
+
+En cumplimiento de la normativa aprobada en Consejo de Gobierno de 4 de marzo de 2013,
+sobre Directrices de la Universidad de Granada para el desarrollo de la asignatura "Trabajo Fin
+de Máster" de sus títulos de máster (Art 8,4)
+
+\vspace*{1cm}
+\begin{center}
+\Large \textbf{D.D\textordfeminine} \dotuline{\textsc{Ignacio Cordón Castillo}\hspace*{\fill}} \normalsize
+\end{center}
+
+\vspace*{1cm}
+
+Asume la originalidad del trabajo fin de máster, entendida en el sentido de que no ha utilizado
+fuentes sin citarlas debidamente.
+
+\vspace*{1cm}
+Granada, a \septdate\today
+
+\begin{flushright}
+ \begin{tabular}{m{5.5cm}}
+     \img{imgs/firma_nacho.png}{0.45} \\
+     Fdo: Ignacio Cordón Castillo
+ \end{tabular}
+\end{flushright}
+
 * Acknowledgments
 :PROPERTIES:
 :UNNUMBERED: t
@@ -151,7 +190,7 @@ out that package is not only written in R. The core parts are coded in C++, sinc
 
 Being that =markovchain= is widely used, a lot of methods could be improved from the mathematical correctness
 perspective (for example the computation of steady states could return a linearly dependent base of the
-convex space of steady states, which is not correct) and the computational efficiency one (use less
+convex space of steady states, which is not correct) and the computational efficiency one (use fewer
 iterative methods and more algebraic ones, improve efficiency for methods in general). Effiency is extremely
 important because it can represent the difference between being able to analyze a Markov chain with $10\times 10$
 dimension transition matrix or a $100\times 100$ one. Furthermore, the package was lacking methods to perform a more complete
@@ -1923,7 +1962,7 @@ However, the aforementioned algorithm entails several problems:
 1. Algorithms to compute eigen vectors are iterative [fn::[[https://en.wikipedia.org/wiki/Eigenvalue_algorithm#Iterative_algorithms]]] and can take up to $\algcomp{m^3}$ or $\algcomp{m^4}$ (in each iteration!). Also, because of the use of convergence, we could end up having rounding problems (i.e. how to securely search for the $1$ eigen values) and uncertainty about the algorithmic complexity (we do not know how many iterations we need for them to converge beforehand).
 2. Taking real parts does not ensure we will end up with linearly independent eigen vectors. Let us propose a counterexample of this. If the matrix $P$ has real eigen vectors $\{u, v\}$ which are linearly independent and are tied to the eigen value $1$, then $\{u + iu, u + iv\}$ are also independent eigen vectors whose real parts are $\{u,u\}$. We cannot assure that the eigen values computation method is going to output real eigen vectors only (we can only make such an assurance when the matrix $P$ is symmetric).
 
-As result, we could get less steady states than we should.
+As result, we could get fewer steady states than we should.
 
 **** Improved approach
 
@@ -1932,7 +1971,7 @@ instead of having and uncertain iterative method. Following the theoretical sect
 fulfilled that objective.
 
 Let $P_1, \ldots, P_r$ be the decomposition of the transition matrix $P$ for its recurrent classes,
-as expressed in its canonic form \eqref{eq:canonic-form}. Solving the system from Lemma
+as expressed in its canonic form \eqref{eq:canonic-form}. Solving all the systems from Lemma
 \eqref{lemma:steady-states-computation} for each $k = 1, \ldots, r$ can be done in $\algcomp{m^2}$.
 Therefore, the total cost of the algorithm, since computing recurrent classes is $\algcomp{m^2}$,
 is $\algcomp{m^2}$.
@@ -1984,7 +2023,7 @@ $\algcomp{m^2}$. This algorithm is based on Definition \eqref{def:irreducible}.
 \end{algorithm}
 
 Note that for $P_{m\times m}$, computing the power $P^n$ using the normal matrix product algorithm and
-iterating is $\algcomp{n \cdot m^3}$. The naive algorithm to compute $P^{m^2 - 2m + 2}$, which is what
+iterating is $\algcomp{m^3 \cdot n}$. The naive algorithm to compute $P^{m^2 - 2m + 2}$, which is what
 we need by means of Lemma \eqref{lemma:ergodic-pos-diagonal}, would be $O(m^5)$. But we can think of a
 better way of doing this, since every number can be expressed as a sum
 of powers of $2$ (we can encode an arbitrary number using binary representation). Algorithm
@@ -1992,7 +2031,7 @@ of powers of $2$ (we can encode an arbitrary number using binary representation)
 
 \begin{algorithm}[H]
 \begin{algorithmic}[1]
-  \REQUIRE $P_{m \times m}$ an stochastic matrix
+  \REQUIRE $P_{m \times m}$ a stochastic matrix
   \REQUIRE $n$ the exponent
   \NEWLINE
   \STATE{$Q:= I_{m \times m}$}
@@ -2001,7 +2040,7 @@ of powers of $2$ (we can encode an arbitrary number using binary representation)
     \IF{$n \mod(2) = 1$}
       \STATE{$Q := Q + A$}
     \ENDIF
-    \STATE{$A = A * A$}
+    \STATE{$A := A * A$}
     \STATE{$n := n / 2$}
   \ENDWHILE
   \RETURN{$Q$}
@@ -2016,7 +2055,7 @@ matrix may be regular. This procedure works in $\algcomp{m^3 \log(m)}$.
 
 \begin{algorithm}[H]
 \begin{algorithmic}[1]
-  \REQUIRE $P_{m \times m}$ an stochastic matrix
+  \REQUIRE $P_{m \times m}$ a stochastic matrix
   \NEWLINE
   \STATE{$d = \#\{i \in \{1, \ldots, m\}: p_{ii} > 0\}$}
   \IF{$d > 0$}
@@ -2037,15 +2076,15 @@ The second one, \eqref{alg:absorptionProbabilities} runs in $\algcomp{m^3}$ foll
 
 \begin{algorithm}[H]
 \begin{algorithmic}[1]
-  \REQUIRE $P_{m \times m}$ an stochastic matrix
+  \REQUIRE $P_{m \times m}$ a stochastic matrix
   \REQUIRE $C$ destination set, $\emptyset$ by default.
   \NEWLINE
   \IF{$C = \emptyset$}
-    \STATE{$B = \texttt{recurrentStates}(R)$}
+    \STATE{$A = \texttt{transientStates}(R)$}
   \ELSE
-    \STATE{Set $B = \{1, \ldots, m\} - C$}
+    \STATE{Set $A = \{1, \ldots, m\} - C$}
   \ENDIF
-  \STATE{Compute $R = P[B, B]$}
+  \STATE{Compute $R = P[A, A]$}
   \STATE{Compute the fundamental matrix $N = (I - R)^{-1}$}
   \STATE{Compute $t = N \cdot \onecol$}
   \RETURN{$t$}
@@ -2056,11 +2095,11 @@ The second one, \eqref{alg:absorptionProbabilities} runs in $\algcomp{m^3}$ foll
 
 \begin{algorithm}[H]
 \begin{algorithmic}[1]
-  \REQUIRE $P_{m \times m}$ an stochastic matrix
+  \REQUIRE $P_{m \times m}$ a stochastic matrix
   \NEWLINE
   \STATE{$A = \texttt{transientStates}(P)$}
   \STATE{$B = \texttt{recurrentStates}(R)$}
-  \STATE{Compute $R = P[B, B]$}
+  \STATE{Compute $R = P[A, A]$}
   \STATE{Compute the fundamental matrix $N = (I - R)^{-1}$}
   \STATE{Compute $F^{*} = N \cdot P[A, B]$}
   \RETURN{$F^{\ast}$}
@@ -2147,7 +2186,7 @@ systems, and complexity of =commClassesKernel= is $\algcomp{m^2}$, this procedur
 
 \begin{algorithm}[H]
 \begin{algorithmic}[1]
-  \REQUIRE $P_{m \times m}$ an stochastic matrix
+  \REQUIRE $P_{m \times m}$ a stochastic matrix
   \NEWLINE
   \STATE{$[C,v] = \texttt{commClassesKernel(P)}$}
   \NEWLINE
@@ -2177,12 +2216,12 @@ since it needs to call Algorithm \eqref{alg:hittingProbs}.
 
 \begin{algorithm}[H]
 \begin{algorithmic}[1]
-  \REQUIRE $P_{m \times m}$ an stochastic matrix
+  \REQUIRE $P_{m \times m}$ a stochastic matrix
   \NEWLINE
   \STATE{$(f_{ij}) = \texttt{hittingProbs}(P)$}
   \FOR{$j \in \{1, \ldots, m\}$}
     \STATE{$\texttt{isOne := } f_{jj} = 1$}
-    \IF{$not \, \texttt{isOne}$}
+    \IF{not \texttt{isOne}}
       \STATE{$r = \frac{1}{1 - f_{jj}}$}
     \ENDIF
     \FOR{$i \in \{1, \ldots, m\}$}
@@ -2214,7 +2253,7 @@ since it computes an inverse matrix.
   \REQUIRE $C$ destination set, $\emptyset$ by default.
   \NEWLINE
   \IF{$C = \emptyset$}
-    \STATE{Compute $w = \texttt{steadyStates}(P)$ (there should be only one)}
+    \STATE{Compute $w = \texttt{steadyStates}(P^t)$ (there is only one)}
     \STATE{Compute $Z = (I - P + W)^{-1}$}
     \STATE{Compute $m_{ij} = (Z_{jj} - Z_{ij}) * w^{-j}$ for all $i, j \in \{1, \ldots, m\}$}
     \RETURN{$M = (m_{ij})$}
@@ -2233,7 +2272,7 @@ Markov chain. Thus, the following algorithm has been added to the package ($\alg
 
 \begin{algorithm}[H]
 \begin{algorithmic}[1]
-  \REQUIRE $P_{m \times m}$ an stochastic matrix
+  \REQUIRE $P_{m \times m}$ a stochastic matrix
   \NEWLINE
   \STATE{$(u_1 | \ldots | u_n) = \texttt{steadyStates}(P^t)$}
   \STATE{$r = (0, \ldots, 0)$}
@@ -2251,14 +2290,14 @@ Markov chain. Thus, the following algorithm has been added to the package ($\alg
 \end{algorithm}
 
 ** Reachability
-Let us define $sign(P)_{ij} = \twopartdefow{1}{p_{ij} > 0}{0}$ for $P$ an stochastic matrix.
+Let us define $sign(P)_{ij} = \twopartdefow{1}{p_{ij} > 0}{0}$ for $P$ a stochastic matrix.
 Former algorithm to compute the reachability matrix (entry $(i, j)$ is $1$ iff $i \goto j$, $0$ otherwise)
 was $\algcomp{m^5}$ since it computed $\left[sign(P + I)\right]^{m - 1}$. Using Algorithm
 \eqref{alg:matrixPow} we can achieve a better $\algcomp{m^3 \log(m)}$ algorithm.
 
 \begin{algorithm}[H]
 \begin{algorithmic}[1]
-  \REQUIRE $P_{m \times m}$ an stochastic matrix
+  \REQUIRE $P_{m \times m}$ a stochastic matrix
   \NEWLINE
   \STATE{$A = sign(P + I)$}
   \STATE{$B = \texttt{matrixPow}(A, m - 1)$}
@@ -2295,7 +2334,6 @@ be $\algcomp{m^2}$ at most.
 \caption{\texttt{is.accessible} $j$ from $i$}
 \label{alg:is.accessible.i.j}
 \end{algorithm}
-
 
 * Conclusions and future work
 Firstly a few considerations should be made:
