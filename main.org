@@ -17,45 +17,6 @@
 #+latex_header: \input{config/macros}
 
 \newpage
-* Authenticity declaration :ignore:
-:PROPERTIES:
-:UNNUMBERED: t
-:END:
-
-\thispagestyle{empty}
-
-\vspace*{3cm}
-
-\begin{center}
-\textsc{Declaración}
-\end{center}
-
-\vspace*{3.5cm}
-
-En cumplimiento de la normativa aprobada en Consejo de Gobierno de 4 de marzo de 2013,
-sobre Directrices de la Universidad de Granada para el desarrollo de la asignatura "Trabajo Fin
-de Máster" de sus títulos de máster (Art 8,4)
-
-\vspace*{1cm}
-\begin{center}
-\Large \textbf{D.D\textordfeminine} \dotuline{\textsc{Ignacio Cordón Castillo}\hspace*{\fill}} \normalsize
-\end{center}
-
-\vspace*{1cm}
-
-Asume la originalidad del trabajo fin de máster, entendida en el sentido de que no ha utilizado
-fuentes sin citarlas debidamente.
-
-\vspace*{1cm}
-Granada, a \septdate\today
-
-\begin{flushright}
- \begin{tabular}{m{5.5cm}}
-     \img{imgs/firma_nacho.png}{0.45} \\
-     Fdo: Ignacio Cordón Castillo
- \end{tabular}
-\end{flushright}
-
 * Acknowledgments
 :PROPERTIES:
 :UNNUMBERED: t
@@ -1756,7 +1717,7 @@ modification of Tarjan's algorithm from [[citep:tarjan]].
     \FOR{$i \in L_k$}
       \STATE{$v[i] := \texttt{isClosed}$}
       \FOR{$j \in L_k$}
-        \STATE{$C_{ij} = true$}
+        \STATE{$C_{ij} := true$}
       \ENDFOR
     \ENDFOR
   \ENDFOR
@@ -1832,7 +1793,7 @@ was $\algcomp{m^4}$.
 \begin{algorithm}[H]
 \begin{algorithmic}[1]
   \REQUIRE $P_{m \times m}$ an stochastic matrix
-  \STATE{Do $[C, v] = \textrm{\texttt{commClassesKernel}}$}
+  \STATE{Do $[C, v] = \textrm{\texttt{commClassesKernel}}(P)$}
   \STATE{Mark all states' class as not computed :
          $w = (\underset{(1)}{false}, \ldots, \underset{(m)}{false})$
   }
@@ -1840,7 +1801,7 @@ was $\algcomp{m^4}$.
   \NEWLINE
   \FOR{$i \in \{1, \ldots, m\}$}
     \STATE{$B= \emptyset$}
-    \IF{not $w[i]$ (class not computed)}
+    \IF{not $w[i]$ (not computed class)}
       \FOR{$j \in \{1, \ldots, m\}$}
          \IF{$C_{ij}$}
             \STATE{$B := B \bigcup \{j\}$}
@@ -1863,7 +1824,7 @@ recurrent states, since the ones for transient classes / states are similar (the
 the package too).
 
 Note that for DTMCs, Corollary \eqref{corollary:comm-recurrence} guarantees us that recurrent classes
-and closed classes are the same. \texttt{recurrentClasses} algorithm is quite similar to
+and closed classes are the same. \texttt{recurrentClasses} algorithm similar to
 \texttt{communicatingClasses} one, with the difference that parsing the communicating matrix we should
 check that the class for the state we are inspecting is closed.
 
@@ -1881,7 +1842,7 @@ Algorithm \eqref{alg:recurrentClasses} and Algorithm \eqref{alg:recurrentStates}
   \NEWLINE
   \FOR{$i \in \{1, \ldots, m\}$}
     \STATE{$B = \emptyset$}
-    \IF{$v[i]$ (class closed) and not $w[i]$ (class not computed)}
+    \IF{$v[i]$ (closed class) and not $w[i]$ (not computed class)}
       \FOR{$j \in \{1, \ldots, m\}$}
          \IF{$C_{ij}$}
             \STATE{$B := B \bigcup \{j\}$}
@@ -1918,7 +1879,7 @@ Algorithm \eqref{alg:recurrentClasses} and Algorithm \eqref{alg:recurrentStates}
 
 *** Steady States
 **** Original approach
-The original algorithm present in the package consisted in trying to compute the eigen vectors for
+The original algorithm in the package consisted in trying to compute the eigen vectors for
 the eigen value $1$ and normalize each one by its sum. If some negative value arose (even after
 normalizing and obtaining probability vectors), then the transition matrix was subsetted to retain
 just the states corresponding to recurrent states, same procedure was applied (computing eigen vectors) and
@@ -1955,14 +1916,14 @@ eigen vectors to analyze flaws in that approach.
 
 
 Note the step of taking $(u_1, \ldots, u_l) = (Re(v_1), \ldots, Re(v_l))$ is fundamented in the fact
-that if $e_j \in \complexes$ is eigen value for $P$, and $P \cdot u_j = e_j \cdot v_j$, i.e. $u_j$ is an eigen vector tied to $e_j$, then $Re(v_j$ and $Im(v_j)$ are also eigen vectors tied to $e_j$.
+that if $e_j \in \complexes$ is eigen value for $P$, and $P \cdot u_j = e_j \cdot u_j$, i.e. $u_j$ is an eigen vector tied to $e_j$, then $Re(v_j)$ and $Im(v_j)$ are also eigen vectors tied to $e_j$.
 
 However, the aforementioned algorithm entails several problems:
 
 1. Algorithms to compute eigen vectors are iterative [fn::[[https://en.wikipedia.org/wiki/Eigenvalue_algorithm#Iterative_algorithms]]] and can take up to $\algcomp{m^3}$ or $\algcomp{m^4}$ (in each iteration!). Also, because of the use of convergence, we could end up having rounding problems (i.e. how to securely search for the $1$ eigen values) and uncertainty about the algorithmic complexity (we do not know how many iterations we need for them to converge beforehand).
 2. Taking real parts does not ensure we will end up with linearly independent eigen vectors. Let us propose a counterexample of this. If the matrix $P$ has real eigen vectors $\{u, v\}$ which are linearly independent and are tied to the eigen value $1$, then $\{u + iu, u + iv\}$ are also independent eigen vectors whose real parts are $\{u,u\}$. We cannot assure that the eigen values computation method is going to output real eigen vectors only (we can only make such an assurance when the matrix $P$ is symmetric).
 
-As result, we could be could get less steady states than we should.
+As result, we could get less steady states than we should.
 
 **** Improved approach
 
@@ -2037,7 +1998,7 @@ of powers of $2$ (we can encode an arbitrary number using binary representation)
   \STATE{$Q:= I_{m \times m}$}
   \STATE{$A = P$}
   \WHILE{$n > 0$}
-    \IF{$n mod(2) = 1$}
+    \IF{$n \mod(2) = 1$}
       \STATE{$Q := Q + A$}
     \ENDIF
     \STATE{$A = A * A$}
@@ -2045,13 +2006,13 @@ of powers of $2$ (we can encode an arbitrary number using binary representation)
   \ENDWHILE
   \RETURN{$Q$}
 \end{algorithmic}
-\caption{$\algcomp{log(n)}$ \texttt{matrixPow} algorithm}
+\caption{$\algcomp{m^3\log(n)}$ \texttt{matrixPow} algorithm}
 \label{alg:matrixPow}
 \end{algorithm}
 
 Using this Algorithm \eqref{alg:matrixPow}, Corollary \eqref{corollary:regular-cond} and Lemma
 \eqref{lemma:ergodic-pos-diagonal}, we can arrive to an efficient procedure to compute whether a
-matrix may be regular. This procedure works in $\algcomp{log(m) m^3}$.
+matrix may be regular. This procedure works in $\algcomp{m^3 \log(m)}$.
 
 \begin{algorithm}[H]
 \begin{algorithmic}[1]
@@ -2289,6 +2250,53 @@ Markov chain. Thus, the following algorithm has been added to the package ($\alg
 \label{alg:mrt}
 \end{algorithm}
 
+** Reachability
+Let us define $sign(P)_{ij} = \twopartdefow{1}{p_{ij} > 0}{0}$ for $P$ an stochastic matrix.
+Former algorithm to compute the reachability matrix (entry $(i, j)$ is $1$ iff $i \goto j$, $0$ otherwise)
+was $\algcomp{m^5}$ since it computed $\left[sign(P + I)\right]^{m - 1}$. Using Algorithm
+\eqref{alg:matrixPow} we can achieve a better $\algcomp{m^3 \log(m)}$ algorithm.
+
+\begin{algorithm}[H]
+\begin{algorithmic}[1]
+  \REQUIRE $P_{m \times m}$ an stochastic matrix
+  \NEWLINE
+  \STATE{$A = sign(P + I)$}
+  \STATE{$B = \texttt{matrixPow}(A, m - 1)$}
+  \RETURN{$B$}
+\end{algorithmic}
+\caption{\texttt{is.accessible} algorithm}
+\label{alg:is.accessible}
+\end{algorithm}
+
+To compute reachability from a state single $i$ to a state $j$, former algorithm was $\algcomp{m^5}$
+also, since it computed the whole reachability matrix. We have changed it for a DFS exploration, which would
+be $\algcomp{m^2}$ at most.
+
+\begin{algorithm}[H]
+\begin{algorithmic}[1]
+  \REQUIRE $P_{m \times m}$ an adjacency matrix
+  \REQUIRE $i,j \in \{1, \ldots, m\}$
+  \NEWLINE
+  \STATE{$\texttt{exploring := stack\{i\}}$}
+  \STATE{$\texttt{v := } (false, \ldots, false)_{1 \times m}$}
+  \STATE{$\texttt{reachable := } false$}
+  \WHILE{$\texttt{exploring} \neq \emptyset$ and not \texttt{reachable}}
+    \STATE{$k := \texttt{exploring.pop()}$}
+    \STATE{$v[k]: = true$}
+    \STATE{$\texttt{reachable := } k = j$}
+    \FOR{$l \in \{1, \ldots, m\}$}
+      \IF {$\texttt{not } v[l]$}
+        \STATE{\texttt{exploring.push\{l\}}}
+      \ENDIF
+    \ENDFOR
+  \ENDWHILE
+  \RETURN{\texttt{reachable}}
+\end{algorithmic}
+\caption{\texttt{is.accessible} $j$ from $i$}
+\label{alg:is.accessible.i.j}
+\end{algorithm}
+
+
 * Conclusions and future work
 Firstly a few considerations should be made:
 
@@ -2296,28 +2304,28 @@ Firstly a few considerations should be made:
 + Lack of appropriate academic material has been a constant throughout this project: we could either find good mathematical proofs, but lacking sense of how algorithms could be implemented in a computer, or the other way around.
 + The algorithms presented in chaper [[R package]] are in their vast majority an original work based on my own mathematical and computer science knowledge. They are the result of a long process of trial and error, and although only final versions made it to this report, lots of intermediate versions for them were lost along the way. The rationale behind this is that the development workflow looked something alike: identify where the former algorithms of the package could fail or give incomplete results, code a proposal, test it, improve it, find its weak points, write it in paper, analyze it mathematically and algorithmically, think of new improvements and repeat from second step onwards until a satisfactory point was reached.
 
-** Conclussions
+** Conclusions
 Therefore, and having that into account, the main values of this work can be summarized in the following points:
 
-+ Open knowledge: the report is hosted at a public repository [fn::https://github.com/ncordon/graduate-dissertation] so that everyone can consult it, improve it or use its information citing the author. The coding efforts have been integrated into the R package, available at CRAN official repository [fn::https://cran.r-project.org/web/packages/markovchain], as open source software, which means everyone can contribute to it, propose ideas, use it or modify it (as long as they give credit to their authors). Autorship of the relevant parts of the sofware described in this project can be corroborated with the history of the Github public respository. [fn::https://github.com/spedygiorgio/markovchain/commits?author=ncordon].
++ Open knowledge: the report is hosted at a public repository [fn::https://github.com/ncordon/graduate-dissertation] so that everyone can consult it, improve it or use its information citing the author. The coding efforts have been integrated into the R package, available at CRAN official repository [fn::https://cran.r-project.org/web/packages/markovchain], as open source software, which means everyone can contribute to it, propose ideas, use it or modify it (as long as they give credit to their authors). Authorship of the relevant parts of the sofware described in this project can be corroborated with the history of the Github public respository. [fn::https://github.com/spedygiorgio/markovchain/commits?author=ncordon].
 + Cooperation: having our efforts integrated in an open source software package means that we are adding more value to what other people did before us, being able to impact more people that if we had presented a separate software.
-+ Research and development: the main intent of this work was to do scientific programming driven by mathematical viewpoints and that is what we have tried to capture along this work. I believe the level of correctness that has been achieved is really satisfaying. And in spite of all the struggles to grasp actionable mathematical knowledge from different sources, in the end we have been able to manipulate theoretical constructs in an useful way from the software perspective.
++ Research and development: the main intent of this work was to do scientific programming driven by mathematical viewpoints and that is what we have tried to capture along this work. I believe the level of correctness that has been achieved is really satisfaying. And in spite of all the struggles to grasp actionable mathematical knowledge from different sources, in the end we have been able to manipulate theoretical constructs in an useful way for our coding purposes.
 + Versatility: Markov chains may not include extremely complicated mathematics (although the learning curve is hard due to the abundance of slightly similar but different concepts), but they certainly require skills in different areas, as it was stated alongside this work: graphs, linear algebra, probability or programming, to name a few. In adition to this, project is multilanguage, with a mixture of R and C++ languages, which certainly has posed more challenges to the endeavour of improving the library.
 + A lot of not so visible work: sending the software to a repository as CRAN implies that the package has to be thorougly documented, all the tests for the algorithms included in it have to be correctly checked and ultimately we had to verify CRAN standards to publish. This implies a huge maintenance work that may not be fairly reflected in this report.
 
 ** Future work
 We propose the following lines of further development for the package:
 
-+ Keep improving =markovchain= R library, porting the relevant parts to C++ when possible. Objective for following months is inference part of the package.
++ Keep improving =markovchain= R library, porting the relevant parts to C++ wherever possible. Objective for following months is inference part of the package.
 + Right now the C++ part is tied (less with the work carried in this project) to the R part. A suitable goal is to completely split it from the R part, and use it as a backend for both the R package and a forseeable Python package. In particular the former one could be coded extremely fast due to the core of the functionality been already curated and in good developing state; only missing part is the glue code to make Python communicate with C++, but that can be achieved with C-Python API [fn::[[https://docs.python.org/3/c-api/intro.html]]] easily.
-+ Among the algorithms that could be improved, reachability matrix one could be improved with Strassen method [[citep:strassen]]. This algorithm is $\algcomp{m^{2.81}}$ in algorithmic complexity, where $m$ is the number of states of the Markov chain. That would make reachability matrix computation $\algcomp{m^{2.81} \log(m)}$, which is better than the current $\algcomp{m^{3} \log(m)}$. It could be combined with "bits packing" and the use of the =AND= operator instead of product for elements: groupping rows and columnsin packs of 64 bits, with $1$ being reachable state and $0$ not reachable. Let $(A \otimes B)_{i,j} = \sum_{k = 1}^{m/64} \bigg(a_{ik} \textrm{ AND } b_{kj}\bigg)$. Then although the resulting algorithm would still be $\algcomp{m^{2.81} \log(m)}$, hidden constants would be very small: $\algcomp{\frac{1}{64^{2.81}} \cdot m^{2.81} log(m)}$. With that custom product:
++ Certain algorithms could be further improved, as Algorithm \eqref{alg:matrixPow}, where we could use Strassen method [[citep:strassen]]. The former is $\algcomp{m^{2.81}}$ in algorithmic complexity, where $m$ is the number of states of the Markov chain. That would make reachability matrix computation $\algcomp{m^{2.81} \log(m)}$, which is better than the current $\algcomp{m^{3} \log(m)}$. It could be combined with "bits packing" and the use of =AND= operator instead of product for elements to generate the reachability matrix: groupping rows and columns in packs of 64 bits, with $1$ being reachable state and $0$ not reachable. Let $(A \otimes B)_{i,j} = \sum_{k = 1}^{m/64} \bigg(a_{ik} \textrm{ AND } b_{kj}\bigg)$. Then although the resulting algorithm would still be $\algcomp{m^{2.81} \log(m)}$, hidden constants would be very small: $\algcomp{\frac{1}{64^{2.81}} \cdot m^{2.81} log(m)}$. With that custom product:
 
 \begin{eqnarray*}
-P^{m - 1} &=& \left(\begin{array}{ccccccccccc}
+P^{m} &=& \left(\begin{array}{ccccccccccc}
   1 & 0 & 1 & 0 & 1 & 0 & 1 & 0 & 1 & 0 &\ldots \\
   0 & 1 & 0 & 0 & 0 & 1 & 1 & 1 & 0 & 0 &\ldots \\
   \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \ddots
-  \end{array}\right)^{m - 1} = \\
+  \end{array}\right)^{m} = \\
 &=& \left(\begin{array}{cc}
   1010101010\ldots &\ldots \\
   0100011100\ldots &\ldots \\
@@ -2334,7 +2342,7 @@ P^{m - 1} &=& \left(\begin{array}{ccccccccccc}
   \overset{1}{\overset{0}{\overset{0}{\vdots}}} & \overset{0}{\overset{1}{\overset{0}{\vdots}}} \ddots \\
   \end{array}
 \right)
-}_{m - 2}
+}_{m - 1}
 \end{eqnarray*}
 + Try to write an article for Journal of Statistical Software [fn::[[https://www.jstatsoft.org/index]]], a [[https://www.scimagojr.com/journalsearch.php?q=12137&tip=sid][Q1]] (in Software and in Statistics and Probability categories) open access journal which publishes papers for sofware with highly mathematical foundation. Given the importance of the package and the improvements it is receiving it would be suitable to publish it, as long as we keep adding valuable content to it and we fulfill our purpose of creating bindings for Python.
 
@@ -2373,7 +2381,7 @@ First we need to load =markovchain=:
 library("markovchain")
 #+end_src
 
-We define the data. We will be using Drunkard's Walk example from \cite{grinstead}.
+We define the data. We will be using Drunkard's Walk example from \citep{grinstead}.
 
 #+attr_latex: :options style=vs, bgcolor=light-gray
 #+begin_src R :session examples :results output :exports both
@@ -2510,9 +2518,9 @@ meanAbsorptionTime(mc)
 : 2 3 4
 : 3 4 3
 
-that is, $3$ steps if that person start in corner $2, 4$, otherwise $4$ steps.
+that is, $3$ steps if that person start in corners $2, 4$, otherwise $4$ steps.
 
-To compute the steady states of the Markov chain:
+To compute a base for the steady states of the Markov chain:
 
 #+attr_latex: :options style=vs, bgcolor=light-gray
 #+begin_src R :session examples :results output :exports both
@@ -2567,13 +2575,13 @@ couple of examples) of reduced dimension from a book, find the analytical soluti
 variable, and check that the result of the methods coded in the package did not change against this
 solution across different revisions of the software.
 
-This has the problem that it lacks edge cases, and it is misses the point of testing a mathematical
+This has the problem that it lacks edge cases, and it misses the point of testing a mathematical
 property $\forall x P(x)$, because the $\forall$ becomes just a couple of examples.
 
 We have designed a better approach for testing the package:
 
 1. Still test against known examples taken from books (giving them credit for that). More examples in this regard have been added.
-1. Generate random Markov chains of random dimnension, given both by by-rows stochastic matrices and by-column ones. We cannot generate non numerable infinite instances of course, to cover the $\forall$ that quantifies the property, but at least we should get a little more closer than just a couple of examples.
+1. Generate random Markov chains of random dimnension, given both by-rows stochastic matrices and by-column ones. We cannot generate non numerable infinite instances of course, to cover the $\forall$ that quantifies the property, but at least we should get a little more closer than just a couple of examples.
 1. Of course we cannot compute the solution for random instances by hand. However, we can check that different implications, equivalences and characteristic equation systems inspired from the chapter [[Markov chains]] are verified by the result of the coded methods.
 1. All algorithms coded in chapter [[R package]] have been tested using this approach, and work done in this sense can be consulted in the =testthat= [fn::https://github.com/spedygiorgio/markovchain/tree/master/tests/testthat] folder from the project.
 
@@ -2610,7 +2618,7 @@ transition matrix or Markov chains with strictly positive matrices):
 + Communicating classes matrix is symmetric.
 + Rows of the same class can be permuted in a communicating classes matrix and the matrix does not change, i.e. if $i,j$ are in the same class, they should communicate with same states.
 + All classes are closed for identity matrices.
-+ Communicating class matrix from \texttt{commClassesKernel} should coincide with the matrix arising from $(sign(P) + I)^{m - 1}$ where $sign(P)_{ij} = \twopartdefow{1}{p_{ij} > 0}{0}$ where $m$ is the number of states.
++ Communicating class matrix from \texttt{commClassesKernel} should coincide with the matrix arising from $(sign(P) + I)^{m - 1}$ where $m$ is the number of states.
 + Communicating classes are a partition of the states of the Markov chain.
 
 **** =testMarkovChainsClassification.R=
