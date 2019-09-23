@@ -1,0 +1,162 @@
+\subsection{Classification of states}
+ \begin{frame}\frametitle{Communicating classes}
+
+    \begin{definition}
+    The state \(i\in S\) communicates with \(j\in S\), and we will write it like 
+    \(i \rightarrow j\) iff \(p_{i,j}^{(n)} > 0\) for some \(n > 0\). It is a 
+    transitive relation.
+
+    If \(i \goto j\) and \(j \goto i\) then we will say that both states communicate and
+    we will represent it as \(i \dgoto j\).
+    \end{definition}
+
+    \begin{definition}
+    State \(i\in S\) is essential if \(i \goto j\) always implies \(j \goto i\). We denote the set
+    of essential states by \(S^{\ast}\).
+    \end{definition}
+
+    \begin{lemma}
+    If \(i\in S^{\ast}\) and \(i \goto j\), then \(j \in S^{\ast}\)
+    \end{lemma}
+
+    \begin{proposition}
+    \(\dgoto\) is an equivalence relation in \(S^{\ast}\), and we can decompose:
+
+    \[
+    S^{\ast} = C_1 \cup C_2 \cup \ldots \cup C_r
+    \]
+
+    where for every \(i, j \in C_k\), it holds \(i \dgoto j\).
+    \end{proposition}
+ \end{frame}
+
+ \begin{frame} \frametitle{Canonic form}
+    \vspace{2em}
+    For a DTMC, we can reorder the states of the matrix: let $P_k$ be the transition matrix for 
+    the states in $C_k$ (which only communicate with themselves); $Q_k$ the probabilities of
+    going from $S - S^{\ast}$ to $C_k$ (and never returning); and $R$ the probability
+    of the non-essential states communicating with themselves. If on top of that we consider:
+    
+    \begin{enumerate}
+    \item States are ordered inside each class, \(S - S^{\ast}\) included.
+    \item \(C_k = [s_k]\) where \(s_k\) is the minimum of \(C_k\) and \(s_{i} < s_{i + 1}\) for all \(i\).
+    \end{enumerate}
+    
+    then the transition (stochastic by rows) matrix we get is:
+ 
+  \[
+  \left(\begin{array}{cccccccccc}
+  \gcell P_1    &        &            &       &        &       &            &        & \\
+                & \rcell & \rcell     & \rcell&        &       &            &        & \\
+                & \rcell & \rcell P_2 & \rcell&        &       &            &        & \\
+                & \rcell & \rcell     & \rcell&        &       &            &        & \\
+                &        &            &       & \ddots &       &            &        & \\
+                &        &            &       &        &\bcell &   \bcell   & \bcell & \\
+                &        &            &       &        &\bcell & \bcell P_r & \bcell & \\
+                &        &            &       &        &\bcell &   \bcell   & \bcell & \\
+    \rowcolor{gray!20}
+      Q_1       &        &   Q_2      &       & \ldots &       &    Q_r     &        & R\\
+  \end{array}\right)
+  \]
+ \end{frame}
+
+ \begin{frame} \frametitle{Recurrence and transcience}
+    \begin{definition}
+    An state \(i\in S\) is called recurrent iff \(f_{i,i} = 1\) and transient iff \(f_{i,i} < 0\)
+    \end{definition}
+
+    \begin{proposition}
+    If \(i\) is a recurrent state and \(i\) communicates with \(j\), then 
+    \(f_{j,i} = f_{i,j} = f_{j,j} = 1\), and \(j\) is recurrent. Therefore, all the states of a
+    communicating class are either recurrent or transient.
+    \end{proposition}
+    
+    \begin{definition}
+    We will say a communicating class is recurrent (resp. transient) iff all of its states
+    are recurrent (resp. transient). We will say a communicating class \(C\) is closed if it
+    holds \(i \goto j\) and \(i\in C\) implies \(j\in C\).
+    \end{definition}
+    
+    \begin{proposition}
+    All the closed irreducible subchains of a DTMC are recurrent, and every DTMC has
+    at least one subchain of such type. A state is transient iff it is non-essential.
+    \end{proposition}
+  
+    \begin{corollary}
+    In a DTMC, a communicating class is recurrent iff it is closed.
+    \end{corollary}
+    
+ \end{frame}
+ 
+ \begin{frame} \frametitle{Absorption}
+    \vspace{2em}
+    
+    \begin{definition}
+    A state \(i\in S\) is absorbing iff \(p_{i,i} = 1\).
+    \end{definition}
+  
+  \begin{definition}
+    \begin{enumerate}
+    \item The absorbing time as \(\tau^{\ast} = \min \{n > 0: X_n \in S^{\ast}\}\).
+    \item The absorbing probability as \(f_{i}^{\ast} = \probi{\tau^{\ast} < \infty}\).
+    \item Taking \(j\in S^{\ast}\), we can define the probability of being absorbed by \(j\) as \(f_{i,j}^{\ast} = \probi{\tau^{\ast} < \infty, X_{\tau^{\ast}} = j}\)
+    \item Since we can decompose \(S^{\ast} = C_1 \cup C_2 \cup \ldots \cup C_r\), given \(C = C_i\), we can define the probability of the state \(i\) being absorbed by the subchain \(C\) as:
+    \end{enumerate}
+
+    \[
+    f_{i,C}^{\ast} = \probi{\tau^{\ast} < \infty, X_{\tau^{\ast}} \in C}
+    \]
+    \end{definition}
+
+    \begin{proposition}
+    The following holds for each \(i \not\in S^{\ast}, j\in S^{\ast}\):
+
+    \begin{enumerate}
+    \item \(f_i^{\ast} = \sum_{j \in S^{\ast}} p_{i,j} + \sum_{j \not\in S^{\ast}} p_{i,j} f_{j}^{\ast}\)
+    \item \(f_{i,j}^{\ast} = p_{i,j} + \sum_{k \not\in S^{\ast}} p_{i,j} f_{k,j}^{\ast}\)
+    \item \(f_{i,C}^{\ast} = \sum_{j \in C} p_{i,j} + \sum_{j \not\in S^{\ast}} p_{i,j} f_{j}^{\ast}\)
+    \end{enumerate}
+    \end{proposition}
+ \end{frame}
+ 
+ \begin{frame} \frametitle{The fundamental matrix}
+    \vspace{2em}
+    
+    \begin{proposition}
+    The following relations hold:
+
+    \[
+    F^{\ast} = (I + V)Q \qquad
+    f^{\ast} = (I + V)q
+    \]
+
+    The distribution for \(\tau^{\ast}\) is \(\probi{\tau^{\ast} = n} = R^{n - 1}q, \quad n \in \mathbb{N}\)
+    \end{proposition}
+  
+    \begin{definition}
+    The matrix \(N := (I - R)^{-1}\) is called fundamental matrix for the Markov chain. 
+    The entry \(n_{ij}\) represents the number of times the process is in transient state \(j\) 
+    if it is started in also transient state \(i\).
+    \end{definition}
+
+    \begin{definition}
+    We will call \(t_i\) to the mean number of steps before the chain is absorbed, given that 
+    the chain starts in \(i\), with \(i\) a transient state.
+    \end{definition}
+    
+    \begin{proposition}
+    If \(S - S^{\ast}\) is finite, then \(N = (I - R)^{-1}\) exists, \(N = I + V\) and:
+
+    \[
+    F^{\ast} = N\cdot Q \qquad 
+    t = N \cdot \onecol \qquad
+    f^{\ast} = 1
+    \]
+
+    where the last equation tells us the absorption would take place almost surely.
+    \end{proposition}
+  
+ \end{frame}
+
+
+

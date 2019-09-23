@@ -1,0 +1,67 @@
+\subsection{Hitting times distribution}
+ \begin{frame}\frametitle{Definition}
+    \vspace{2em}
+    
+    \begin{definition}
+    We define the hitting time for the state \(j \in S\) as 
+    $\tau_j = min \{n > 0 : X_n = j \}$
+    \end{definition}
+    
+    \begin{definition}
+    We call first hitting time probability of the state \(j\), starting at \(i\), to:
+
+    \[
+    f_{i,j}^{(n)} = P_i\left(\tau_j = n\right) = P_i\left(X_n = j, X_k \neq j \quad \forall k = 1, \ldots, n - 1 \right)
+    \]
+
+    and we will define the (first) hitting probability for \(j\) starting at \(i\) as:
+
+    \[
+    f_{i, j} := \sum_{n = 1}^{\infty} f_{i,j}^{(n)} = P_i\left(\tau_j < \infty\right) =
+    \probi{X_n = j \textrm{ for some } n > 0}
+    \]
+    \end{definition}
+    
+    The values $f_{i, j}$ verify the recurrence:
+
+    \[
+    f_{i,j} = \probi{X_1 = j} + \sum_{k \neq j} \probi {X_1 = k} \prob {\tau_j < \infty, j > 1 | X_1 = k } = p_{i,j} + \sum_{k\neq j} p_{i,k} f_{k,j}
+    \]
+
+    \begin{lemma}
+    If $f_{i,j} = 1$ and $p_{i,k} > 0$, then $f_{k,j} = 1$
+    \end{lemma}
+ \end{frame}
+ 
+ \begin{frame} \frametitle{Number of visits}
+    \vspace{2em}
+    
+    \begin{definition}
+    Taking a fixed state $j$, we can name:
+    \begin{enumerate}
+     \item The total number of visits to $j$  as $V_j = \sum_{n = 1}^{\infty} \mathds{1}_{X_n = j}$
+     \item The expected number of visited to $j$  as $\expecti{V_j}$
+    \end{enumerate}
+    \end{definition}
+    
+    \begin{proposition}
+    If $f_{j,j} \neq 1$, we have:
+
+    \[
+    \expecti{V_j} = \frac{f_{i,j}}{1 - f_{j,j}}
+    \]
+
+    Moreover, it holds $f_{j, j} = 1 \dimplies \expecti{V_j} = \infty$.
+    \end{proposition}
+    
+    \begin{proposition}
+    There is an equivalence between:
+    \begin{enumerate}
+    \item \(\exists n >0 : p_{i,j}^{(n)} > 0\) (note we will name this \(i \goto j\) afterwards)
+    \item \(\expecti{V_j} > 0\)
+    \item \(f_{i,j} > 0\)
+    \end{enumerate}
+    \end{proposition}
+
+ \end{frame}
+

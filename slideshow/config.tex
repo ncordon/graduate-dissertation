@@ -1,0 +1,244 @@
+\usepackage[spanish, es-lcroman]{babel}
+%------------------------
+% Math libraries
+%------------------------
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usepackage{tikz-cd}
+\usetikzlibrary{shapes,fit}
+\usepackage{bussproofs}
+\EnableBpAbbreviations{}
+\usepackage{mathtools}
+\usepackage{scalerel}
+\usepackage{stmaryrd}
+
+
+\usepackage{fix-cm}
+\usepackage{dsfont}
+\usepackage{ragged2e}
+\usepackage{graphicx}
+\definecolor{lightgray}{cmyk}{.30,0,0,.67} % define color using xcolor syntax
+\definecolor{midgray}{gray}{0.40}
+\usepackage{svg}
+\usepackage{listings}
+\usepackage{minted}
+\usepackage{mdframed} % Add easy frames to paragraphs
+\usepackage{lipsum} % For dummy text
+\usepackage{xparse} % Add support for \NewDocumentEnvironment
+\newmdenv[ % Define mdframe settings and store as leftrule
+  linecolor=lightgray,
+  topline=false,
+  bottomline=false,
+  rightline=false,
+  skipabove=\topsep,
+  skipbelow=\topsep
+]{leftrule}
+
+\addtobeamertemplate{block begin}{}{\justifying}
+\apptocmd{\frame}{}{\justifying}{}
+\apptocmd{\column}{}{\justifying}{}
+\let\oldenumerate=\enumerate  
+\renewenvironment{enumerate}{\justifying\oldenumerate}{\endlist}
+\let\olditem=\item% 
+\renewcommand{\item}{\olditem \justifying}
+
+
+% *************************************************************************************************************
+% Pseudocódigo de algoritmos
+% *************************************************************************************************************
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\floatname{algorithm}{Algorithm}
+\renewcommand{\listalgorithmname}{Algorithm list}
+\renewcommand{\algorithmicrequire}{\textbf{Input }}
+\renewcommand{\algorithmicensure}{\textbf{Output}}
+\makeatletter
+\def\NEWLINE{\STATE{}}
+\makeatother
+
+\usepackage{listings}
+\renewcommand{\lstlistingname}{Código}
+\definecolor{light-gray}{gray}{0.97}
+\lstset{
+  language=R,
+  literate={<-}{{\boldmath{$\gets$}}}1,
+  basicstyle=\small\linespread{1.3}\ttfamily,
+  commentstyle=\ttfamily\color{OliveGreen},
+  stringstyle=\color{Thistle},
+  numbers=left,
+  numberstyle=\scriptsize\ttfamily\color{RoyalBlue},
+  stepnumber=1,
+  numbersep=5pt,
+  backgroundcolor=\color{light-gray},
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  %frame=single,
+  tabsize=2,
+  captionpos=b,
+  breaklines=true,
+  breakatwhitespace=false,
+  %title=\lstname,
+  escapeinside={},
+  keywordstyle={},
+  morekeywords={}
+}
+
+
+
+% *************************************************************************************************************
+% Entornos
+% *************************************************************************************************************
+\usepackage{tabularx}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\usepackage{float}
+\usepackage{wrapfig}
+
+\NewDocumentEnvironment{example}{O{\textbf{Ejemplo:}}}
+{\begin{leftrule}\noindent\textcolor{black}{#1}\par}
+{\end{leftrule}}
+
+\NewDocumentEnvironment{counterex}{O{\textbf{Contraejemplo:}}}
+{\begin{leftrule}\noindent\textcolor{black}{#1}\par}
+{\end{leftrule}}
+% arg min
+\DeclareMathOperator*{\argmin}{arg\,\min }
+\DeclareMathOperator*{\argmax}{arg\,\max }
+
+% norma || ||
+\newcommand{\norm}[1]{||{#1}||}
+
+
+%\defaultfontfeatures{Ligatures=TeX}
+
+\addto\captionsspanish{%
+  \renewcommand{\proofname}%
+    {\textit{Sketch} de la prueba}%
+}
+
+\newcommand{\img}[2]{
+  \begin{center}
+  \includegraphics[width=#2\textwidth]{#1}
+  \end{center}
+}
+
+\newcommand{\imgcaption}[3]{
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[width=#3\textwidth]{#1}
+  \end{center}
+  
+  \caption[]{#2}
+\end{figure}
+}
+
+
+%------------------------
+% Theorem styles
+%------------------------
+\theoremstyle{definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+\newtheorem{definition}{Definition}
+\newtheorem{proofs}{Demonstration}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+\newtheorem{exampleth}{Example}
+
+%------------------------
+% Macros
+% ------------------------
+
+% Latex shortcuts
+\newcommand*\diff{\mathop{}\!\mathrm{d}}
+\newcommand{\tildemc}{\widetilde{X}_n}
+\newcommand{\tildex}{\widetilde{X}}
+\newcommand{\tildeP}{\widetilde{P}}
+\newcommand{\tildep}{\widetilde{p}}
+\newcommand{\mc}{$\{X_n\}$}
+\newcommand{\tildeprob}{\widetilde{p}}
+\newcommand{\expecti}[1]{\mathbb{E}_i\left[{#1}\right]}
+\newcommand{\expectj}[1]{\mathbb{E}_j\left[{#1}\right]}
+\newcommand{\probi}[1]{P_i\left({#1}\right)}
+\newcommand{\probj}[1]{P_j\left({#1}\right)}
+\newcommand{\prob}[1]{P\left({#1}\right)}
+\newcommand{\dimplies}{\Longleftrightarrow}
+\newcommand{\goto}{\rightarrow}
+\newcommand{\dgoto}{\leftrightarrow}
+
+% Commands to divide a definition / equality into two parts
+\newcommand{\twopartdef}[4]{
+  \left\{\begin{array}{ll}
+        #1 & \textrm{if } #2 \\
+        #3 & \textrm{if } #4
+  \end{array}\right.
+}
+
+\newcommand{\twopartsys}[4]{
+  \left\{\begin{array}{lcl}
+        #1 & = & #2 \\
+        #3 & = & #4
+  \end{array}\right.
+}
+
+
+\newcommand{\twopartdefow}[3]{
+  \left\{\begin{array}{ll}
+        #1 & \textrm{if } #2 \\
+        #3 & \textrm{otherwise }
+  \end{array}\right.
+}
+
+% and three parts
+\newcommand{\threepartdef}[6]{
+  \left\{\begin{array}{ll}
+        #1 & \textrm{if } #2 \\
+        #3 & \textrm{if } #4 \\
+        #5 & \textrm{if } #6
+  \end{array}\right.
+}
+
+\newcommand{\twoparteq}[2]{
+  \left\{\begin{array}{l}
+        #1\\
+        #2
+  \end{array}\right.
+}
+
+\newcommand{\threemat}[3]{
+  \left(
+    \begin{array}{ccc}
+      #1 \\
+      #2 \\
+      #3
+    \end{array}
+  \right)
+}
+
+\newcommand{\algcomp}[1]{\mathcal{O}\left(#1\right)}
+\newcommand{\card}[1]{\#{#1}}
+
+\newcommand{\bigzero}{\mbox{\normalfont\Large\bfseries 0}}
+
+% Number sets
+\newcommand{\naturals}{\mathbb{N}}
+\newcommand{\reals}{\mathbb{R}}
+\newcommand{\complexes}{\mathbb{C}}
+\newcommand{\posreals}{\mathbb{R}^{+}}
+
+% bold 1 to represent a row / col full of 1s
+\newcommand{\onecol}{\mathbf{1}}
+\newcommand{\onerow}{\onecol}
+
+\setbeamertemplate{enumerate item}{\roman{enumi}.}
+
+% To be able to color matrices
+\usepackage{blkarray}
+\usepackage{colortbl}
+\newcommand\x{\times}
+\newcommand\rcell{\cellcolor{red!20}}
+\newcommand\bcell{\cellcolor{blue!20}}
+\newcommand\gcell{\cellcolor{green!20}}

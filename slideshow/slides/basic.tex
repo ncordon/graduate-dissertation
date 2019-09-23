@@ -1,4 +1,4 @@
-\subsection{Introducción a la probabilidad}
+\subsection{Markov chains and time homogeneity}
  \begin{frame}\frametitle{Definition}
     \vspace{1em}
     \begin{definition}
@@ -30,7 +30,6 @@
     \(P(k, n) = P(k, l) \cdot P(l, n), \quad \forall k \le l \le n
     \)
     \end{proposition}
-
  \end{frame}
  
  \begin{frame} \frametitle{Time homogeneous Markov chains}
@@ -45,8 +44,19 @@
 
     \(p_{i, j}\) is called one-step transition probability and \(P = (p_{i, j})_{i, j \in S}\) the transition matrix.
     \end{definition}
+    
+    \begin{definition}
+     We will denote $P_A(X_n \in B) = P(X_n \in B | X_{0} \in A)$ and $p_{i,j}^{(n)} = P_i(X_n = j)$.
+    \end{definition}
 
     \begin{proposition}
     Given \(\{X_n\}\) a DTMC it holds \(P(m, n) = P^{n - m}\)
     \end{proposition}
+    
+    \begin{remark}
+    There is bijection between a DTMC with $S = \{1, \ldots, m\}$,
+    a by-row stochastic matrix $P$ of dimension $m \times m$ (we will note it 
+    $P_{m\times m}$) and a directed graph $G(P):=(S, E, P)$ where there is an
+    edge $e = (i, j), e \in E$ iff $p_{i,j} > 0$
+    \end{remark}
  \end{frame}
