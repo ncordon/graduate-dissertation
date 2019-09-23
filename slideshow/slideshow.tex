@@ -1,0 +1,65 @@
+\documentclass[english,9pt, notheorems, xcolor=dvipsnames]{beamer}
+% \usepackage{eulervm}
+% \usefonttheme[onlymath]{serif}
+% \everymath{\displaystyle}
+\usetheme{Execushares}
+\usepackage[USenglish]{datetime}
+\input{config}
+\usefonttheme{professionalfonts}
+%\mode<presentation>
+\makeatletter
+  \def\tutor{Giorgio Alfredo Spedicato}
+  \def\universitybadge{imgs/ugr.png}
+  \def\cclicense{../imgs/by-nc-sa.png}
+  \def\theoryrepo{\href{https://github.com/ncordon/graduate-dissertation}{ncordon/graduate-dissertation}}
+  \def\swrepo{\href{https://github.com/spedygiorgio/markovchain}{spedygiorgio/markovchain}}
+  \def\ghlogo{imgs/gh-logo.png}
+\makeatother
+
+\title{Markov chains\\ ~\\R library: \texttt{markovchain}}
+\author{Ignacio Cordón}
+\date{\today}
+
+
+\setcounter{showSlideNumbers}{1}
+
+\makeatletter
+  \def\input@path{{./slides/}}
+\makeatother
+
+\begin{document}
+ \setcounter{showProgressBar}{0}
+ \setcounter{showSlideNumbers}{0}
+
+ \frame{\titlepage}
+ 
+ % Title, objectives, toc
+  \begin{frame}{Content}
+  \tableofcontents
+ \end{frame}
+
+ \setcounter{framenumber}{0}
+ \setcounter{showProgressBar}{1}
+ \setcounter{showSlideNumbers}{1}
+ 
+ \section{Introduction}
+  \input{motivation}
+  \input{objectives}
+
+ \section{Theory and additions to \texttt{markovchain package}}
+  \input{basic}
+  %\input{pac}
+  %\input{fundamental}
+  %\input{nonuniform}
+  %\input{rpackage}
+  
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ \section{Conclusions and future work}
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+ \input{conclusions}
+ \input{futurework}
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  % Bibliography
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+ \input{references}
+\end{document}

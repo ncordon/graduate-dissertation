@@ -1,0 +1,123 @@
+\begin{frame}\frametitle{Motivation}
+ \begin{columns}
+ \begin{column}{0.5\textwidth}
+  \begin{itemize}
+   \item Highly researched area of mathematics and computer science. Used in 
+   wide variety of fields: weather prediction, actuarial science, physics,
+   speech recognition, genetics, \ldots
+   \item R is probably the most used language among statisticians and the main 
+   competitor of python in machine learning programming. The R package 
+   \href{https://github.com/spedygiorgio/markovchain}{markovchain} is an 
+   open source library which aims to provide easy representations, plotting 
+   and analysis of discrete time Markov chains.
+  \end{itemize}
+ \end{column}
+ 
+ \begin{column}{0.4\textwidth}
+   \begin{figure}[htbp]
+  \centering
+  \includesvg[width=\textwidth]{../imgs/percentile}
+  \end{figure}
+ \end{column}
+\end{columns}
+ 
+ \begin{columns}
+  \begin{column}{\textwidth}
+  \begin{itemize}
+  \item Lots of methods could be improved from the mathematical correctness perspective
+   and the computational efficiency one (use fewer iterative methods and more algebraic 
+   ones, improve efficiency for methods in general). High impact of the contributions.
+  \end{itemize}
+  \end{column}
+ \end{columns}
+\end{frame}
+
+\begin{frame}[fragile] \frametitle{Maintainability?}
+\vspace{2.7em}
+\begin{minted}[fontsize=\tiny]{C++}
+List communicatingClasses(S4 object) {
+  NumericMatrix matr = object.slot("transitionMatrix");
+  List temp = commclassesKernel(matr);
+  LogicalMatrix adjMatr = temp["C"];
+  int len = adjMatr.nrow();
+  List classesList;
+  CharacterVector rnames = rownames(adjMatr);
+  for(int i = 0; i < len; i ++) {
+    bool isNull = false;
+    LogicalVector row2Check = adjMatr(i, _);
+    CharacterVector proposedCommClass;
+    for(int j = 0; j < row2Check.size(); j++) {
+      if(row2Check[j] == true) {
+        String rname = rnames[j];
+        proposedCommClass.push_back(rname);
+      }
+    }
+    if (i > 0) {
+      for(int j = 0; j < classesList.size(); j ++) {
+        bool check = false;        
+        CharacterVector cv = classesList[j];
+        std::set<std::string> s1, s2;
+        for(int k = 0; k < cv.size(); k ++) {
+          s1.insert(as<std::string>(cv[k]));
+          if(proposedCommClass.size() > k)
+            s2.insert(as<std::string>(proposedCommClass[k]));
+        }
+        check = std::equal(s1.begin(), s1.end(), s2.begin());
+        if(check) {
+          isNull = true;
+          break;
+        }
+      }
+    }
+    if(!isNull) 
+      classesList.push_back(proposedCommClass);
+  }
+  return classesList;
+}
+\end{minted}
+\end{frame}
+
+\begin{frame}[fragile] \frametitle{Correctness}
+\begin{algorithm}[H]
+\begin{algorithmic}[1]
+  \REQUIRE $P_{m \times m}$ an stochastic matrix by columns
+  \STATE{Compute $v = (e_1, \ldots, e_k)$, eigen values for $P$, i.e.
+    \[
+      \forall e_j \in \mathbb{C} \quad \exists v_j =
+              \left(\begin{array}{c}
+                v_{j1} \\
+                \vdots \\
+                v_{jm}
+              \end{array}\right)
+      \in \mathbb{C}^m: Pv_j = e_j v_j
+    \]
+  }
+  \STATE{Compute $S = (Re(v_1) | \ldots | Re(v_k)) = (u_1| \ldots |u_k)$, eigen vectors for eigen values $1$}
+  \FOR{$i = 1, \ldots, k$}
+    \STATE{$s_i = \sum_{j = 1}^m u_{ij}$}
+    \STATE{Normalize each column $u_i := u_i / s_i$}
+  \ENDFOR
+  \NEWLINE
+  \RETURN{$S = (u_1 | \ldots | u_k)$}
+\end{algorithmic}
+\caption{Former \texttt{steadyStates} algorithm}
+\label{alg:computeSteadyStatesFirst}
+\end{algorithm}
+
+\end{frame}
+
+\begin{frame} \frametitle{Correctness}
+\begin{itemize}
+ \item Algorithms to compute eigen vectors are iterative and can take up to 
+ $\mathcal{O}(m^3)$ or $\mathcal{O}(m^4)$ (in each iteration!). Also, because of 
+ the use of convergence, we could end up having rounding problems (i.e. how 
+ to securely search for the $1$ eigen values) and uncertainty about the 
+ algorithmic complexity (we do not know how many iterations we need for them to converge beforehand).
+ \item Taking real parts does not ensure we will end up with linearly independent eigen vectors. If the matrix $P$ has real eigen vectors $\{u, v\}$ which are linearly independent and are tied to the eigen value $1$, then $\{u + iu, u + iv\}$ are also independent eigen vectors whose real parts are $\{u,u\}$. 
+\end{itemize}
+
+\bigskip
+As a result, we could get fewer steady states than we should.
+\end{frame}
+
+

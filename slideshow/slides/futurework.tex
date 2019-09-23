@@ -1,0 +1,20 @@
+\begin{frame}\frametitle{Future work}
+ \vspace{2em}\fontsize{10pt}{0}\selectfont
+ We propose the following lines of further development for the package:
+ \begin{itemize}
+ \item Keep improving the library, porting the relevant parts to C++ whereve
+ possible. Objective for following months is inference part of the package.
+ \item Completely split the C++ from the R part, use it as a backend for both the R 
+ package and a forseeable Python package.
+ \item Certain algorithms could be further improved. e.g. pow of a matrix, where we 
+ could use Strassen method. The former is $\mathcal{O}(m^{2.81})$ in algorithmic 
+ complexity, where $m$ is the number of states of the Markov chain. That would make 
+ reachability matrix computation $\mathcal{O}(m^{2.81} \log(m))$. It could be combined 
+ with "bits packing" and the use of \texttt{AND} operator
+ $(A \otimes B)_{i,j} = \sum_{k = 1}^{m/64} \bigg(a_{ik} \textrm{ AND } b_{kj}\bigg)$
+ to reduce hidden constants.
+ \item Try to write an article for Journal of Statistical Software, a Q1 (in Software 
+ and in Statistics and Probability categories) open access journal which publishes papers
+ for sofware with highly mathematical foundation.
+ \end{itemize}
+\end{frame}
