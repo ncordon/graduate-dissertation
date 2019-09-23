@@ -1,0 +1,32 @@
+\subsection{Mean first passage time}
+ \begin{frame}\frametitle{Steady states}
+    \vspace{2em}
+    
+    \begin{definition}
+    We call the expected number of steps to reach a state \(j\) from initial state 
+    \(i\) as mean first passage time \(m_{ij}\).
+    
+    We define the mean recurrence time for \(i\) as
+    \(r_{i} := \expecti{\tau_{i}} = \sum_{n = 1}^{\infty} n f_{ii}^{(n)}\)
+    \end{definition}
+    
+    \begin{proposition}
+    Defining \(M = (m_{ij})\), \(D = (\delta_{ij} \cdot r_i)\), \(C = (1) \), then 
+    it holds:
+    
+    \[
+    M = PM + C - D
+    \]
+    \end{proposition}
+    
+    \begin{proposition}
+    Given an ergodic Markov chain, then \(r_i = w_i^{-1}\) where \(w\) is its unique steady state.
+    \end{proposition}
+
+    \begin{theorem}
+    Given \(P\) an ergodic matrix, \(w\) its steady state, \(Z = (I - P + W)^{-1} = (z_{ij})\) and \(M = (m_{ij})\), it holds:
+
+    \[ m_{ij} = \frac{z_{jj} - z_{ij}}{w_j} \]
+    \end{theorem}
+    
+\end{frame}

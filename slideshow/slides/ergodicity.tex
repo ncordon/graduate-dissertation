@@ -1,0 +1,67 @@
+\subsection{Ergodicity}
+ \begin{frame}\frametitle{Ergodicity}
+    \vspace{2em}
+    
+    \begin{definition}
+    We say that a Markov chain is ergodic (or irreducible) iff all states communicate 
+    with each other
+    \end{definition}
+
+    \begin{definition}
+    We say that a Markov chain is regular iff there exists some power of its transition 
+    matrix with all positive elements
+    \end{definition}
+
+    \begin{proposition}
+    Every regular Markov chain is also ergodic. The opposite does not hold.
+    \end{proposition}
+
+    \begin{lemma}
+    Given \(P_{m\times m}\) regular, then \(P^n\) is regular for every \(n\in \naturals\)
+    \end{lemma}
+    
+    \begin{definition}
+    Given \(P\) a regular matrix, we will call \(\gamma(P) = \min\{n \in \naturals: P^n > 0\}\)
+    \end{definition}
+    
+    \begin{theorem}
+    If \(P_{m\times m}\) is regular and the shortest cycle in \(G(P)\) has length 
+    \(s\), then \(\gamma(P) \le m + s(m - 2)\), and \(A^{m + s(m - 2)} > 0\).
+    \end{theorem}
+\end{frame}
+
+\begin{frame} \frametitle{Fundamental limit theorem }
+    \vspace{2em}
+    \begin{corollary}
+    \(P_{m \times m}\) is regular iff \(P^{m^2 - 2m + 2} > 0\)
+    \end{corollary}
+
+    \begin{lemma}
+    If \(P_{m \times m}\) is ergodic and has some \(1 \le d \le m\) diagonal entries 
+    strictly positive, then \(P\) is regular and \(\gamma(P) \le 2m - d - 1\)
+    \end{lemma}
+    
+    \begin{definition}
+    We call steady state to a probability row vector \(v\) such that \(vP = v\)
+    \end{definition}
+    
+    \begin{theorem}[Fundamental theorem for ergodic Markov chains]
+
+    If \(P_{m\times m}\) is an ergodic transition matrix, then there exists a unique steady state \(w\) with all its
+    elements strictly positive. Moreover, every left eigenvector \(r: rP = r\) is linearly dependent of \(w\), and
+    every right eigenvector \(c: Pc = c\) is a multiple of \(\onecol\).
+
+    \label{th:steady-ergodic}
+    \end{theorem}
+
+    \begin{lemma}
+    An ergodic stochastic matrix \(P_{m \times m}\) has a unique steady state \(w\) that can be computed as the
+    only solution of the system:
+
+    \[
+    \twopartsys{(I - P^t)w}{0}{\onerow \cdot w}{1}
+    \]
+    \label{lemma:steady-states-computation}
+    \end{lemma}
+
+ \end{frame}

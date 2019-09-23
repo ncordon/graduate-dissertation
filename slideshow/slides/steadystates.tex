@@ -1,0 +1,29 @@
+\subsection{Steady states}
+ \begin{frame}\frametitle{Steady states}
+    \vspace{2em}
+    \begin{proposition}
+    Given \(P_{m\times m}\) an stochastic matrix, then every steady state \(v\) assigns 
+    \(0\) to the transient states, i.e. if \(i\) -th state is transient, then 
+    \((vP)_i = 0\)
+    
+    ~\\
+    \label{prop:ss-transient-zero}
+    \end{proposition}
+    Each matrix \(P_1, \ldots, P_r\) from its canonic form is irreducible. Therefore, 
+    by the fundamental theorem, each \(P_i\) has a unique steady vector \(v^{(i)}\). 
+    If \(P_i\) corresponds to the states \([l_i, l_i + 1 \ldots, u_i]\). We are going 
+    to call:
+    
+    \[
+    \widetilde{v}^{(i)}_j = \twopartdef{0}{j < l_i \textrm{ or } j > u_i}{v^{(i)}_k}{j = l_{i + k - 1}}
+    \]
+
+    \begin{proposition}
+    Given an stochastic matrix \(P\) written in its canonic form, then its space of 
+    steady states is a convex hull given by:
+
+    \[
+    \bigg\{\sum_{i = 1}^r \alpha_i \widetilde{v}^{(i)}: 0 \le \alpha_i, \sum_{i = 1}^{r} \alpha_i = 1\bigg\}
+    \]
+    \end{proposition}
+\end{frame}
