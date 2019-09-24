@@ -1,0 +1,55 @@
+\begin{frame}\frametitle{Mathematical unit tests}
+    \vspace{2.5em}
+    
+    Only testing on a couple of examples has the problem that it misses edge cases, and 
+    it skips the point of testing a mathematical property \(\forall x P(x)\).
+    
+    \begin{enumerate}
+    \item Generate random Markov chains of random dimnension, given both by-rows 
+    stochastic matrices and by-column ones.
+    \item Check that different implications, equivalences and characteristic 
+    equation systems are verified.
+    \end{enumerate}
+
+    \begin{itemize}
+    \item A state is absorbing iff it constitutes its own recurrent class.
+    \item Recurrent and transient states form a partition of states.
+    \item \(f_{i,i} < 1\) for a transient state (by defintion this must hold).
+    \item \(f_{i,j} = 1\) for \(i,j\) in same recurrent class.
+    \item \(f_{i,k} = 0\) if \(i\) is a recurrent state but \(k\) does not belong to 
+    the same class.
+    \item Union of recurrent (resp. transient) classes gives the recurrent (tesp. transient) states.
+    \item Recurrent (resp. transient) classes are disjoint.
+    \item Number of steady states should coincide with the number of recurrent classes.
+    \item Steady states for a matrix are linearly independent (since they should be a base of the convex hull).
+    \item Steady states are eigen probability vectors for the transition matrix.
+    \end{itemize}
+
+\end{frame}
+
+\begin{frame} \frametitle{Mean recurrence time}
+
+    The following algorithm has been added to the package (\(\algcomp{m^2}\) 
+    complexity):
+
+    \begin{algorithm}[H]
+    \begin{algorithmic}[1]
+    \REQUIRE $P_{m \times m}$ a stochastic matrix
+    \NEWLINE
+    \STATE{$(u_1 | \ldots | u_n) = \texttt{steadyStates}(P^t)$}
+    \STATE{$r = (0, \ldots, 0)$}
+    \FOR{Each steady state $u_i$}
+        \FOR{$j = 1, \ldots, m$}
+        \IF{$u_{ij} > 0$}
+            \STATE{$r_j := u_{ij}^{-1}$}
+        \ENDIF
+        \ENDFOR
+    \ENDFOR
+    \RETURN{$\{(j, r_j): r_j > 0\}$}
+    \end{algorithmic}
+    \caption{\texttt{meanRecurrenceTime} algorithm}
+    \label{alg:mrt}
+    \end{algorithm}
+
+\end{frame}
+

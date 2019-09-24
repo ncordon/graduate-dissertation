@@ -1,0 +1,57 @@
+\subsection{Reachability}
+ \begin{frame}\frametitle{Reachability from $j$ to $i$}
+    \vspace{2.5em}
+    
+    To compute reachability from a state single \(i\) to a state \(j\), former 
+    algorithm was \(\algcomp{m^5}\) also, since it computed the whole reachability 
+    matrix. We have  changed it for a DFS exploration, which would be \(\algcomp{m^2}\) 
+    at most.
+    \vspace{-1em}
+    
+    \begin{algorithm}[H]
+    \begin{algorithmic}[1]
+    \REQUIRE $P_{m \times m}$ an adjacency matrix
+    \REQUIRE $i,j \in \{1, \ldots, m\}$
+    \NEWLINE
+    \STATE{$\texttt{exploring := stack\{i\}}$}
+    \STATE{$\texttt{v := } (false, \ldots, false)_{1 \times m}$}
+    \STATE{$\texttt{reachable := } false$}
+    \WHILE{$\texttt{exploring} \neq \emptyset$ and not \texttt{reachable}}
+        \STATE{$k := \texttt{exploring.pop()}$}
+        \STATE{$v[k]: = true$}
+        \STATE{$\texttt{reachable := } k = j$}
+        \FOR{$l \in \{1, \ldots, m\}$}
+        \IF {$\texttt{not } v[l]$}
+            \STATE{\texttt{exploring.push\{l\}}}
+        \ENDIF
+        \ENDFOR
+    \ENDWHILE
+    \RETURN{\texttt{reachable}}
+    \end{algorithmic}
+    \caption{\texttt{is.accessible} $j$ from $i$}
+    \label{alg:is.accessible.i.j}
+    \end{algorithm}
+
+\end{frame}
+
+\begin{frame} \frametitle{Reachability}
+    Let us define \(sign(P)_{ij} = \twopartdefow{1}{p_{ij} > 0}{0}\) for \(P\) a 
+    stochastic matrix. Former algorithm to compute the reachability matrix (entry 
+    \((i, j)\) is \(1\) iff \(i \goto j\), \(0\) otherwise) was \(\algcomp{m^5}\) since 
+    it computed \(\left[sign(P + I)\right]^{m - 1}\). Using  new \texttt{matrixPow} 
+    algorithm we can achieve a better \(\algcomp{m^3 \log(m)}\) complexity.
+
+    \begin{algorithm}[H]
+    \begin{algorithmic}[1]
+    \REQUIRE $P_{m \times m}$ a stochastic matrix
+    \NEWLINE
+    \STATE{$A = sign(P + I)$}
+    \STATE{$B = \texttt{matrixPow}(A, m - 1)$}
+    \RETURN{$B$}
+    \end{algorithmic}
+    \caption{\texttt{is.accessible} algorithm}
+    \label{alg:is.accessible}
+    \end{algorithm}
+
+\end{frame}
+

@@ -1,0 +1,106 @@
+\subsection{Hitting probabilities}
+ \begin{frame}\frametitle{Hitting probabilities}
+    \vspace{3em}
+    
+    Rewriting the recurrence:     
+    
+    \[
+    f_{i,j} = \sum_{k\neq j} p_{i,k} f_{k,j}
+    \]
+
+    \fontsize{6pt}{0}\selectfont
+    \begin{equation*}
+    \begin{array}{rcl}
+    A_1 = \left(\begin{matrix}
+    -1     & p_{12}       & \ldots & p_{1m} \\
+    0      & (p_{22} - 1) & \ldots & p_{2m} \\
+    \vdots & \vdots       & \ddots & \vdots  \\
+    0      & p_{m 2}      & \ldots & (p_{mm} - 1)
+    \end{matrix}\right) & \ldots &
+    A_m = \left(\begin{matrix}
+    (p_{11} - 1) & p_{12}      & \ldots & 0 \\
+    p_{21}       & (p_{22} -1) & \ldots & 0 \\
+    \vdots        & \vdots     & \ddots & \vdots  \\
+    p_{m1}       & p_{m2}      & \ldots & -1
+    \end{matrix}\right)
+    \end{array}
+    \end{equation*}
+
+    \begin{equation*}
+    \begin{array}{rlrl}
+    X = \left(\begin{array}{c}
+    X_1 \\
+    X_2 \\
+    \vdots \\
+    X_m \\
+    \end{array}\right) &
+    X_j = \left(\begin{array}{c}
+    f_{1j} \\
+    f_{2j} \\
+    \vdots  \\
+    f_{mj}
+    \end{array}\right) &
+    L = \left(\begin{array}{c}
+    L_1 \\
+    L_2 \\
+    \vdots  \\
+    L_m
+    \end{array}\right) &
+    L_j = - \left(\begin{array}{c}
+    p_{1j} \\
+    p_{2j} \\
+    \vdots  \\
+    p_{mj}
+    \end{array}\right)
+    \end{array}
+    \end{equation*}
+    
+    \fontsize{10pt}{0}\selectfont\bigskip
+    
+    we end up with the system: \bigskip
+    
+    \[
+    \left(\begin{array}{c|c|c|c}
+    A_1 & \bigzero & \ldots & \bigzero \\
+    \hline
+    \bigzero & A_2 & \ldots & \bigzero \\
+    \hline
+    \vdots & \vdots & \ddots & \vdots \\
+    \hline
+    \bigzero & \bigzero & \ldots & A_m
+    \end{array}\right) X = L
+    \]
+
+\end{frame}
+
+\begin{frame} \frametitle{Hitting probabilities}
+    \vspace{2em}
+    
+    \begin{algorithm}[H]
+    \begin{algorithmic}[1]
+    \REQUIRE $P_{m \times m}$ a stochastic matrix
+    \NEWLINE
+    \STATE{$[C,v] = \texttt{commClassesKernel(P)}$}
+    \NEWLINE
+    \FOR{$j \in \{1, \ldots, m\}$}
+        \STATE{Compute the matrix $A_j$}
+        \STATE{Compute the independent terms $L_j$}
+        \NEWLINE
+        \FOR{$i \in \{1, \ldots, m\}$}
+        \IF{$v[i]$ ($i$ is closed)}
+            \FOR{$k \in \{1, \ldots, m\}$}
+            \STATE{$A_j(i,k) = \delta_{ik}$}
+            \ENDFOR
+            \STATE{$L_{j}[i] = C_{ij}$}
+        \ENDIF
+        \ENDFOR
+        \STATE{Solve $A_j \cdot X_j = L_j$}
+    \ENDFOR
+    \RETURN{$X = (X_1 | \ldots | X_m)$}
+    \end{algorithmic}
+    \caption{\texttt{hittingProbabilities} algorithm}
+    \label{alg:hittingProbs}
+    \end{algorithm}
+ 
+\end{frame}
+

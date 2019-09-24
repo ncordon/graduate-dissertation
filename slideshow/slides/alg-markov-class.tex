@@ -1,0 +1,51 @@
+\subsection{Markov chain classification}
+ \begin{frame}\frametitle{Markov chain classification}
+    \vspace{3em}
+    
+    The following procedure works in \(\algcomp{m^5}\)
+
+    \begin{algorithm}[H]
+    \begin{algorithmic}[1]
+    \REQUIRE $P_{m \times m}$ a stochastic matrix
+    \NEWLINE
+    \STATE{$d = \#\{i \in \{1, \ldots, m\}: p_{ii} > 0\}$}
+    \IF{$d > 0$}
+        \RETURN{$\texttt{matrixPow}(P, 2m - d - 1) > 0$}
+    \ELSE
+        \RETURN{$\texttt{matrixPow}(P, m^2 - 2m + 2) > 0$}
+    \ENDIF
+    \end{algorithmic}
+    \caption{\texttt{is.regular} algorithm}
+    \label{alg:isRegular}
+    \end{algorithm}
+    
+\end{frame}
+
+\begin{frame} \frametitle{Efficient matrix pow}
+    \vspace{3em}
+    
+    Note that for \(P_{m\times m}\), computing the power \(P^n\) using the normal matrix product algorithm and
+    iterating is \(\algcomp{m^3 \cdot n}\). Since every number can be expressed as a sum
+    of powers of \(2\) (we can encode an arbitrary number using binary representation), we can use this to refine
+    the former algorithm into an \(\algcomp{m^3 \log(m)}\) one.
+
+    \begin{algorithm}[H]
+    \begin{algorithmic}[1]
+    \REQUIRE $P_{m \times m}$ a stochastic matrix
+    \REQUIRE $n$ the exponent
+    \NEWLINE
+    \STATE{$Q:= I_{m \times m}$}
+    \STATE{$A = P$}
+    \WHILE{$n > 0$}
+        \IF{$n \mod(2) = 1$}
+        \STATE{$Q := Q + A$}
+        \ENDIF
+        \STATE{$A := A * A$}
+        \STATE{$n := n / 2$}
+    \ENDWHILE
+    \RETURN{$Q$}
+    \end{algorithmic}
+    \caption{$\algcomp{m^3\log(n)}$ \texttt{matrixPow} algorithm}
+    \label{alg:matrixPow}
+    \end{algorithm}
+\end{frame}

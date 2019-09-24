@@ -1,0 +1,29 @@
+\subsection{Steady states}
+ \begin{frame}\frametitle{Steady states}
+    \vspace{3em}
+    
+    The total cost of the newly added algorithm is \(\algcomp{m^2}\).
+
+    \begin{algorithm}[H]
+    \begin{algorithmic}[1]
+    \REQUIRE $P_{m \times m}$ an stochastic matrix by columns
+    \STATE{$\{C_1, \ldots, C_r\} = \textrm{\texttt{recurrentClasses}}(P)$}
+    \NEWLINE
+    \FOR{$k = 1, \ldots, r$}
+        \STATE{$P_k$ from the canonic form, subsetting $P_k = P[C_k, C_k]$}
+        \STATE{Compute $u_k$ solving the system:
+        \[
+            \twopartsys{(I - P_k)u_k}{0}{\onerow \cdot u_k}{1}
+        \]
+        }
+        \STATE{Compute the vector $v_k$ as $u_k$ completing with $0$ in states outside of $C_k$}
+    \ENDFOR
+    \NEWLINE
+    \STATE{$S := (v_1 | \ldots | v_r)$}
+    \NEWLINE
+    \RETURN{$S$}
+    \end{algorithmic}
+    \caption{\texttt{steadyStates} algorithm}
+    \label{alg:steadyStates}
+    \end{algorithm}
+\end{frame}

@@ -1,0 +1,37 @@
+\subsection{Absorption}
+ \begin{frame}\frametitle{Absorption}
+    \vspace{3em}
+    The following two algorithms are \(\algcomp{m^3}\):
+    \vspace{-1em}
+    \begin{algorithm}[H]
+    \begin{algorithmic}[1]
+    \REQUIRE $P_{m \times m}$ a stochastic matrix
+    \NEWLINE
+    \STATE{$A = \texttt{transientStates}(R)$}
+    \STATE{Compute $R = P[A, A]$}
+    \STATE{Compute the fundamental matrix $N = (I - R)^{-1}$}
+    \STATE{Compute $t = N \cdot \onecol$}
+    \RETURN{$t$}
+    \caption{\texttt{meanAbsorptionTime} algorithm}
+    \label{alg:meanAbsorptionTime}
+    \end{algorithmic}
+    \end{algorithm}
+
+    \vspace{-2em}
+    
+    \begin{algorithm}[H]
+    \begin{algorithmic}[1]
+    \REQUIRE $P_{m \times m}$ a stochastic matrix
+    \NEWLINE
+    \STATE{$A = \texttt{transientStates}(P)$}
+    \STATE{$B = \texttt{recurrentStates}(R)$}
+    \STATE{Compute $R = P[A, A]$}
+    \STATE{Compute the fundamental matrix $N = (I - R)^{-1}$}
+    \STATE{Compute $F^{*} = N \cdot P[A, B]$}
+    \RETURN{$F^{\ast}$}
+    \caption{\texttt{absorptionProbabilities} algorithm}
+    \label{alg:absorptionProbabilities}
+    \end{algorithmic}
+    \end{algorithm}
+    
+\end{frame}

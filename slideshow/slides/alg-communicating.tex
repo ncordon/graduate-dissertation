@@ -1,0 +1,63 @@
+\subsection{Communicating classes}
+ \begin{frame}\frametitle{Communicating classes}
+    \vspace{3em}
+    The original algorithm run in \(\algcomp{m^4}\) in worst cases. We have improved it 
+    turning it into a \(\algcomp{m^2}\) algorithm, using a modification of Tarjan's algorithm.
+    \vspace{-1em}
+    \begin{algorithm}[H]
+    \begin{algorithmic}[1]
+    \REQUIRE $P_{m \times m}$ an stochastic matrix
+    \NEWLINE
+    \STATE{$\{L_1, \ldots, L_r\} = \texttt{Tarjan}(P)$}
+    \STATE{$C := (false)_{m\times m}, \quad v := (false, \ldots, false)_{1 \times m}$}
+    \FOR{$k \in \{1, \ldots, r\}$}
+        \FOR{$i \in L_k$}
+        \STATE{$\texttt{isClosed} = \exists j\in \{1, \ldots, m\}, j \not\in L_k: P(i, j) > 0$}
+        \ENDFOR
+        \FOR{$i \in L_k$}
+        \STATE{$v[i] := \texttt{isClosed}$}
+        \FOR{$j \in L_k$}
+            \STATE{$C_{ij} := true$}
+        \ENDFOR
+        \ENDFOR
+    \ENDFOR
+    \NEWLINE
+    \RETURN{$[C, v]$}
+    \end{algorithmic}
+    \caption{\texttt{commClassesKernel} algorithm}
+    \label{alg:commClassesKernel}
+    \end{algorithm}
+
+\end{frame}
+
+\begin{frame} \frametitle{Communicating classes}
+    \vspace{2em}
+    \begin{algorithm}[H]
+    \begin{algorithmic}[1]
+    \REQUIRE $P_{m \times m}$ an stochastic matrix
+    \STATE{Do $[C, v] = \textrm{\texttt{commClassesKernel}}(P)$}
+    \STATE{Mark all states' class as not computed :
+            $w = (\underset{(1)}{false}, \ldots, \underset{(m)}{false})$
+    }
+    \STATE{Initialize $A = \emptyset$}
+    \NEWLINE
+    \FOR{$i \in \{1, \ldots, m\}$}
+        \STATE{$B= \emptyset$}
+        \IF{not $w[i]$ (not computed class)}
+        \FOR{$j \in \{1, \ldots, m\}$}
+            \IF{$C_{ij}$}
+                \STATE{$B := B \bigcup \{j\}$}
+                \STATE{$w[j] := true$}
+            \ENDIF
+        \ENDFOR
+        \STATE{$A := A \bigcup \{B\}$}
+        \ENDIF
+    \ENDFOR
+    \NEWLINE
+    \RETURN{$A$}
+    \end{algorithmic}
+    \caption{\texttt{communicatingClasses} algorithm}
+    \label{alg:commClasses}
+    \end{algorithm}
+    
+\end{frame}
