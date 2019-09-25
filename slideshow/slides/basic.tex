@@ -1,37 +1,4 @@
-\subsection{Markov chains and time homogeneity}
- \begin{frame}\frametitle{Definition}
-    \vspace{1em}
-    \begin{definition}
-    A stochastic random process \(\{X_n\}_{n\in \naturals}\), is a Markov chain iff the 
-    future process \(\{X_k\}_{k > n}\) is independent of the past process 
-    \(\{X_k\}_{k < n}\) conditionally on \(X_n\).
-    \end{definition}
-
-    \begin{lemma}
-    \(\{X_n\}_{n \ge 0}\) is a Markov chain iff for all \(n\in\mathbb{N}\) and 
-    arbitrary \(s_0, \ldots, s_{n + 1} \in S\) it holds:
-
-    \[
-    P(X_{n + 1} = s_{n + 1} | X_n = s_n, \ldots, X_0 = s_0) = P(X_{n + 1} = s_{n + 1} | X_n = s_n)
-    \]
-    \end{lemma}
-    
-    \begin{definition}
-    Let \(S\) be the state space. Then we define the transition probabilities as:
-
-    \begin{align*}
-    & p_{i, j}(k, n) = P(X_n = j | X_k = i),\quad i,j \in S, \quad n,k \in \mathbb{N}, n\neq k \\
-    & p_{i, j}(n, n) = \mathds{1}_{i = j}
-    \end{align*}
-    \end{definition}
-    
-    \begin{proposition}[Chapman-Kolmogorov equation]
-    \(P(k, n) = (p_{i, j}(k, n))_{i,j \in S}\) holds:
-    \(P(k, n) = P(k, l) \cdot P(l, n), \quad \forall k \le l \le n
-    \)
-    \end{proposition}
- \end{frame}
- 
+\subsection{Time homogeneous Markov chains}
  \begin{frame} \frametitle{Time homogeneous Markov chains}
     \begin{definition}
     Given a Markov chain \(\{X_n\}\) with finite space state \(S\), it is said to be a 
@@ -39,22 +6,22 @@
     probabilities do not depend on time:
 
     \[
-    \forall i, j\in S, \,\forall n \in \mathbb{N} \qquad p_{i, j} (n, n + 1) = p_{i, j} \in [0, 1]
+    \forall i, j\in S, \,\forall n \in \mathbb{N} \qquad p_{i, j} (n, n + 1) = P(X_{n + 1} = j | X_{n} = i) = p_{i, j} \in [0, 1]
     \]
 
-    \(p_{i, j}\) is called one-step transition probability and \(P = (p_{i, j})_{i, j \in S}\) the transition matrix.
+    \(p_{i, j}\) is called one-step transition probability, \(P = (p_{i, j})_{i, j \in S}\) the transition matrix.
     \end{definition}
     
-    \begin{definition}
+    \begin{remark}
      We will denote $P_A(X_n \in B) = P(X_n \in B | X_{0} \in A)$ and $p_{i,j}^{(n)} = P_i(X_n = j)$.
-    \end{definition}
+    \end{remark}
 
     \begin{proposition}
-    Given \(\{X_n\}\) a DTMC it holds \(P(m, n) = P^{n - m}\)
+    Given \(\{X_n\}\) a DTMC, then it holds \(P(m, n) = (P(X_{n} = j | X_{m} = i)) = P^{n - m}\)
     \end{proposition}
     
     \begin{remark}
-    There is bijection between a DTMC with $S = \{1, \ldots, m\}$,
+    There is a bijection between a DTMC with $S = \{1, \ldots, m\}$,
     a by-row stochastic matrix $P$ of dimension $m \times m$ (we will note it 
     $P_{m\times m}$) and a directed graph $G(P):=(S, E, P)$ where there is an
     edge $e = (i, j), e \in E$ iff $p_{i,j} > 0$

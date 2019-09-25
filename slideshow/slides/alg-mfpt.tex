@@ -1,53 +1,48 @@
-\subsection{Mean first passage time and recurrence times}
+\subsection{Mean first passage time}
  \begin{frame}\frametitle{Mean first passage time}
     \vspace{2.5em}
-    
-    This algorithm is \(\algcomp{m^3}\), since it computes an inverse matrix.
-    
-    \begin{algorithm}[H]
-    \begin{algorithmic}[1]
-    \REQUIRE $P_{m \times m}$ an ergodic matrix
-    \REQUIRE $C$ destination set, $\emptyset$ by default.
-    \NEWLINE
-    \IF{$C = \emptyset$}
-        \STATE{Compute $w = \texttt{steadyStates}(P^t)$ (there is only one)}
+    \begin{columns}
+    \begin{column}{0.5\textwidth}
+
+        This algorithm is \(\algcomp{m^3}\), since it computes an inverse matrix.
+        
+        \begin{algorithm}[H]
+        \begin{algorithmic}[1]
+        \REQUIRE $P_{m \times m}$ an ergodic matrix
+        \NEWLINE
+        \STATE{Compute $w = $\small\texttt{steadyStates}$(P^t)$}
         \STATE{Compute $Z = (I - P + W)^{-1}$}
         \STATE{Compute $m_{ij} = (Z_{jj} - Z_{ij}) * w^{-j}$ for all $i, j \in \{1, \ldots, m\}$}
         \RETURN{$M = (m_{ij})$}
-    \ELSE
-        \STATE{$M = \texttt{meanAborptionTime}(P, C)$}
-    \ENDIF
-    \RETURN{M}
-    \end{algorithmic}
-    \caption{\texttt{meanFirstPassageTime} algorithm}
-    \label{alg:mfpt}
-    \end{algorithm}
+        \end{algorithmic}
+        \caption{\small\texttt{meanFirstPassageTime}}
+        \label{alg:mfpt}
+        \end{algorithm}
+    \end{column}
+    \begin{column}{0.5\textwidth}
 
-\end{frame}
+        The following algorithm has been added to the package (\(\algcomp{m^2}\) 
+        complexity):
 
-\begin{frame} \frametitle{Mean recurrence time}
-
-    The following algorithm has been added to the package (\(\algcomp{m^2}\) 
-    complexity):
-
-    \begin{algorithm}[H]
-    \begin{algorithmic}[1]
-    \REQUIRE $P_{m \times m}$ a stochastic matrix
-    \NEWLINE
-    \STATE{$(u_1 | \ldots | u_n) = \texttt{steadyStates}(P^t)$}
-    \STATE{$r = (0, \ldots, 0)$}
-    \FOR{Each steady state $u_i$}
-        \FOR{$j = 1, \ldots, m$}
-        \IF{$u_{ij} > 0$}
-            \STATE{$r_j := u_{ij}^{-1}$}
-        \ENDIF
+        \begin{algorithm}[H]
+        \begin{algorithmic}[1]
+        \REQUIRE $P_{m \times m}$ a stochastic matrix
+        \NEWLINE
+        \STATE{$(u_1 | \ldots | u_n) = $\small\texttt{steadyStates}$(P^t)$}
+        \STATE{$r = (0, \ldots, 0)$}
+        \FOR{Each steady state $u_i$}
+            \FOR{$j = 1, \ldots, m$}
+            \IF{$u_{ij} > 0$}
+                \STATE{$r_j := u_{ij}^{-1}$}
+            \ENDIF
+            \ENDFOR
         \ENDFOR
-    \ENDFOR
-    \RETURN{$\{(j, r_j): r_j > 0\}$}
-    \end{algorithmic}
-    \caption{\texttt{meanRecurrenceTime} algorithm}
-    \label{alg:mrt}
-    \end{algorithm}
-
+        \RETURN{$\{(j, r_j): r_j > 0\}$}
+        \end{algorithmic}
+        \caption{\small\texttt{meanRecurrenceTime}}
+        \label{alg:mrt}
+        \end{algorithm}
+    \end{column}
+    \end{columns}
 \end{frame}
 

@@ -5,3 +5,6 @@ ltximg*
 *~
 imgs/firma_nacho.png
 svg-inkscape/
+*.nav
+*.snm
+*.vrb

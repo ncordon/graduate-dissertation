@@ -6,16 +6,16 @@
     \vspace{-1em}
     \begin{algorithm}[H]
     \begin{algorithmic}[1]
-    \REQUIRE $P_{m \times m}$ an stochastic matrix
+    \REQUIRE $P_{m \times m}$ a stochastic matrix
     \NEWLINE
-    \STATE{$\{L_1, \ldots, L_r\} = \texttt{Tarjan}(P)$}
+    \STATE{$\{L_1, \ldots, L_r\} = $\small\texttt{Tarjan}$(P)$}
     \STATE{$C := (false)_{m\times m}, \quad v := (false, \ldots, false)_{1 \times m}$}
     \FOR{$k \in \{1, \ldots, r\}$}
         \FOR{$i \in L_k$}
-        \STATE{$\texttt{isClosed} = \exists j\in \{1, \ldots, m\}, j \not\in L_k: P(i, j) > 0$}
+        \STATE{\small\texttt{isClosed } $= \exists j\in \{1, \ldots, m\}, j \not\in L_k: P(i, j) > 0$}
         \ENDFOR
         \FOR{$i \in L_k$}
-        \STATE{$v[i] := \texttt{isClosed}$}
+        \STATE{$v[i] := $\small\texttt{isClosed}}
         \FOR{$j \in L_k$}
             \STATE{$C_{ij} := true$}
         \ENDFOR
@@ -24,7 +24,7 @@
     \NEWLINE
     \RETURN{$[C, v]$}
     \end{algorithmic}
-    \caption{\texttt{commClassesKernel} algorithm}
+    \caption{\small\texttt{commClassesKernel} algorithm}
     \label{alg:commClassesKernel}
     \end{algorithm}
 
@@ -34,8 +34,8 @@
     \vspace{2em}
     \begin{algorithm}[H]
     \begin{algorithmic}[1]
-    \REQUIRE $P_{m \times m}$ an stochastic matrix
-    \STATE{Do $[C, v] = \textrm{\texttt{commClassesKernel}}(P)$}
+    \REQUIRE $P_{m \times m}$ a stochastic matrix
+    \STATE{Do $[C, v] = \textrm{\small\texttt{commClassesKernel}}(P)$}
     \STATE{Mark all states' class as not computed :
             $w = (\underset{(1)}{false}, \ldots, \underset{(m)}{false})$
     }
@@ -56,7 +56,7 @@
     \NEWLINE
     \RETURN{$A$}
     \end{algorithmic}
-    \caption{\texttt{communicatingClasses} algorithm}
+    \caption{\small\texttt{communicatingClasses} algorithm}
     \label{alg:commClasses}
     \end{algorithm}
     

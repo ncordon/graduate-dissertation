@@ -1,0 +1,59 @@
+\subsection{Classification of states}
+ \begin{frame}\frametitle{Communicating classes, canonic form}
+    \vspace{2em}
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \begin{definition}
+            The state \(i\in S\) communicates with \(j\in S\), and we will write it like 
+            \(i \rightarrow j\) iff \(p_{i,j}^{(n)} > 0\) for some \(n > 0\). It is a 
+            transitive relation.
+
+            If \(i \goto j\) and \(j \goto i\) then we will say that both states communicate and
+            we will represent it as \(i \dgoto j\).
+            \end{definition}
+
+            \begin{definition}
+            State \(i\in S\) is essential if \(i \goto j\) always implies \(j \goto i\). We denote the set
+            of essential states by \(S^{\ast}\).
+            \end{definition}
+
+            \begin{lemma}
+            If \(i\in S^{\ast}\) and \(i \goto j\), then \(j \in S^{\ast}\)
+            \end{lemma}
+
+            \begin{proposition}
+            \(\dgoto\) is an equivalence relation in \(S^{\ast}\), and:
+
+            \[
+            S^{\ast} = C_1 \cup C_2 \cup \ldots \cup C_r
+            \]
+
+            where for every \(i, j \in C_k\), it holds \(i \dgoto j\).
+            \end{proposition}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+        Let $P_k$ be the transition matrix for the states in $C_k$ (which only 
+        communicate with themselves); $Q_k$ the probabilities of going from 
+        $S - S^{\ast}$ to $C_k$ (and never returning); and $R$ the probability
+        of the non-essential states communicating with themselves. If on top of
+        that we consider an all states are ordered and $C_k = [s_k]$ holds 
+        \(s_{i} < s_{i + 1}\) for all \(i\).
+        
+        \[
+            \left(\begin{array}{cccccccccc}
+            \gcell P_1    &        &            &       &        &       &            &        & \\
+                            & \rcell & \rcell     & \rcell&        &       &            &        & \\
+                            & \rcell & \rcell P_2 & \rcell&        &       &            &        & \\
+                            & \rcell & \rcell     & \rcell&        &       &            &        & \\
+                            &        &            &       & \ddots &       &            &        & \\
+                            &        &            &       &        &\bcell &   \bcell   & \bcell & \\
+                            &        &            &       &        &\bcell & \bcell P_r & \bcell & \\
+                            &        &            &       &        &\bcell &   \bcell   & \bcell & \\
+                \rowcolor{gray!20}
+                Q_1       &        &   Q_2      &       & \ldots &       &    Q_r     &        & R\\
+            \end{array}\right)
+        \]
+        \end{column}
+
+    \end{columns}
+ \end{frame}

@@ -5,7 +5,7 @@
     Rewriting the recurrence:     
     
     \[
-    f_{i,j} = \sum_{k\neq j} p_{i,k} f_{k,j}
+    f_{i,j} = p_{i,j} + \sum_{k\neq j} p_{i,k} f_{k,j}
     \]
 
     \fontsize{6pt}{0}\selectfont
@@ -80,7 +80,7 @@
     \begin{algorithmic}[1]
     \REQUIRE $P_{m \times m}$ a stochastic matrix
     \NEWLINE
-    \STATE{$[C,v] = \texttt{commClassesKernel(P)}$}
+    \STATE{$[C,v] = $\small\texttt{commClassesKernel}$(P)$}
     \NEWLINE
     \FOR{$j \in \{1, \ldots, m\}$}
         \STATE{Compute the matrix $A_j$}
@@ -98,7 +98,7 @@
     \ENDFOR
     \RETURN{$X = (X_1 | \ldots | X_m)$}
     \end{algorithmic}
-    \caption{\texttt{hittingProbabilities} algorithm}
+    \caption{\small\texttt{hittingProbabilities} algorithm}
     \label{alg:hittingProbs}
     \end{algorithm}
  

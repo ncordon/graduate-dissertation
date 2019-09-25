@@ -6,8 +6,8 @@
 
     \begin{algorithm}[H]
     \begin{algorithmic}[1]
-    \REQUIRE $P_{m \times m}$ an stochastic matrix by columns
-    \STATE{$\{C_1, \ldots, C_r\} = \textrm{\texttt{recurrentClasses}}(P)$}
+    \REQUIRE $P_{m \times m}$ a stochastic matrix by columns
+    \STATE{$\{C_1, \ldots, C_r\} = \textrm{\small\texttt{recurrentClasses}}(P)$}
     \NEWLINE
     \FOR{$k = 1, \ldots, r$}
         \STATE{$P_k$ from the canonic form, subsetting $P_k = P[C_k, C_k]$}
@@ -23,7 +23,7 @@
     \NEWLINE
     \RETURN{$S$}
     \end{algorithmic}
-    \caption{\texttt{steadyStates} algorithm}
+    \caption{\small\texttt{steadyStates} algorithm}
     \label{alg:steadyStates}
     \end{algorithm}
 \end{frame}
