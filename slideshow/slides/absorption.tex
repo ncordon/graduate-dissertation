@@ -1,0 +1,52 @@
+ \begin{frame} \frametitle{Absorption}
+    \vspace{2em}
+    
+    \begin{columns}
+    \begin{column}{0.5\textwidth}
+
+        \begin{definition}
+        A state \(i\in S\) is absorbing iff \(p_{i,i} = 1\).
+        \end{definition}
+    
+        \begin{definition}
+        \begin{enumerate}
+        \item We define absorbing time as \(\tau^{\ast} = \min \{n > 0: X_n \in S^{\ast}\}\).
+        \item We define absorbing probability as \(f_{i}^{\ast} = \probi{\tau^{\ast} < \infty}\).
+        \item Taking \(j\in S^{\ast}\), we can define the probability of being absorbed by \(j\) as \(f_{i,j}^{\ast} = \probi{\tau^{\ast} < \infty, X_{\tau^{\ast}} = j}\)
+        \item Since we can decompose \(S^{\ast} = C_1 \cup C_2 \cup \ldots \cup C_r\), given \(C = C_i\), we can define the probability of the state \(i\) being absorbed by the subchain \(C\) as:
+        \end{enumerate}
+
+        \[
+        f_{i,C}^{\ast} = \probi{\tau^{\ast} < \infty, X_{\tau^{\ast}} \in C}
+        \]
+        \end{definition}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+        \begin{definition}
+        We will call \(t_i\) to the mean number of steps before the chain is absorbed, given that 
+        the chain starts in \(i\), with \(i\) a transient state.
+        \end{definition}
+        
+        \begin{proposition}
+        If \(S - S^{\ast}\) is finite, then \(N = (I - R)^{-1}\) exists and:
+
+        \[
+        F^{\ast} = (f_{i,j}^{\ast})_{i \not\in S^{\ast}, j \in S^{\ast}} = N\cdot Q \qquad 
+        t = N \cdot \onecol \qquad
+        f_i^{\ast} = 1
+        \]
+
+        where the last equation tells us the absorption would take place almost surely.
+        \end{proposition}
+        
+        \begin{definition}
+        The matrix \(N := (I - R)^{-1}\) is called fundamental matrix for the Markov chain. 
+        The entry \(n_{ij}\) represents the number of steps the process is in transient state \(j\) 
+        if it is started in also transient state \(i\).
+        \end{definition}
+    \end{column}
+    \end{columns}
+ \end{frame}
+
+
+

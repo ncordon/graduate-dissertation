@@ -1,0 +1,28 @@
+ \begin{frame} \frametitle{Recurrence and transcience}
+    \vspace{2em}
+    \begin{definition}
+    An state \(i\in S\) is called recurrent iff \(f_{i,i} = 1\) and transient iff \(f_{i,i} < 1\)
+    \end{definition}
+
+    \begin{proposition}
+    If \(i\) is a recurrent state and \(i\) communicates with \(j\), then
+    \(f_{j,i} = f_{i,j} = f_{j,j} = 1\), and \(j\) is recurrent. Therefore, all the states of a
+    communicating class are either recurrent or transient.
+    \end{proposition}
+
+    \begin{definition}
+    We will say a communicating class is recurrent (resp. transient) iff all of its states
+    are recurrent (resp. transient). We will say a communicating class \(C\) is closed if it
+    holds \(i \goto j\) and \(i\in C\) implies \(j\in C\).
+    \end{definition}
+
+    \begin{proposition}
+    All closed irreducible subchains of a DTMC are recurrent, and every DTMC has
+    at least one subchain of such type. A state is transient iff it is non-essential.
+    \end{proposition}
+
+    \begin{corollary}
+    In a DTMC, a communicating class is recurrent iff it is closed.
+    \end{corollary}
+
+ \end{frame}

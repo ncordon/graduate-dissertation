@@ -1,0 +1,51 @@
+\subsection{Steady states}
+ \begin{frame}\frametitle{Steady states}
+    \vspace{2em}
+    \begin{columns}
+     \begin{column}{0.5\textwidth}
+        \begin{proposition}
+        Given \(P_{m\times m}\) an stochastic matrix, then every steady state \(v\) 
+        assigns \(0\) to the transient states.
+        
+        ~\\
+        \label{prop:ss-transient-zero}
+        \end{proposition}
+        Each matrix \(P_1, \ldots, P_r\) from its canonic form is irreducible. 
+        Therefore, by the fundamental theorem, each \(P_i\) has a unique steady vector 
+        \(v^{(i)}\). 
+        
+        \begin{proposition}
+        Given an stochastic matrix \(P\) written in its canonic form, then its space of 
+        steady states is a convex hull given by:
+
+        \[
+        \bigg\{\sum_{i = 1}^r \alpha_i \widetilde{v}^{(i)}: 0 \le \alpha_i, \sum_{i = 1}^{r} \alpha_i = 1\bigg\}
+        \]
+        \end{proposition}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+        The total cost of this newly added algorithm is \(\algcomp{m^2}\).
+        \vspace{-1em}
+        \begin{algorithm}[H]
+        \begin{algorithmic}[1]
+        \REQUIRE $P_{m \times m}$ a stochastic matrix by columns
+        \STATE{$\{C_1, \ldots, C_r\} = \textrm{\small\texttt{recurrentClasses}}(P)$}
+        \NEWLINE
+        \FOR{$k = 1, \ldots, r$}
+            \STATE{$P_k := P[C_k, C_k]$}
+            \STATE{Compute $u_k$ solving the system:
+            \[
+                \twopartsys{(I - P_k)u_k}{0}{\onerow \cdot u_k}{1}
+            \]
+            }
+            \STATE{Compute the vector $v_k$ as $u_k$ completing with $0$ outside of $C_k$}
+        \ENDFOR
+        \NEWLINE
+        \RETURN{$S:= (v_1 | \ldots | v_r)$}
+        \end{algorithmic}
+        \caption{\small\texttt{steadyStates} algorithm}
+        \label{alg:steadyStates}
+        \end{algorithm}
+    \end{column}
+    \end{columns}
+\end{frame}

@@ -1,29 +1,52 @@
 \subsection{Time homogeneous Markov chains}
  \begin{frame} \frametitle{Time homogeneous Markov chains}
-    \begin{definition}
-    Given a Markov chain \(\{X_n\}\) with finite space state \(S\), it is said to be a 
-    time-homogeneous Markov chain (and we will note it DTMC) iff the transition 
-    probabilities do not depend on time:
+    \begin{columns}
+    \begin{column}{0.5\textwidth}
+        \begin{definition}
+        Given a Markov chain \(\{X_n\}\) with finite space state \(S\), it is said to be a 
+        time-homogeneous Markov chain (and we will note it DTMC) iff the transition 
+        probabilities do not depend on time:
 
-    \[
-    \forall i, j\in S, \,\forall n \in \mathbb{N} \qquad p_{i, j} (n, n + 1) = P(X_{n + 1} = j | X_{n} = i) = p_{i, j} \in [0, 1]
-    \]
+        \[
+        \forall i, j, n \quad P(X_{n + 1} = j | X_{n} = i) = p_{i, j}
+        \]
 
-    \(p_{i, j}\) is called one-step transition probability, \(P = (p_{i, j})_{i, j \in S}\) the transition matrix.
-    \end{definition}
+        \(p_{i, j}\) is called one-step transition probability, \(P = (p_{i, j})_{i, j \in S}\) the transition matrix.
+        \end{definition}
+        
+        \begin{remark}
+        There is a bijection between a DTMC with $S = \{1, \ldots, m\}$,
+        a by-row stochastic matrix $P$ of dimension $m \times m$ (we will note it 
+        $P_{m\times m}$) and a directed graph $G(P):=(S, E, P)$ where there is an
+        edge $e = (i, j), e \in E$ iff $p_{i,j} > 0$
+        \end{remark}
+    \end{column}
     
-    \begin{remark}
-     We will denote $P_A(X_n \in B) = P(X_n \in B | X_{0} \in A)$ and $p_{i,j}^{(n)} = P_i(X_n = j)$.
-    \end{remark}
+    \begin{column}{0.5\textwidth}
+        \begin{definition}
+        We define the hitting time for the state \(j \in S\) as 
+        $\tau_j = min \{n > 0 : X_n = j \}$
+        \end{definition}
+        
+        \begin{definition}
+        The probability that the first hitting time for $j$, starting at $i$, is $n$, is:
 
-    \begin{proposition}
-    Given \(\{X_n\}\) a DTMC, then it holds \(P(m, n) = (P(X_{n} = j | X_{m} = i)) = P^{n - m}\)
-    \end{proposition}
-    
-    \begin{remark}
-    There is a bijection between a DTMC with $S = \{1, \ldots, m\}$,
-    a by-row stochastic matrix $P$ of dimension $m \times m$ (we will note it 
-    $P_{m\times m}$) and a directed graph $G(P):=(S, E, P)$ where there is an
-    edge $e = (i, j), e \in E$ iff $p_{i,j} > 0$
-    \end{remark}
+        \[
+        f_{i,j}^{(n)} = P_i\left(\tau_j = n\right)
+        \]
+
+        and we will define the (first) hitting probability for \(j\) starting at \(i\) as:
+
+        \[
+        f_{i, j} = P_i\left(\tau_j < \infty\right)
+        \]
+        \end{definition}
+        
+        The values $f_{i, j}$ verify the recurrence:
+
+        \[
+        f_{i,j} = p_{i,j} + \sum_{k\neq j} p_{i,k} f_{k,j}
+        \]
+    \end{column}
+    \end{columns}
  \end{frame}
